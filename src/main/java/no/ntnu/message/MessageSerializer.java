@@ -63,7 +63,7 @@ public class MessageSerializer {
       throw new IllegalArgumentException("Message cannot be null");
     }
     if (message.matches(SINGLE_PARAMETER_COMMAND_REGEX)) {
-//      switch (message) {
+      switch (message) {
 //        case CHANNEL_COUNT_COMMAND:
 //          return new ChannelCountCommand();
 //        case TURN_ON_COMMAND:
@@ -78,9 +78,9 @@ public class MessageSerializer {
 //          return new TvStateMessage(true);
 //        case TV_STATE_OFF:
 //          return new TvStateMessage(false);
-//        default:
-//          throw new IllegalArgumentException(UNKNOWN_COMMAND_PREFIX + message);
-//      }
+        default:
+          throw new IllegalArgumentException(UNKNOWN_COMMAND_PREFIX + message);
+      }
     } else {
       return deserializeParameterizedCommand(message);
     }
