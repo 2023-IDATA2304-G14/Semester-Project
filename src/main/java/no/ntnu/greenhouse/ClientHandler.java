@@ -1,0 +1,80 @@
+package no.ntnu.greenhouse;
+
+import no.ntnu.message.*;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+
+public class ClientHandler extends Thread {
+  private final Socket clientSocket;
+  private final GreenhouseServer greenhouseServer;
+  private final BufferedReader socketReader;
+  private final PrintWriter socketWriter;
+
+  public ClientHandler(Socket clientSocket, GreenhouseServer greenhouseServer) throws IOException {
+    this.clientSocket = clientSocket;
+    this.greenhouseServer = greenhouseServer;
+    this.socketReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+    this.socketWriter = new PrintWriter(clientSocket.getOutputStream(), true);
+  }
+
+  @Override
+  public void run() {
+    Message response;
+    do {
+      Command clientCommand = readClientRequest();
+      if (clientCommand != null) {
+        System.out.println("Received from client: " + clientCommand);
+        response = clientCommand.execute(greenhouseServer.getGreenhouseNode());
+        if (response != null) {
+          if (!(clientCommand instanceof GetCommand) && response instanceof BroadcastMessage) {
+            greenhouseServer.broadcastMessage(response);
+          } else {
+            sendResponseToClient(response);
+          }
+          System.out.println("Sent to client: " + response);
+        }
+      } else {
+        response = null;
+      }
+    } while (response != null);
+    System.out.println("Client disconnected: " + clientSocket.getRemoteSocketAddress());
+    greenhouseServer.removeClient(this);
+  }
+
+  private Command readClientRequest() {
+    Message clientCommand = null;
+    try {
+      String rawClientRequest = socketReader.readLine();
+      if (rawClientRequest == null) {
+        return null;
+      }
+      clientCommand = MessageSerializer.deserialize(rawClientRequest);
+      if (!(clientCommand instanceof Command)) {
+        System.err.println("Received invalid request from client: " + clientCommand);
+        clientCommand = null;
+      }
+    } catch (IOException e) {
+      System.err.println("Could not read from client socket: " + e.getMessage());
+    }
+    return (Command) clientCommand;
+  }
+
+  public void sendResponseToClient(Message response) {
+    String serializedResponse = MessageSerializer.serialize(response);
+    socketWriter.println(serializedResponse);
+  }
+
+  public void close() {
+    try {
+      socketReader.close();
+      socketWriter.close();
+      clientSocket.close();
+    } catch (IOException e) {
+      System.err.println("Could not close client socket: " + e.getMessage());
+    }
+  }
+}
