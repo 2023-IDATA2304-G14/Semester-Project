@@ -12,7 +12,11 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.ActuatorCollection;
-
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.util.Map;
+import java.util.HashMap;
 public class ActuatorPane extends TitledPane {
   private final Map<Actuator, SimpleStringProperty> actuatorValue = new HashMap<>();
   private final Map<Actuator, SimpleBooleanProperty> actuatorActive = new HashMap<>();
@@ -79,13 +83,19 @@ public class ActuatorPane extends TitledPane {
   }
 
   private void sendActuatorCommand(Actuator actuator, boolean isOn) {
-    // Implement the logic to send the command to the actuator.
-    // This could involve network communication, API calls, etc.
-    // Example:
-    // if (isOn) {
-    //     // Code to turn on the actuator
-    // } else {
-    //     // Code to turn off the actuator
-    // }
+    String serverAddress = "your_server_address"; // Replace with  server address
+    int serverPort = 1234; // Replace with  server port
+
+    try (Socket socket = new Socket(serverAddress, serverPort);
+         PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+
+      String command = actuator.getId() + ":" + (isOn ? "ON" : "OFF");
+      out.println(command);
+
+    } catch (IOException e) {
+      System.err.println("Error sending command to actuator: " + e.getMessage());
+      // Handle the error
+    }
   }
+
 }
