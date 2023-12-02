@@ -1,7 +1,5 @@
 package no.ntnu.gui.common;
 
-import java.util.HashMap;
-import java.util.Map;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -15,19 +13,10 @@ import javafx.scene.layout.VBox;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.ActuatorCollection;
 
-/**
- * A section of the GUI representing a list of actuators. Can be used both on the sensor/actuator
- * node, and on a control panel node.
- */
 public class ActuatorPane extends TitledPane {
   private final Map<Actuator, SimpleStringProperty> actuatorValue = new HashMap<>();
   private final Map<Actuator, SimpleBooleanProperty> actuatorActive = new HashMap<>();
 
-  /**
-   * Create an actuator pane.
-   *
-   * @param actuators A list of actuators to display in the pane.
-   */
   public ActuatorPane(ActuatorCollection actuators) {
     super();
     setText("Actuators");
@@ -40,7 +29,7 @@ public class ActuatorPane extends TitledPane {
 
   private void addActuatorControls(ActuatorCollection actuators, Pane parent) {
     actuators.forEach(actuator ->
-        parent.getChildren().add(createActuatorGui(actuator))
+            parent.getChildren().add(createActuatorGui(actuator))
     );
   }
 
@@ -56,10 +45,8 @@ public class ActuatorPane extends TitledPane {
     actuatorActive.put(actuator, isSelected);
     checkbox.selectedProperty().bindBidirectional(isSelected);
     checkbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-      if (newValue != null && newValue) {
-        actuator.turnOn();
-      } else {
-        actuator.turnOff();
+      if (newValue != null) {
+        sendActuatorCommand(actuator, newValue);
       }
     });
     return checkbox;
@@ -78,11 +65,6 @@ public class ActuatorPane extends TitledPane {
     return actuator.getType() + ": " + onOff;
   }
 
-  /**
-   * An actuator has been updated, update the corresponding GUI parts.
-   *
-   * @param actuator The actuator which has been updated
-   */
   public void update(Actuator actuator) {
     SimpleStringProperty actuatorText = actuatorValue.get(actuator);
     SimpleBooleanProperty actuatorSelected = actuatorActive.get(actuator);
@@ -94,5 +76,16 @@ public class ActuatorPane extends TitledPane {
       actuatorText.set(generateActuatorText(actuator));
       actuatorSelected.set(actuator.isOn());
     });
+  }
+
+  private void sendActuatorCommand(Actuator actuator, boolean isOn) {
+    // Implement the logic to send the command to the actuator.
+    // This could involve network communication, API calls, etc.
+    // Example:
+    // if (isOn) {
+    //     // Code to turn on the actuator
+    // } else {
+    //     // Code to turn off the actuator
+    // }
   }
 }
