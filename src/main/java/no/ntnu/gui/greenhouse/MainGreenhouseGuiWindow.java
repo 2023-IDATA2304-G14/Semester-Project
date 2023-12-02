@@ -21,18 +21,42 @@ public class MainGreenhouseGuiWindow extends Scene {
   public static final int WIDTH = 300;
   public static final int HEIGHT = 300;
 
+  // Dashboard labels
+  private static Label temperatureLabel = new Label("Temperature: -- °C");
+  private static Label humidityLabel = new Label("Humidity: -- %");
+
   public MainGreenhouseGuiWindow() {
     super(createMainContent(), WIDTH, HEIGHT);
   }
 
   private static Parent createMainContent() {
-    VBox container = new VBox(createInfoLabel(), createMasterImage(), createCopyrightNotice());
+    VBox container = new VBox(
+            createInfoLabel(),
+            createDashboard(temperatureLabel, humidityLabel),
+            createMasterImage(),
+            createCopyrightNotice());
     container.setPadding(new Insets(20));
     container.setAlignment(Pos.CENTER);
     container.setSpacing(5);
     return container;
   }
 
+  private static Node createDashboard(Label tempLabel, Label humidLabel) {
+    VBox dashboard = new VBox();
+    dashboard.setAlignment(Pos.CENTER);
+    dashboard.setSpacing(10);
+
+    dashboard.getChildren().addAll(tempLabel, humidLabel);
+    return dashboard;
+  }
+
+  public static void updateTemperature(double temperature) {
+    temperatureLabel.setText("Temperature: " + temperature + " °C");
+  }
+
+  public static void updateHumidity(double humidity) {
+    humidityLabel.setText("Humidity: " + humidity + "%");
+  }
   private static Label createInfoLabel() {
     Label l = new Label("Close this window to stop the whole simulation");
     l.setWrapText(true);
