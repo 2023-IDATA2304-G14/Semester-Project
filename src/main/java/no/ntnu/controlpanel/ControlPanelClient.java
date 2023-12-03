@@ -1,6 +1,7 @@
 package no.ntnu.controlpanel;
 
 import no.ntnu.greenhouse.GreenhouseServer;
+import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
 import no.ntnu.message.Command;
 import no.ntnu.message.Message;
 import no.ntnu.message.MessageSerializer;
@@ -24,7 +25,7 @@ public class ControlPanelClient {
   private final String host;
   private final int port;
 //  TODO: Add the correct listener type
-  private final SOMELISTENER listener;
+  private final GreenhouseEventListener listener;
 
   /**
    * Construct a ControlPanel client with default hostname and port.
@@ -32,7 +33,7 @@ public class ControlPanelClient {
    * @param listener The listener of the ControlPanel client
    */
 //  TODO: Add the correct listener type
-  public ControlPanelClient(SOMELISTENER listener) {
+  public ControlPanelClient(GreenhouseEventListener listener) {
     this(GreenhouseServer.DEFAULT_HOSTNAME, GreenhouseServer.DEFAULT_PORT, listener);
   }
 
@@ -44,7 +45,7 @@ public class ControlPanelClient {
    * @param listener The listener of the ControlPanel client.
    * @throws RuntimeException Throws a RuntimeException if there is an error.
    */
-  public ControlPanelClient(String host, int port, SOMELISTENER listener) throws RuntimeException {
+  public ControlPanelClient(String host, int port, GreenhouseEventListener listener) throws RuntimeException {
     this.host = host;
     this.port = port;
     this.listener = listener;
@@ -102,9 +103,8 @@ public class ControlPanelClient {
    * @param message the message received from the server.
    * @param listener the listener that will be notified when a response is received.
    */
-//  TODO: Add the correct listener type
 //  TODO: Add handling of the different message types
-    private void handleMessage(Message message, SOMELISTENER listener) {
+    private void handleMessage(Message message, GreenhouseEventListener listener) {
 //        if (message instanceof ChannelCountMessage channelCountMessage) {
 //          listener.handleChannelCount(channelCountMessage.getChannelCount());
 //        } else if (message instanceof TvStateMessage tvStateMessage) {
