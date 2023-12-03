@@ -19,7 +19,7 @@ public class GreenhouseNode implements ActuatorListener, CommunicationChannelLis
   private static final long SENSING_DELAY = 5000;
   private final int id;
 
-  private final List<Sensor> sensors = new LinkedList<>();
+  private final SensorCollection sensors = new SensorCollection();
   private final ActuatorCollection actuators = new ActuatorCollection();
 
   private final List<SensorListener> sensorListeners = new LinkedList<>();
@@ -214,6 +214,10 @@ public class GreenhouseNode implements ActuatorListener, CommunicationChannelLis
     return actuators.get(actuatorId);
   }
 
+  public Sensor getSensor(int sensorId) {
+    return sensors.get(sensorId);
+  }
+
   private void notifySensorChanges() {
     for (SensorListener listener : sensorListeners) {
       listener.sensorsUpdated(sensors);
@@ -271,7 +275,7 @@ public class GreenhouseNode implements ActuatorListener, CommunicationChannelLis
    *
    * @return List of all the sensors
    */
-  public List<Sensor> getSensors() {
+  public SensorCollection getSensors() {
     return sensors;
   }
 

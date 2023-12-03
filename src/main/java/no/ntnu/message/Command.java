@@ -15,5 +15,5 @@ public interface Command extends Message {
      */
 //    TODO: Check if this should be GreenhouseNode or not
 //    TODO: Add nodeId or another identifier to the command
-    public abstract Message execute(GreenhouseNode logic/*, String nodeId*/);
+    public abstract Message execute(GreenhouseNode logic, String nodeId);
 }
