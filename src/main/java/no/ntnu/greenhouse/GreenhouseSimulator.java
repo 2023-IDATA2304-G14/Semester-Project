@@ -105,6 +105,11 @@ public class GreenhouseSimulator {
     }
   }
 
+  /**
+   * Get a node by its ID.
+   * @param nodeId The ID of the node
+   * @return The node, or null if no node with this ID exists
+   */
   public GreenhouseNode getNode(int nodeId) {
     return nodes.get(nodeId);
   }
