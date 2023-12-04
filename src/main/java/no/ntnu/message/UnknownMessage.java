@@ -1,6 +1,6 @@
 package no.ntnu.message;
 
-public record ErrorMessage(String message) implements Message {
+public record UnknownMessage(String message) implements Message {
     /**
      * Get the error message.
      *
