@@ -11,7 +11,7 @@ import no.ntnu.tools.Logger;
  * Application entrypoint - a simulator for a greenhouse.
  */
 public class GreenhouseSimulator {
-  private final Map<Integer, SensorActuatorNode> nodes = new HashMap<>();
+  private final Map<Integer, GreenhouseNode> nodes = new HashMap<>();
 
   private final List<PeriodicSwitch> periodicSwitches = new LinkedList<>();
   private final boolean fake;
@@ -37,7 +37,7 @@ public class GreenhouseSimulator {
   }
 
   private void createNode(int temperature, int humidity, int windows, int fans, int heaters) {
-    SensorActuatorNode node = DeviceFactory.createNode(
+    GreenhouseNode node = DeviceFactory.createNode(
         temperature, humidity, windows, fans, heaters);
     nodes.put(node.getId(), node);
   }
@@ -47,7 +47,7 @@ public class GreenhouseSimulator {
    */
   public void start() {
     initiateCommunication();
-    for (SensorActuatorNode node : nodes.values()) {
+    for (GreenhouseNode node : nodes.values()) {
       node.start();
     }
     for (PeriodicSwitch periodicSwitch : periodicSwitches) {
@@ -79,7 +79,7 @@ public class GreenhouseSimulator {
    */
   public void stop() {
     stopCommunication();
-    for (SensorActuatorNode node : nodes.values()) {
+    for (GreenhouseNode node : nodes.values()) {
       node.stop();
     }
   }
@@ -100,7 +100,7 @@ public class GreenhouseSimulator {
    * @param listener The listener which will receive notifications
    */
   public void subscribeToLifecycleUpdates(NodeStateListener listener) {
-    for (SensorActuatorNode node : nodes.values()) {
+    for (GreenhouseNode node : nodes.values()) {
       node.addStateListener(listener);
     }
   }

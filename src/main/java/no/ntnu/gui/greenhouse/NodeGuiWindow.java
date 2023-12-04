@@ -7,7 +7,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.Sensor;
-import no.ntnu.greenhouse.SensorActuatorNode;
+import no.ntnu.greenhouse.GreenhouseNode;
+import no.ntnu.greenhouse.SensorCollection;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
 import no.ntnu.listeners.common.ActuatorListener;
@@ -21,7 +22,7 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
   private static final double HORIZONTAL_OFFSET = 150;
   private static final double WINDOW_WIDTH = 300;
   private static final double WINDOW_HEIGHT = 300;
-  private final SensorActuatorNode node;
+  private final GreenhouseNode node;
 
   private ActuatorPane actuatorPane;
   private SensorPane sensorPane;
@@ -31,7 +32,7 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
    *
    * @param node The node which will be handled in this window
    */
-  public NodeGuiWindow(SensorActuatorNode node) {
+  public NodeGuiWindow(GreenhouseNode node) {
     this.node = node;
     Scene scene = new Scene(createContent(), WINDOW_WIDTH, WINDOW_HEIGHT);
     setScene(scene);
@@ -48,7 +49,7 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
   }
 
 
-  private void initializeListeners(SensorActuatorNode node) {
+  private void initializeListeners(GreenhouseNode node) {
     setOnCloseRequest(windowEvent -> shutDownNode());
     node.addSensorListener(this);
     node.addActuatorListener(this);
@@ -66,7 +67,7 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
 
 
   @Override
-  public void sensorsUpdated(List<Sensor> sensors) {
+  public void sensorsUpdated(SensorCollection sensors) {
     if (sensorPane != null) {
       sensorPane.update(sensors);
     }

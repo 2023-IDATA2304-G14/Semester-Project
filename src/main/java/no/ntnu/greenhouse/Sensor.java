@@ -5,6 +5,7 @@ package no.ntnu.greenhouse;
  */
 public class Sensor {
   private final SensorReading reading;
+  private final int id;
   private final double min;
   private final double max;
 
@@ -17,8 +18,9 @@ public class Sensor {
    * @param current The current (starting) value of the sensor
    * @param unit    The measurement unit. Examples: "%", "C", "lux"
    */
-  public Sensor(String type, double min, double max, double current, String unit) {
+  public Sensor(String type, int id, double min, double max, double current, String unit) {
     this.reading = new SensorReading(type, current, unit);
+    this.id = id;
     this.min = min;
     this.max = max;
     ensureValueBoundsAndPrecision(current);
@@ -38,12 +40,21 @@ public class Sensor {
   }
 
   /**
+   * Get the unique ID of the sensor.
+   *
+   * @return The ID
+   */
+  public int getId() {
+      return id;
+  }
+
+  /**
    * Create a clone of this sensor.
    *
    * @return A clone of this sensor, where all the fields are the same
    */
   public Sensor createClone() {
-    return new Sensor(this.reading.getType(), this.min, this.max,
+    return new Sensor(this.reading.getType(), this.id, this.min, this.max,
         this.reading.getValue(), this.reading.getUnit());
   }
 

@@ -12,14 +12,14 @@ import no.ntnu.listeners.greenhouse.SensorListener;
 import no.ntnu.tools.Logger;
 
 /**
- * Represents one node with sensors and actuators.
+ * Represents one greenhouse node with sensors and actuators.
  */
-public class SensorActuatorNode implements ActuatorListener, CommunicationChannelListener {
+public class GreenhouseNode implements ActuatorListener, CommunicationChannelListener {
   // How often to generate new sensor values, in seconds.
   private static final long SENSING_DELAY = 5000;
   private final int id;
 
-  private final List<Sensor> sensors = new LinkedList<>();
+  private final SensorCollection sensors = new SensorCollection();
   private final ActuatorCollection actuators = new ActuatorCollection();
 
   private final List<SensorListener> sensorListeners = new LinkedList<>();
@@ -37,7 +37,7 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
    *
    * @param id A unique ID of the node
    */
-  public SensorActuatorNode(int id) {
+  public GreenhouseNode(int id) {
     this.id = id;
     this.running = false;
   }
@@ -214,6 +214,10 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
     return actuators.get(actuatorId);
   }
 
+  public Sensor getSensor(int sensorId) {
+    return sensors.get(sensorId);
+  }
+
   private void notifySensorChanges() {
     for (SensorListener listener : sensorListeners) {
       listener.sensorsUpdated(sensors);
@@ -271,7 +275,7 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
    *
    * @return List of all the sensors
    */
-  public List<Sensor> getSensors() {
+  public SensorCollection getSensors() {
     return sensors;
   }
 
