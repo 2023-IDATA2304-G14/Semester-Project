@@ -90,7 +90,7 @@ public class GreenhouseSimulator {
         periodicSwitch.stop();
       }
     } else {
-      // TODO - here you stop the TCP/UDP communication
+      // TODO: stop the TCP/UDP communication
     }
   }
 
@@ -103,5 +103,9 @@ public class GreenhouseSimulator {
     for (GreenhouseNode node : nodes.values()) {
       node.addStateListener(listener);
     }
+  }
+
+  public GreenhouseNode getNode(int nodeId) {
+    return nodes.get(nodeId);
   }
 }

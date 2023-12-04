@@ -2,7 +2,7 @@ package no.ntnu.message;
 
 import no.ntnu.greenhouse.SensorReading;
 
-public record GetSensorReadingMessage(SensorReading reading, int nodeId) implements BroadcastMessage {
+public record GetSensorReadingMessage(SensorReading reading, int nodeId, int sensorId) implements BroadcastMessage {
     /**
      * Get the sensor reading from the message.
      *
@@ -14,5 +14,9 @@ public record GetSensorReadingMessage(SensorReading reading, int nodeId) impleme
 
     public int getNodeId() {
         return nodeId;
+    }
+
+    public int getSensorId() {
+        return sensorId;
     }
 }

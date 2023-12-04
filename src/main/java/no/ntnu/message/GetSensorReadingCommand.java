@@ -1,20 +1,24 @@
 package no.ntnu.message;
 
 import no.ntnu.greenhouse.GreenhouseNode;
+import no.ntnu.greenhouse.GreenhouseSimulator;
 import no.ntnu.greenhouse.SensorReading;
 
 public class GetSensorReadingCommand implements GetCommand {
     private final int nodeId;
+    private final int sensorId;
 
-    public GetSensorReadingCommand(int nodeId) {
+    public GetSensorReadingCommand(int nodeId, int sensorId) {
         this.nodeId = nodeId;
+        this.sensorId = sensorId;
     }
     @Override
-    public Message execute(GreenhouseNode logic) {
+    public Message execute(GreenhouseSimulator logic) {
         Message response;
         try {
-            SensorReading reading = logic.getSensor(nodeId).getReading();
-            response = new GetSensorReadingMessage(reading, nodeId);
+            GreenhouseNode node = logic.getNode(nodeId);
+            SensorReading reading = node.getSensor(sensorId).getReading();
+            response = new GetSensorReadingMessage(reading, nodeId, sensorId);
         } catch (IllegalStateException e) {
             response = new ErrorMessage(e.getMessage());
         }

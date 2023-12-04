@@ -14,26 +14,26 @@ import java.util.concurrent.Executors;
 public class GreenhouseServer {
   public static final String DEFAULT_HOSTNAME = "localhost";
   public static final int DEFAULT_PORT = 1238;
-  private final GreenhouseNode greenhouseNode;
+  private final GreenhouseSimulator greenhouseSimulator;
   private int port;
   boolean isServerRunning;
   private final List<ClientHandler> connectedClients = new ArrayList<>();
   private ServerSocket serverSocket;
   private CountDownLatch portAssigned;
 
-  public GreenhouseServer(GreenhouseNode greenhouseNode) throws IllegalArgumentException, IOException {
-    this(greenhouseNode, DEFAULT_PORT);
+  public GreenhouseServer(GreenhouseSimulator greenhouseSimulator) throws IllegalArgumentException, IOException {
+    this(greenhouseSimulator, DEFAULT_PORT);
   }
 
-  public GreenhouseServer(GreenhouseNode greenhouseNode, int port) throws IllegalArgumentException, IOException {
-    if (greenhouseNode == null) {
-      throw new IllegalArgumentException("GreenhouseNode cannot be null");
+  public GreenhouseServer(GreenhouseSimulator greenhouseSimulator, int port) throws IllegalArgumentException, IOException {
+    if (greenhouseSimulator == null) {
+      throw new IllegalArgumentException("greenhouseSimulator cannot be null");
     }
     if (port < 0 || port > 65535) {
       throw new IllegalArgumentException("Invalid port number: " + port);
     }
 
-    this.greenhouseNode = greenhouseNode;
+    this.greenhouseSimulator = greenhouseSimulator;
     this.port = port;
   }
 
@@ -114,8 +114,8 @@ public class GreenhouseServer {
     connectedClients.remove(client);
   }
 
-  public GreenhouseNode getGreenhouseNode() {
-    return greenhouseNode;
+  public GreenhouseSimulator getGreenhouseNode() {
+    return greenhouseSimulator;
   }
 
   public int getPort() {
