@@ -317,14 +317,4 @@ public class GreenhouseNode implements ActuatorListener, CommunicationChannelLis
       actuator.set(on);
     }
   }
-
-  /**
-   * Get the current temperature.
-   *
-   * @return Current temperature
-   */
-  public int getCurrentTemperature() {
-
-    return currentTemperature;
-  }
 }
