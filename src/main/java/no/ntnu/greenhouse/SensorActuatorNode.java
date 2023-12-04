@@ -313,4 +313,14 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
       actuator.set(on);
     }
   }
+
+  /**
+   * Get the current temperature.
+   *
+   * @return Current temperature
+   */
+  public int getCurrentTemperature() {
+
+    return currentTemperature;
+  }
 }
