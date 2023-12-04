@@ -18,8 +18,8 @@ import javafx.scene.text.Font;
  * The main GUI window for greenhouse simulator.
  */
 public class MainGreenhouseGuiWindow extends Scene {
-  public static final int WIDTH = 300;
-  public static final int HEIGHT = 300;
+  public static final int WIDTH = 400;
+  public static final int HEIGHT = 400;
 
   public MainGreenhouseGuiWindow() {
     super(createMainContent(), WIDTH, HEIGHT);
@@ -49,10 +49,10 @@ public class MainGreenhouseGuiWindow extends Scene {
   private static Node createMasterImage() {
     Node node;
     try {
-      InputStream fileContent = new FileInputStream("images/picsart_chuck.jpeg");
+      InputStream fileContent = new FileInputStream("images/Herman.png");
       ImageView imageView = new ImageView();
       imageView.setImage(new Image(fileContent));
-      imageView.setFitWidth(100);
+      imageView.setFitWidth(300);
       imageView.setPreserveRatio(true);
       node = imageView;
     } catch (FileNotFoundException e) {
