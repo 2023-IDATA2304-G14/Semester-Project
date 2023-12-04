@@ -17,11 +17,8 @@ import no.ntnu.listeners.greenhouse.SensorListener;
 /**
  * Window with GUI for overview and control of one specific sensor/actuator node.
  */
-public class NodeGuiWindow extends Stage implements SensorListener, ActuatorListener {
-  private static final double VERTICAL_OFFSET = 50;
-  private static final double HORIZONTAL_OFFSET = 150;
-  private static final double WINDOW_WIDTH = 300;
-  private static final double WINDOW_HEIGHT = 300;
+public class NodeGuiWindow extends Parent implements SensorListener, ActuatorListener {
+
   private final GreenhouseNode node;
 
   private ActuatorPane actuatorPane;
@@ -34,28 +31,15 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
    */
   public NodeGuiWindow(GreenhouseNode node) {
     this.node = node;
-    Scene scene = new Scene(createContent(), WINDOW_WIDTH, WINDOW_HEIGHT);
-    setScene(scene);
-    setTitle("Node " + node.getId());
     initializeListeners(node);
-    setPositionAndSize();
   }
-
-  private void setPositionAndSize() {
-    setX((node.getId() - 1) * HORIZONTAL_OFFSET);
-    setY(node.getId() * VERTICAL_OFFSET);
-    setMinWidth(WINDOW_HEIGHT);
-    setMinHeight(WINDOW_WIDTH);
-  }
-
 
   private void initializeListeners(GreenhouseNode node) {
-    setOnCloseRequest(windowEvent -> shutDownNode());
     node.addSensorListener(this);
     node.addActuatorListener(this);
   }
 
-  private void shutDownNode() {
+  public void shutDownNode() {
     node.stop();
   }
 

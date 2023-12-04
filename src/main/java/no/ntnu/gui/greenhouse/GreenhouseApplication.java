@@ -15,13 +15,13 @@ import no.ntnu.tools.Logger;
  */
 public class GreenhouseApplication extends Application implements NodeStateListener {
   private static GreenhouseSimulator simulator;
-  private final Map<GreenhouseNode, NodeGuiWindow> nodeWindows = new HashMap<>();
   private Stage mainStage;
 
+  private MainGreenhouseGuiWindow mainWindow = new MainGreenhouseGuiWindow();
   @Override
   public void start(Stage mainStage) {
     this.mainStage = mainStage;
-    mainStage.setScene(new MainGreenhouseGuiWindow());
+    mainStage.setScene(mainWindow);
     mainStage.setMinWidth(MainGreenhouseGuiWindow.WIDTH);
     mainStage.setMinHeight(MainGreenhouseGuiWindow.HEIGHT);
     mainStage.setTitle("Greenhouse simulator");
@@ -65,8 +65,6 @@ public class GreenhouseApplication extends Application implements NodeStateListe
   @Override
   public void onNodeStopped(GreenhouseNode node) {
     NodeGuiWindow window = nodeWindows.remove(node);
-    if (window != null) {
-      Platform.runLater(window::close);
       if (nodeWindows.isEmpty()) {
         Platform.runLater(mainStage::close);
       }
