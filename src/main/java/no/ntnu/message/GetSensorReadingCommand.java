@@ -26,7 +26,7 @@ public class GetSensorReadingCommand implements GetCommand {
         try {
             GreenhouseNode node = logic.getNode(nodeId);
             SensorReading reading = node.getSensor(sensorId).getReading();
-            response = new SensorReadingMessage(reading, nodeId, sensorId);
+            response = new SensorReadingMessage(nodeId, sensorId, reading);
         } catch (IllegalStateException e) {
             response = new ErrorMessage(e.getMessage());
         }
