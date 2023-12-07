@@ -12,7 +12,6 @@ import no.ntnu.tools.Logger;
  */
 public class GreenhouseSimulator {
   private final Map<Integer, GreenhouseNode> nodes = new HashMap<>();
-
   private final List<PeriodicSwitch> periodicSwitches = new LinkedList<>();
   private final boolean fake;
 

@@ -14,6 +14,12 @@ public class ClientHandler extends Thread {
   private final BufferedReader socketReader;
   private final PrintWriter socketWriter;
 
+  /**
+   * Create a client handler.
+   * @param clientSocket The socket to communicate with the client.
+   * @param greenhouseServer The greenhouse server that created this client handler.
+   * @throws IOException If the socket could not be opened.
+   */
   public ClientHandler(Socket clientSocket, GreenhouseServer greenhouseServer) throws IOException {
     this.clientSocket = clientSocket;
     this.greenhouseServer = greenhouseServer;
@@ -21,6 +27,9 @@ public class ClientHandler extends Thread {
     this.socketWriter = new PrintWriter(clientSocket.getOutputStream(), true);
   }
 
+  /**
+   * Handle communication with a client.
+   */
   @Override
   public void run() {
     Message response;
@@ -28,7 +37,7 @@ public class ClientHandler extends Thread {
       Command clientCommand = readClientRequest();
       if (clientCommand != null) {
         System.out.println("Received from client: " + clientCommand);
-        response = clientCommand.execute(greenhouseServer.getGreenhouseNode());
+        response = clientCommand.execute(greenhouseServer.getGreenhouseSimulator());
         if (response != null) {
           if (!(clientCommand instanceof GetCommand) && response instanceof BroadcastMessage) {
             greenhouseServer.broadcastMessage(response);
@@ -45,6 +54,10 @@ public class ClientHandler extends Thread {
     greenhouseServer.removeClient(this);
   }
 
+  /**
+   * Read a command from the client.
+   * @return The command read from the client, or null if the client disconnected.
+   */
   private Command readClientRequest() {
     Message clientCommand = null;
     try {
@@ -63,11 +76,18 @@ public class ClientHandler extends Thread {
     return (Command) clientCommand;
   }
 
+  /**
+   * Send a response to the client.
+   * @param response The response to send.
+   */
   public void sendResponseToClient(Message response) {
     String serializedResponse = MessageSerializer.serialize(response);
     socketWriter.println(serializedResponse);
   }
 
+  /**
+   * Close the client handler.
+   */
   public void close() {
     try {
       socketReader.close();
