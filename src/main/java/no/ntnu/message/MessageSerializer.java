@@ -25,12 +25,12 @@ public class MessageSerializer {
     if (message instanceof GetSensorReadingCommand getSensorReadingCommand) {
       return new MessageParameterizer(GET_SENSOR_READING_COMMAND_PREFIX)
           .setNodeId(String.valueOf(getSensorReadingCommand.getNodeId()))
-          .setSensorId(String.valueOf(getSensorReadingCommand.getSensorId()))
+          .setItemId(String.valueOf(getSensorReadingCommand.getSensorId()))
           .parameterize();
     } else if (message instanceof SensorReadingMessage sensorReadingMessage) {
       return new MessageParameterizer(SENSOR_READING_MESSAGE_PREFIX)
           .setNodeId(String.valueOf(sensorReadingMessage.getNodeId()))
-          .setSensorId(String.valueOf(sensorReadingMessage.getSensorId()))
+          .setItemId(String.valueOf(sensorReadingMessage.getSensorId()))
           .parameterize();
 
 //    } else if (...) {
@@ -64,7 +64,7 @@ public class MessageSerializer {
               .deparameterize(message);
 
       int nodeID = Integer.parseInt(messageParameterizer.getNodeId());
-      int sensorID = Integer.parseInt(messageParameterizer.getSensorId());
+      int sensorID = Integer.parseInt(messageParameterizer.getItemId());
       return new GetSensorReadingCommand(nodeID, sensorID);
 //    } else if (...) {
 //      TODO: Implement other parameterized messages
