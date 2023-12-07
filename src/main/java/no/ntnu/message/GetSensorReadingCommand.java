@@ -12,13 +12,21 @@ public class GetSensorReadingCommand implements GetCommand {
         this.nodeId = nodeId;
         this.sensorId = sensorId;
     }
+
+    public int getNodeId() {
+        return nodeId;
+    }
+
+    public int getSensorId() {
+        return sensorId;
+    }
     @Override
     public Message execute(GreenhouseSimulator logic) {
         Message response;
         try {
             GreenhouseNode node = logic.getNode(nodeId);
             SensorReading reading = node.getSensor(sensorId).getReading();
-            response = new GetSensorReadingMessage(reading, nodeId, sensorId);
+            response = new SensorReadingMessage(nodeId, sensorId, reading);
         } catch (IllegalStateException e) {
             response = new ErrorMessage(e.getMessage());
         }

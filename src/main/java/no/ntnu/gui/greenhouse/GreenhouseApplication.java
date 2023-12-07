@@ -15,13 +15,13 @@ import no.ntnu.tools.Logger;
  */
 public class GreenhouseApplication extends Application implements NodeStateListener {
   private static GreenhouseSimulator simulator;
-  private final Map<GreenhouseNode, NodeGuiWindow> nodeWindows = new HashMap<>();
   private Stage mainStage;
 
+  private MainGreenhouseGuiWindow mainWindow = new MainGreenhouseGuiWindow();
   @Override
   public void start(Stage mainStage) {
     this.mainStage = mainStage;
-    mainStage.setScene(new MainGreenhouseGuiWindow());
+    mainStage.setScene(mainWindow);
     mainStage.setMinWidth(MainGreenhouseGuiWindow.WIDTH);
     mainStage.setMinHeight(MainGreenhouseGuiWindow.HEIGHT);
     mainStage.setTitle("Greenhouse simulator");
@@ -56,20 +56,17 @@ public class GreenhouseApplication extends Application implements NodeStateListe
 
   @Override
   public void onNodeReady(GreenhouseNode node) {
-    Logger.info("Starting window for node " + node.getId());
-    NodeGuiWindow window = new NodeGuiWindow(node);
-    nodeWindows.put(node, window);
-    window.show();
+    Logger.info("Node " + node.getId() + " is ready");
+    Platform.runLater(() -> {
+      NodeGuiWindow nodeGui = new NodeGuiWindow(node); // Create the GUI for the node
+      mainWindow.addNode(node.getId(), nodeGui); // Add the node GUI to the main window
+    });
   }
-
-  @Override
   public void onNodeStopped(GreenhouseNode node) {
-    NodeGuiWindow window = nodeWindows.remove(node);
-    if (window != null) {
-      Platform.runLater(window::close);
-      if (nodeWindows.isEmpty()) {
-        Platform.runLater(mainStage::close);
-      }
-    }
+    Logger.info("Node " + node.getId() + " has stopped");
+    Platform.runLater(() -> {
+      mainWindow.removeNode(node.getId()); // Remove the node GUI from the main window
+    });
   }
 }
+
