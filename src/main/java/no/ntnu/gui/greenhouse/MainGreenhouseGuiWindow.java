@@ -1,26 +1,14 @@
 package no.ntnu.gui.greenhouse;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import no.ntnu.gui.common.ActuatorPane;
-import no.ntnu.gui.common.SensorPane;
 
 /**
  * The main GUI window for greenhouse simulator.
@@ -29,8 +17,8 @@ public class MainGreenhouseGuiWindow extends Scene {
   public static final int WIDTH = 500;
   public static final int HEIGHT = 500;
   private final Map<Integer, Parent> nodes = new HashMap<>();
-  private BorderPane container;
-  private VBox nodeDisplay;
+  private final BorderPane container;
+  private final VBox nodeDisplay;
 
   public MainGreenhouseGuiWindow() {
     super(new BorderPane(), WIDTH, HEIGHT);

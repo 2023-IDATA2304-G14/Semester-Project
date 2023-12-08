@@ -5,8 +5,8 @@ import javafx.scene.layout.VBox;
 import no.ntnu.greenhouse.GreenhouseNode;
 
 public class GreenhouseNodeGui extends VBox {
-    private GreenhouseNode node;
-    private ComboBox<String> dropdownMenu;
+    private final GreenhouseNode node;
+    private final ComboBox<String> dropdownMenu;
 
     public GreenhouseNodeGui(GreenhouseNode node) {
         this.node = node;

@@ -1,12 +1,7 @@
 package no.ntnu.gui.greenhouse;
 
-import java.util.List;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import no.ntnu.greenhouse.Actuator;
-import no.ntnu.greenhouse.Sensor;
 import no.ntnu.greenhouse.GreenhouseNode;
 import no.ntnu.greenhouse.SensorCollection;
 import no.ntnu.gui.common.ActuatorPane;

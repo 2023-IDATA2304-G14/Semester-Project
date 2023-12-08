@@ -1,7 +1,6 @@
 package no.ntnu.message;
 
 
-import no.ntnu.greenhouse.GreenhouseNode;
 import no.ntnu.greenhouse.GreenhouseSimulator;
 
 /**

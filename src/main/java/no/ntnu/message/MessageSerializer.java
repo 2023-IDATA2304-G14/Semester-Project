@@ -29,8 +29,8 @@ public class MessageSerializer {
           .parameterize();
     } else if (message instanceof SensorReadingMessage sensorReadingMessage) {
       return new MessageParameterizer(SENSOR_READING_MESSAGE_PREFIX)
-          .setNodeId(String.valueOf(sensorReadingMessage.getNodeId()))
-          .setItemId(String.valueOf(sensorReadingMessage.getSensorId()))
+          .setNodeId(String.valueOf(sensorReadingMessage.nodeId()))
+          .setItemId(String.valueOf(sensorReadingMessage.sensorId()))
           .parameterize();
 
 //    } else if (...) {
@@ -47,11 +47,10 @@ public class MessageSerializer {
     if (message.matches(PARAMETERIZED_COMMAND_REGEX)) {
       return deserializeParameterizedMessage(message);
     } else {
-      switch (message) {
+        return switch (message) {
 //        TODO: Implement other messages
-        default:
-          return new UnknownMessage(message);
-      }
+            default -> new UnknownMessage(message);
+        };
     }
 
   }

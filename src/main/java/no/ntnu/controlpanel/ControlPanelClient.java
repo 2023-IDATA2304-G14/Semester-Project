@@ -5,6 +5,7 @@ import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
 import no.ntnu.message.Command;
 import no.ntnu.message.Message;
 import no.ntnu.message.MessageSerializer;
+import no.ntnu.tools.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -68,14 +69,13 @@ public class ControlPanelClient {
       socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
       return true;
     } catch (Exception e) {
-      System.out.println("Error connecting to server: " + e.getMessage());
+      Logger.error("Error connecting to server: " + e.getMessage());
     }
     return false;
   }
 
   /**
    * Starts a listening thread that listens for responses from the server.
-   *
    * #see SOMELISTENER
    */
     private void startListeningThread() {
@@ -91,7 +91,7 @@ public class ControlPanelClient {
                     message = null;
                   }
                 } catch (IOException e) {
-                    System.err.println("Error reading from server: " + e.getMessage());
+                  Logger.error("Error reading from server: " + e.getMessage());
                 }
             } while (message != null);
         }).start();
@@ -114,7 +114,7 @@ public class ControlPanelClient {
 //        } else if (message instanceof ErrorMessage errorMessage) {
 //          listener.handleErrorMessage(errorMessage.getMessage());
 //        } else {
-          System.out.println("Unhandled message received from server: " + message.getClass().getSimpleName());
+      Logger.error("Unhandled message received from server: " + message.getClass().getSimpleName());
 //        }
     }
 
@@ -131,7 +131,7 @@ public class ControlPanelClient {
             socketWriter.println(serializedCommand);
             return true;
           } catch (Exception e) {
-            System.out.println("Error sending command to server: " + e.getMessage());
+            Logger.error("Error sending command to server: " + e.getMessage());
           }
         }
         return false;
@@ -149,7 +149,7 @@ public class ControlPanelClient {
             socketReader = null;
             socketWriter = null;
         } catch (IOException e) {
-            System.out.println("Error closing socket: " + e.getMessage());
+          Logger.error("Error closing socket: " + e.getMessage());
         }
     }
 
