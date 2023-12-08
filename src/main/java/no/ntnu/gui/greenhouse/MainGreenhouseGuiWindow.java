@@ -19,6 +19,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import no.ntnu.gui.common.ActuatorPane;
+import no.ntnu.gui.common.SensorPane;
 
 /**
  * The main GUI window for greenhouse simulator.
@@ -28,29 +30,29 @@ public class MainGreenhouseGuiWindow extends Scene {
   public static final int HEIGHT = 500;
   private final Map<Integer, Parent> nodes = new HashMap<>();
   private BorderPane container;
-
+  private VBox nodeDisplay;
 
   public MainGreenhouseGuiWindow() {
     super(new BorderPane(), WIDTH, HEIGHT);
     container = (BorderPane) this.getRoot();
+    nodeDisplay = new VBox(10);
     mainWindow();
   }
   private void mainWindow() {
-    // Create a new VBox for organizing nodes
-    VBox leftVBox = new VBox(10);
-
-    // Iterate over the HashMap and add each node's GUI component to the VBox
+    // Clear and repopulate NodeDisplay
+    nodeDisplay.getChildren().clear();
     for (Map.Entry<Integer, Parent> entry : nodes.entrySet()) {
-      leftVBox.getChildren().add(entry.getValue());
+      nodeDisplay.getChildren().add(entry.getValue());
     }
-    container.setLeft(leftVBox);
+    container.setLeft(nodeDisplay);
     container.setRight(createInfoLabel());
-    container.setCenter(createMasterImage());
-
   }
-  public void addNode(int nodeId, Parent nodeGui) {
+
+
+
+  public void addNode(int nodeId, GreenhouseNodeGui nodeGui) {
     nodes.put(nodeId, nodeGui);
-    mainWindow();
+    nodeDisplay.getChildren().add(nodeGui);
   }
 
   public void removeNode(int nodeId) {
@@ -63,19 +65,19 @@ public class MainGreenhouseGuiWindow extends Scene {
     l.setPadding(new Insets(0, 0, 10, 0));
     return l;
   }
-  private static Node createMasterImage() {
-    Node node;
-    try {
-      InputStream fileContent = new FileInputStream("images/Herman.png");
-      ImageView imageView = new ImageView();
-      imageView.setImage(new Image(fileContent));
-      imageView.setFitWidth(300);
-      imageView.setPreserveRatio(true);
-      node = imageView;
-    } catch (FileNotFoundException e) {
-      node = new Label("Could not find image file: " + e.getMessage());
-    }
-    return node;
-  }
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

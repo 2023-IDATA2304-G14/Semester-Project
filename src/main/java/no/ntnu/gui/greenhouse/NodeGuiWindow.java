@@ -17,21 +17,16 @@ import no.ntnu.listeners.greenhouse.SensorListener;
 /**
  * Window with GUI for overview and control of one specific sensor/actuator node.
  */
-public class NodeGuiWindow extends Parent implements SensorListener, ActuatorListener {
 
+public class NodeGuiWindow extends VBox implements SensorListener, ActuatorListener {
   private final GreenhouseNode node;
-
   private ActuatorPane actuatorPane;
   private SensorPane sensorPane;
 
-  /**
-   * Create a GUI window for a specific node.
-   *
-   * @param node The node which will be handled in this window
-   */
   public NodeGuiWindow(GreenhouseNode node) {
     this.node = node;
     initializeListeners(node);
+    initializeGui();
   }
 
   private void initializeListeners(GreenhouseNode node) {
@@ -39,16 +34,15 @@ public class NodeGuiWindow extends Parent implements SensorListener, ActuatorLis
     node.addActuatorListener(this);
   }
 
+  private void initializeGui() {
+    actuatorPane = new ActuatorPane(node.getActuators());
+    sensorPane = new SensorPane(node.getSensors());
+    this.getChildren().addAll(sensorPane, actuatorPane);
+  }
+
   public void shutDownNode() {
     node.stop();
   }
-
-  private Parent createContent() {
-    actuatorPane = new ActuatorPane(node.getActuators());
-    sensorPane = new SensorPane(node.getSensors());
-    return new VBox(sensorPane, actuatorPane);
-  }
-
 
   @Override
   public void sensorsUpdated(SensorCollection sensors) {

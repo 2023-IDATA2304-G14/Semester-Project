@@ -58,7 +58,7 @@ public class GreenhouseApplication extends Application implements NodeStateListe
   public void onNodeReady(GreenhouseNode node) {
     Logger.info("Node " + node.getId() + " is ready");
     Platform.runLater(() -> {
-      NodeGuiWindow nodeGui = new NodeGuiWindow(node); // Create the GUI for the node
+      GreenhouseNodeGui nodeGui = new GreenhouseNodeGui(node); // Create the GUI for the node
       mainWindow.addNode(node.getId(), nodeGui); // Add the node GUI to the main window
     });
   }
