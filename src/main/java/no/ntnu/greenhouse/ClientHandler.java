@@ -1,6 +1,7 @@
 package no.ntnu.greenhouse;
 
 import no.ntnu.message.*;
+import no.ntnu.tools.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,21 +37,21 @@ public class ClientHandler extends Thread {
     do {
       Command clientCommand = readClientRequest();
       if (clientCommand != null) {
-        System.out.println("Received from client: " + clientCommand);
+        Logger.info("Received from client: " + clientCommand);
         response = clientCommand.execute(greenhouseServer.getGreenhouseSimulator());
         if (response != null) {
           if (!(clientCommand instanceof GetCommand) && response instanceof BroadcastMessage) {
             greenhouseServer.broadcastMessage(response);
           } else {
-            sendResponseToClient(response);
+            sendMessageToClient(response);
           }
-          System.out.println("Sent to client: " + response);
+          Logger.info("Sent to client: " + response);
         }
       } else {
         response = null;
       }
     } while (response != null);
-    System.out.println("Client disconnected: " + clientSocket.getRemoteSocketAddress());
+    Logger.info("Client disconnected: " + clientSocket.getRemoteSocketAddress());
     greenhouseServer.removeClient(this);
   }
 
@@ -67,34 +68,35 @@ public class ClientHandler extends Thread {
       }
       clientCommand = MessageSerializer.deserialize(rawClientRequest);
       if (!(clientCommand instanceof Command)) {
-        System.err.println("Received invalid request from client: " + clientCommand);
+        Logger.error("Received invalid request from client: " + clientCommand);
         clientCommand = null;
       }
     } catch (IOException e) {
-      System.err.println("Could not read from client socket: " + e.getMessage());
+      Logger.error("Could not read from client socket: " + e.getMessage());
     }
     return (Command) clientCommand;
   }
 
   /**
-   * Send a response to the client.
-   * @param response The response to send.
+   * Send a message to the client.
+   * @param message The message to send.
    */
-  public void sendResponseToClient(Message response) {
-    String serializedResponse = MessageSerializer.serialize(response);
-    socketWriter.println(serializedResponse);
+  public void sendMessageToClient(Message message) {
+    String serializedMessage = MessageSerializer.serialize(message);
+    socketWriter.println(serializedMessage);
   }
 
   /**
-   * Close the client handler.
+   * Closes the client handler.
+   * This will close the socket and the socket reader and writer.
    */
-  public void close() {
+  public void close() throws IOException {
     try {
       socketReader.close();
       socketWriter.close();
       clientSocket.close();
     } catch (IOException e) {
-      System.err.println("Could not close client socket: " + e.getMessage());
+      Logger.error("Could not close client socket: " + e.getMessage());
     }
   }
 }

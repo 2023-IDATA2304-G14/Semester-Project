@@ -21,6 +21,9 @@ distributed application.
 TODO - what transport-layer protocol do you use? TCP? UDP? What port number(s)? Why did you 
 choose this transport layer protocol?
 
+We can use TCP? Since we don't care about speed, but more the data gets the unaltered.
+Can use UDP if we send a lot of data, since the speed and the chance that a lot of data is wrong is low?
+
 ## The architecture
 
 TODO - show the general architecture of your network. Which part is a server? Who are clients? 
@@ -72,3 +75,19 @@ example scenario could be as follows:
 ## Reliability and security
 
 TODO - describe the reliability and security mechanisms your solution supports.
+
+### Security
+Added a encryption system to more securely send messages over the Internet.
+This uses an automatically generated PSK key that the users enter on the control panel
+side. This is a 12 character long string that is displayed in the greenhouse GUI. 
+The user need to enter this key into the control panel to be able to send and
+receive data from the greenhouse.  
+Security measurements:
+* Encrypted with AES.
+* PSK key is randomly generated.
+* Need the key to be able to send/receive data.
+* PSK key is only shown in the greenhouse GUI.
+* Same concepts as a router, with the password on the back
+* Improvements can be:
+* * Use public and private key to send the symmetric key.
+* * Let the user change the password.

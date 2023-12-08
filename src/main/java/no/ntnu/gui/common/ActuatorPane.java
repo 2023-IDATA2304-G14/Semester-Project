@@ -12,6 +12,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.ActuatorCollection;
+import no.ntnu.tools.Logger;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -93,7 +95,7 @@ public class ActuatorPane extends TitledPane {
       out.println(command);
 
     } catch (IOException e) {
-      System.err.println("Error sending command to actuator: " + e.getMessage());
+      Logger.error("Error sending command to actuator: " + e.getMessage());
       // Handle the error
     }
   }

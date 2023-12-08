@@ -60,7 +60,7 @@ public class GreenhouseServer {
   }
 
   /**
-   * Start the server.
+   * Start the server. This will block until the server is stopped.
    * @throws IOException If the server could not be started.
    */
   public void startServer() throws IOException {
@@ -84,12 +84,12 @@ public class GreenhouseServer {
   public void broadcastMessage(Message message) {
     Logger.info("Broadcasting message to " + connectedClients.size() + " clients");
     for (ClientHandler client : connectedClients) {
-      client.sendResponseToClient(message);
+      client.sendMessageToClient(message);
     }
   }
 
   /**
-   * Accept the next client connection.
+   * Accept the next client connection. Creates a client handler for the client.
    * @param listeningSocket The socket to listen for connections on.
    * @return A client handler for the new client connection, or null if no connection could be accepted.
    */
@@ -109,7 +109,8 @@ public class GreenhouseServer {
   }
 
   /**
-   * Open a socket that listens for connections.
+   * Open a socket that listens for connections. The port number will be set to the port number of the socket.
+   * If the startServer method got provided a countdown latch, it will be counted down when the port has been assigned.
    * @return The socket that listens for connections.
    * @throws IOException If the socket could not be opened.
    */
@@ -124,7 +125,7 @@ public class GreenhouseServer {
   }
 
   /**
-   * Stop the server.
+   * Stops the server.
    * This will close all client connections and stop listening for new connections.
    */
   public void stopServer() {
@@ -135,15 +136,20 @@ public class GreenhouseServer {
 
       ExecutorService executor = Executors.newFixedThreadPool(clientsCopy.size());
 
+      try {
         for (ClientHandler clientHandler : clientsCopy) {
           executor.execute(() -> {
-            clientHandler.close();
-            connectedClients.remove(clientHandler);
+            try {
+              clientHandler.close();
+              connectedClients.remove(clientHandler);
+            } catch (IOException e) {
+              Logger.error("Could not close client connection: " + e.getMessage());
+            }
           });
         }
-
+      } finally {
         executor.shutdown();
-
+      }
     }
 
     try {

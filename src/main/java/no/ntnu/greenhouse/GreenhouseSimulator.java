@@ -14,8 +14,6 @@ import no.ntnu.gui.greenhouse.NodeGuiWindow;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.tools.Logger;
 
-import static javafx.application.Platform.runLater;
-
 /**
  * Application entrypoint - a simulator for a greenhouse.
  */
