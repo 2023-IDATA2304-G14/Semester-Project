@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -20,6 +21,7 @@ public class GreenhouseSimulator {
   private final List<PeriodicSwitch> periodicSwitches = new LinkedList<>();
   private final boolean fake;
   private GreenhouseServer greenhouseServer;
+  private ExecutorService serverExecutor;
 
   /**
    * Create a greenhouse simulator.
@@ -84,14 +86,27 @@ public class GreenhouseSimulator {
   }
 
   private void initiateRealCommunication() {
-    ExecutorService serverExecutor = Executors.newSingleThreadExecutor();
+    CountDownLatch serverStarted = new CountDownLatch(1);
+
+    if (serverExecutor != null) {
+      serverExecutor.shutdownNow();
+    }
+
+    serverExecutor = Executors.newSingleThreadExecutor();
     serverExecutor.execute(() -> {
       try {
-        greenhouseServer.startServer();
+        greenhouseServer.startServer(serverStarted);
       } catch (Exception e) {
         Logger.error("Could not start the server: " + e.getMessage());
       }
     });
+
+    try {
+      serverStarted.await();
+    } catch (InterruptedException e) {
+      Logger.info("Waiting for executor start interrupted: " + e.getMessage());
+      Thread.currentThread().interrupt();
+    }
 
     if (greenhouseServer.getPortAssigned() != null) {
       try {
@@ -103,6 +118,8 @@ public class GreenhouseSimulator {
 //      The set port can be access this way:
 //      runLater(() -> this.port.set(greenhouseServer.getPort()));
 
+    } else {
+      Logger.error("Could not get the port assigned");
     }
   }
 
@@ -128,6 +145,9 @@ public class GreenhouseSimulator {
       }
     } else {
         greenhouseServer.stopServer();
+        if (serverExecutor != null) {
+          serverExecutor.shutdown();
+        }
     }
   }
 

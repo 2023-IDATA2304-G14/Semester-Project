@@ -49,22 +49,21 @@ public class GreenhouseServer {
     this.port = port;
   }
 
-//  /**
-//   * Start the server and wait for a port to be assigned.
-//   * @param portAssigned A countdown latch that will be counted down when a port has been assigned.
-//   * @throws IOException If the server could not be started.
-//   */
-//  public void startServer(CountDownLatch portAssigned) throws IOException {
-//    this.portAssigned = portAssigned;
-//    startServer();
-//  }
+  /**
+   * Start the server and wait for a port to be assigned.
+   * @param portAssigned A countdown latch that will be counted down when a port has been assigned.
+   * @throws IOException If the server could not be started.
+   */
+  public void startServer(CountDownLatch portAssigned) throws IOException {
+    this.portAssigned = portAssigned;
+    startServer();
+  }
 
   /**
    * Start the server.
    * @throws IOException If the server could not be started.
    */
   public void startServer() throws IOException {
-    portAssigned = new CountDownLatch(1);
     serverSocket = openListeningSocket();
     Logger.info("Server listening on port " + port);
     isServerRunning = true;
@@ -75,6 +74,7 @@ public class GreenhouseServer {
         clientHandler.start();
       }
     }
+    portAssigned = null;
   }
 
   /**
