@@ -24,8 +24,8 @@ public class MessageSerializer {
     }
     if (message instanceof GetSensorReadingCommand getSensorReadingCommand) {
       return new MessageParameterizer(GET_SENSOR_READING_COMMAND_PREFIX)
-          .setNodeId(String.valueOf(getSensorReadingCommand.getNodeId()))
-          .setItemId(String.valueOf(getSensorReadingCommand.getSensorId()))
+          .setNodeId(String.valueOf(getSensorReadingCommand.nodeId()))
+          .setItemId(String.valueOf(getSensorReadingCommand.sensorId()))
           .parameterize();
     } else if (message instanceof SensorReadingMessage sensorReadingMessage) {
       return new MessageParameterizer(SENSOR_READING_MESSAGE_PREFIX)

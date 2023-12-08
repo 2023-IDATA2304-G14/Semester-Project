@@ -1,6 +1,7 @@
 package no.ntnu.greenhouse;
 
 import no.ntnu.message.Message;
+import no.ntnu.tools.Logger;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -48,23 +49,24 @@ public class GreenhouseServer {
     this.port = port;
   }
 
-  /**
-   * Start the server and wait for a port to be assigned.
-   * @param portAssigned A countdown latch that will be counted down when a port has been assigned.
-   * @throws IOException If the server could not be started.
-   */
-  public void startServer(CountDownLatch portAssigned) throws IOException {
-    this.portAssigned = portAssigned;
-    startServer();
-  }
+//  /**
+//   * Start the server and wait for a port to be assigned.
+//   * @param portAssigned A countdown latch that will be counted down when a port has been assigned.
+//   * @throws IOException If the server could not be started.
+//   */
+//  public void startServer(CountDownLatch portAssigned) throws IOException {
+//    this.portAssigned = portAssigned;
+//    startServer();
+//  }
 
   /**
    * Start the server.
    * @throws IOException If the server could not be started.
    */
   public void startServer() throws IOException {
+    portAssigned = new CountDownLatch(1);
     serverSocket = openListeningSocket();
-    System.out.println("Server listening on port " + port);
+    Logger.info("Server listening on port " + port);
     isServerRunning = true;
     while (isServerRunning) {
       ClientHandler clientHandler = acceptNextClientConnection(serverSocket);
@@ -77,12 +79,12 @@ public class GreenhouseServer {
 
   /**
    * Broadcast a message to all connected clients.
-   * @param response The message to broadcast.
+   * @param message The message to broadcast.
    */
-  public void broadcastMessage(Message response) {
-    System.out.println("Broadcasting message to " + connectedClients.size() + " clients");
+  public void broadcastMessage(Message message) {
+    Logger.info("Broadcasting message to " + connectedClients.size() + " clients");
     for (ClientHandler client : connectedClients) {
-      client.sendResponseToClient(response);
+      client.sendResponseToClient(message);
     }
   }
 
@@ -98,10 +100,10 @@ public class GreenhouseServer {
     }
     try {
       Socket clientSocket = listeningSocket.accept();
-      System.out.println("New client connected from " + clientSocket.getRemoteSocketAddress());
+      Logger.info("New client connected from " + clientSocket.getRemoteSocketAddress());
       clientHandler = new ClientHandler(clientSocket, this);
     } catch (IOException e) {
-      System.err.println("Could not accept client connection: " + e.getMessage());
+      Logger.error("Could not accept client connection: " + e.getMessage());
     }
     return clientHandler;
   }
@@ -115,7 +117,9 @@ public class GreenhouseServer {
     ServerSocket listeningSocket = null;
     listeningSocket = new ServerSocket(port);
     port = listeningSocket.getLocalPort();
-    portAssigned.countDown();
+    if (portAssigned != null) {
+      portAssigned.countDown();
+    }
     return listeningSocket;
   }
 
@@ -140,7 +144,7 @@ public class GreenhouseServer {
 
         executor.shutdown();
       } catch (Exception e) {
-        System.err.println("Could not close client sockets: " + e.getMessage());
+        Logger.error("Could not close client sockets: " + e.getMessage());
       }
     }
 
@@ -148,7 +152,7 @@ public class GreenhouseServer {
       serverSocket.close();
       serverSocket = null;
     } catch (IOException e) {
-      System.err.println("Could not close server socket: " + e.getMessage());
+      Logger.error("Could not close server socket: " + e.getMessage());
     }
   }
 
@@ -174,5 +178,13 @@ public class GreenhouseServer {
    */
   public int getPort() {
     return port;
+  }
+
+  /**
+   * Get the countdown latch that will be counted down when a port has been assigned.
+   * @return The countdown latch.
+   */
+  public CountDownLatch getPortAssigned() {
+    return portAssigned;
   }
 }

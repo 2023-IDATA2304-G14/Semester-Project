@@ -14,6 +14,7 @@ public class GreenhouseSimulator {
   private final Map<Integer, GreenhouseNode> nodes = new HashMap<>();
   private final List<PeriodicSwitch> periodicSwitches = new LinkedList<>();
   private final boolean fake;
+  private GreenhouseServer greenhouseServer;
 
   /**
    * Create a greenhouse simulator.
@@ -23,7 +24,20 @@ public class GreenhouseSimulator {
    */
   public GreenhouseSimulator(boolean fake) {
     this.fake = fake;
+    if (!fake) {
+      greenhouseServer = new GreenhouseServer(this);
+    }
   }
+
+  /**
+   * Create a greenhouse simulator.
+   *
+   * @param port The port to listen on. 0 means that the server will automatically pick a free port.
+   */
+    public GreenhouseSimulator(int port) {
+        this.fake = false;
+        this.greenhouseServer = new GreenhouseServer(this, port);
+    }
 
   /**
    * Initialise the greenhouse but don't start the simulation just yet.
@@ -65,7 +79,11 @@ public class GreenhouseSimulator {
   }
 
   private void initiateRealCommunication() {
-    // TODO - here you can set up the TCP or UDP communication
+    try {
+      greenhouseServer.startServer();
+    } catch (Exception e) {
+      Logger.error("Could not start the server: " + e.getMessage());
+    }
   }
 
   private void initiateFakePeriodicSwitches() {
@@ -89,7 +107,7 @@ public class GreenhouseSimulator {
         periodicSwitch.stop();
       }
     } else {
-      // TODO: stop the TCP/UDP communication
+        greenhouseServer.stopServer();
     }
   }
 

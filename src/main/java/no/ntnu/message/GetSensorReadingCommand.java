@@ -4,22 +4,7 @@ import no.ntnu.greenhouse.GreenhouseNode;
 import no.ntnu.greenhouse.GreenhouseSimulator;
 import no.ntnu.greenhouse.SensorReading;
 
-public class GetSensorReadingCommand implements GetCommand {
-    private final int nodeId;
-    private final int sensorId;
-
-    public GetSensorReadingCommand(int nodeId, int sensorId) {
-        this.nodeId = nodeId;
-        this.sensorId = sensorId;
-    }
-
-    public int getNodeId() {
-        return nodeId;
-    }
-
-    public int getSensorId() {
-        return sensorId;
-    }
+public record GetSensorReadingCommand(int nodeId, int sensorId) implements GetCommand {
     @Override
     public Message execute(GreenhouseSimulator logic) {
         Message response;
