@@ -26,6 +26,22 @@ public class GreenhouseSimulator {
 
   private MainGreenhouseGuiWindow guiWindow;
 
+  public GreenhouseNode addNewNode(int temperatureSensorCount, int humiditySensorCount,
+                                   int windowCount, int fanCount, int heaterCount) {
+    GreenhouseNode newNode = DeviceFactory.createNode(
+            temperatureSensorCount, humiditySensorCount, windowCount, fanCount, heaterCount);
+    nodes.put(newNode.getId(), newNode);
+
+    if (guiWindow != null) {
+      Platform.runLater(() -> {
+        NodeGuiWindow nodeGui = new NodeGuiWindow(newNode);
+        guiWindow.addNode(newNode.getId(), nodeGui);
+      });
+    }
+
+    return newNode;
+  }
+
 
   /**
    * Create a greenhouse simulator.
