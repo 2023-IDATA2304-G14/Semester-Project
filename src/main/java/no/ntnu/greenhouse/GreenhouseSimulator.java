@@ -4,8 +4,13 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.tools.Logger;
+
+import static javafx.application.Platform.runLater;
 
 /**
  * Application entrypoint - a simulator for a greenhouse.
@@ -79,10 +84,25 @@ public class GreenhouseSimulator {
   }
 
   private void initiateRealCommunication() {
-    try {
-      greenhouseServer.startServer();
-    } catch (Exception e) {
-      Logger.error("Could not start the server: " + e.getMessage());
+    ExecutorService serverExecutor = Executors.newSingleThreadExecutor();
+    serverExecutor.execute(() -> {
+      try {
+        greenhouseServer.startServer();
+      } catch (Exception e) {
+        Logger.error("Could not start the server: " + e.getMessage());
+      }
+    });
+
+    if (greenhouseServer.getPortAssigned() != null) {
+      try {
+        greenhouseServer.getPortAssigned().await();
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+      }
+
+//      The set port can be access this way:
+//      runLater(() -> this.port.set(greenhouseServer.getPort()));
+
     }
   }
 

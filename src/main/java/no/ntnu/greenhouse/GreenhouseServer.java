@@ -133,7 +133,7 @@ public class GreenhouseServer {
     if (!connectedClients.isEmpty()) {
       List<ClientHandler> clientsCopy = new ArrayList<>(connectedClients);
 
-      try (ExecutorService executor = Executors.newFixedThreadPool(clientsCopy.size())) {
+      ExecutorService executor = Executors.newFixedThreadPool(clientsCopy.size());
 
         for (ClientHandler clientHandler : clientsCopy) {
           executor.execute(() -> {
@@ -143,9 +143,7 @@ public class GreenhouseServer {
         }
 
         executor.shutdown();
-      } catch (Exception e) {
-        Logger.error("Could not close client sockets: " + e.getMessage());
-      }
+
     }
 
     try {
