@@ -3,6 +3,7 @@ package no.ntnu.gui.greenhouse;
 import java.util.List;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import no.ntnu.greenhouse.Actuator;
@@ -22,9 +23,13 @@ public class NodeGuiWindow extends VBox implements SensorListener, ActuatorListe
   private final GreenhouseNode node;
   private ActuatorPane actuatorPane;
   private SensorPane sensorPane;
+  private Label nodeIdLabel;
+
 
   public NodeGuiWindow(GreenhouseNode node) {
     this.node = node;
+    this.nodeIdLabel = new Label("Node ID: " + node.getId());
+    this.nodeIdLabel.setStyle("-fx-font-weight: bold;");
     initializeListeners(node);
     initializeGui();
   }
@@ -37,7 +42,8 @@ public class NodeGuiWindow extends VBox implements SensorListener, ActuatorListe
   private void initializeGui() {
     actuatorPane = new ActuatorPane(node.getActuators());
     sensorPane = new SensorPane(node.getSensors());
-    this.getChildren().addAll(sensorPane, actuatorPane);
+
+    this.getChildren().addAll(nodeIdLabel, sensorPane, actuatorPane);
   }
 
   public void shutDownNode() {
