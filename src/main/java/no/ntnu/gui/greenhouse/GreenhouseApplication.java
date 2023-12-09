@@ -1,5 +1,7 @@
 package no.ntnu.gui.greenhouse;
 
+import java.util.HashMap;
+import java.util.Map;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -15,7 +17,7 @@ public class GreenhouseApplication extends Application implements NodeStateListe
   private static GreenhouseSimulator simulator;
   private Stage mainStage;
 
-  private final MainGreenhouseGuiWindow mainWindow = new MainGreenhouseGuiWindow();
+  private MainGreenhouseGuiWindow mainWindow = new MainGreenhouseGuiWindow();
   @Override
   public void start(Stage mainStage) {
     this.mainStage = mainStage;
@@ -56,7 +58,7 @@ public class GreenhouseApplication extends Application implements NodeStateListe
   public void onNodeReady(GreenhouseNode node) {
     Logger.info("Node " + node.getId() + " is ready");
     Platform.runLater(() -> {
-      GreenhouseNodeGui nodeGui = new GreenhouseNodeGui(node); // Create the GUI for the node
+      NodeGuiWindow nodeGui = new NodeGuiWindow(node); // Correct type
       mainWindow.addNode(node.getId(), nodeGui); // Add the node GUI to the main window
     });
   }
