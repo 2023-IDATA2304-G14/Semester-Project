@@ -1,7 +1,7 @@
 package no.ntnu.message;
 
 
-public record ActuatorReadingMessage(int nodeId, int actuatorId, boolean isOn, int strength) implements BroadcastMessage {
+public record ActuatorReadingMessage(int nodeId, int actuatorId, boolean isOn, int strength) implements Message {
     public static final String PREFIX = "aD";
 
     @Override

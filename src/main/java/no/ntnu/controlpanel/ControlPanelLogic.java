@@ -3,7 +3,6 @@ package no.ntnu.controlpanel;
 import java.util.LinkedList;
 import java.util.List;
 import no.ntnu.greenhouse.Actuator;
-import no.ntnu.greenhouse.SensorReading;
 import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.common.CommunicationChannelListener;
 import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
@@ -66,8 +65,24 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
   }
 
   @Override
-  public void onSensorData(int nodeId, List<SensorReading> sensors) {
-    listeners.forEach(listener -> listener.onSensorData(nodeId, sensors));
+  public void onSensorDataChanged(int nodeId, int sensorId, double value) {
+    listeners.forEach(listener -> listener.onSensorDataChanged(nodeId, sensorId, value));
+  }
+
+  /**
+   * This event is fired when a sensor changes state or is added to the greenhouse.
+   *
+   * @param nodeId   ID of the node to which the sensor is attached
+   * @param sensorId ID of the sensor
+   * @param type
+   * @param value    The new value of the sensor
+   * @param min      The minimum value of the sensor
+   * @param max      The maximum value of the sensor
+   * @param unit     The unit of the sensor
+   */
+  @Override
+  public void onSensorStateChanged(int nodeId, int sensorId, String type, double value, double min, double max, String unit) {
+
   }
 
   @Override

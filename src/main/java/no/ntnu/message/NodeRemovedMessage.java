@@ -1,6 +1,6 @@
 package no.ntnu.message;
 
-public record NodeRemovedMessage(int nodeId) implements Message {
+public record NodeRemovedMessage(int nodeId) implements BroadcastMessage {
 
   public static final String PREFIX = "nR";
 

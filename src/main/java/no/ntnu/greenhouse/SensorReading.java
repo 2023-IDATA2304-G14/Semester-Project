@@ -6,9 +6,9 @@ import java.util.Objects;
  * Represents one sensor reading (value).
  */
 public class SensorReading {
-  private final String type;
+  private String type;
   private double value;
-  private final String unit;
+  private String unit;
 
   /**
    * Create a new sensor reading.
@@ -25,6 +25,10 @@ public class SensorReading {
 
   public String getType() {
     return type;
+  }
+
+  public void setType(String newType) {
+    this.type = newType;
   }
 
   public double getValue() {
@@ -70,5 +74,9 @@ public class SensorReading {
   @Override
   public int hashCode() {
     return Objects.hash(type, value, unit);
+  }
+
+  public void setUnit(String unit) {
+    this.unit = unit;
   }
 }

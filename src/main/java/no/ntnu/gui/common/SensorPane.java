@@ -1,7 +1,10 @@
 package no.ntnu.gui.common;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.Label;
@@ -16,25 +19,13 @@ import no.ntnu.tools.Logger;
  * A section of GUI displaying sensor data.
  */
 public class SensorPane extends TitledPane {
-  private final List<SimpleStringProperty> sensorProps = new ArrayList<>();
   private final VBox contentBox = new VBox();
-
-
-//  TODO: Remove this constructor if sure not needed
-//  /**
-//   * Create a sensor pane.
-//   *
-//   * @param sensors The sensor data to be displayed on the pane.
-//   */
-//  public SensorPane(Iterable<SensorReading> sensors) {
-//    super();
-//    initialize(sensors);
-//  }
+  private final Map<Sensor, SimpleStringProperty> sensorValues = new HashMap<>();
 
   private void initialize(SensorCollection sensors) {
     setText("Sensors");
     sensors.forEach(sensor ->{
-        contentBox.getChildren().add(createAndRememberSensorLabel(sensor.getReading()));
+        contentBox.getChildren().add(createAndRememberSensorLabel(sensor));
     });
     setContent(contentBox);
   }
@@ -43,6 +34,7 @@ public class SensorPane extends TitledPane {
    * Create an empty sensor pane, without any data.
    */
   public SensorPane() {
+    super();
     initialize(new SensorCollection());
   }
 
@@ -53,21 +45,22 @@ public class SensorPane extends TitledPane {
    * @param sensors The sensor data to be displayed on the pane.
    */
   public SensorPane(SensorCollection sensors) {
+    super();
     initialize(sensors);
   }
 
 
-  /**
-   * Update the GUI according to the changes in sensor data.
-   *
-   * @param sensorReadings The sensor data that has been updated
-   */
-  public void update(List<SensorReading> sensorReadings) {
-    int index = 0;
-    for (SensorReading sensorReading : sensorReadings) {
-      updateSensorLabel(sensorReading, index++);
-    }
-  }
+//  /**
+//   * Update the GUI according to the changes in sensor data.
+//   *
+//   * @param sensorReadings The sensor data that has been updated
+//   */
+//  public void update(List<SensorReading> sensorReadings) {
+//    int index = 0;
+//    for (SensorReading sensorReading : sensorReadings) {
+//      updateSensorLabel(sensorReading, index++);
+//    }
+//  }
 
   /**
    * Update the GUI according to the changes in sensor data.
@@ -75,15 +68,29 @@ public class SensorPane extends TitledPane {
    * @param sensors The sensors that has been updated
    */
   public void update(SensorCollection sensors) {
-    int index = 0;
       for (Sensor sensor : sensors) {
-          SensorReading sensorReading = sensor.getReading();
-          updateSensorLabel(sensorReading, index++);
+          updateSensorLabel(sensor);
       }
   }
-  private Label createAndRememberSensorLabel(SensorReading sensor) {
-    SimpleStringProperty props = new SimpleStringProperty(generateSensorText(sensor));
-    sensorProps.add(props);
+
+  /**
+   * Update the GUI according to the changes in sensor data.
+   *
+   * @param sensorId The id of the sensor that has been updated
+   */
+  public void update(int sensorId, double value) {
+    for (Sensor sensor : sensorValues.keySet()) {
+      if (sensor.getId() == sensorId) {
+        sensor.getReading().setValue(value);
+        updateSensorLabel(sensor);
+        break;
+      }
+    }
+  }
+
+  private Label createAndRememberSensorLabel(Sensor sensor) {
+    SimpleStringProperty props = new SimpleStringProperty(generateSensorText(sensor.getReading()));
+    sensorValues.put(sensor, props);
     Label label = new Label();
     label.textProperty().bind(props);
     return label;
@@ -93,13 +100,36 @@ public class SensorPane extends TitledPane {
     return sensor.getType() + ": " + sensor.getFormatted();
   }
 
-  private void updateSensorLabel(SensorReading sensor, int index) {
-    if (sensorProps.size() > index) {
-      SimpleStringProperty props = sensorProps.get(index);
-      Platform.runLater(() -> props.set(generateSensorText(sensor)));
+  private void updateSensorLabel(Sensor sensor) {
+    if (sensorValues.containsKey(sensor)) {
+      Platform.runLater(() -> sensorValues.get(sensor).set(generateSensorText(sensor.getReading())));
     } else {
-      Logger.info("Adding sensor[" + index + "]");
+      Logger.info("Adding sensor[" + sensor.getId() + "]");
       Platform.runLater(() -> contentBox.getChildren().add(createAndRememberSensorLabel(sensor)));
+    }
+  }
+
+  /**
+   * Update the GUI according to the changes in sensor state.
+   *
+   * @param sensorId The id of the sensor that has been updated
+   * @param type     The type of the sensor
+   * @param value    The new value of the sensor
+   * @param min      The minimum value of the sensor
+   * @param max      The maximum value of the sensor
+   * @param unit     The unit of the sensor
+   */
+  public void update(int sensorId, String type, double value, double min, double max, String unit) {
+    for (Sensor sensor : sensorValues.keySet()) {
+      if (sensor.getId() == sensorId) {
+        sensor.getReading().setType(type);
+        sensor.getReading().setValue(value);
+        sensor.getReading().setUnit(unit);
+        sensor.setMin(min);
+        sensor.setMax(max);
+        updateSensorLabel(sensor);
+        break;
+      }
     }
   }
 }

@@ -1,6 +1,6 @@
 package no.ntnu.message;
 
-public record NodeUpdatedMessage(int nodeId, String name) implements Message {
+public record NodeUpdatedMessage(int nodeId, String name) implements BroadcastMessage {
     public static final String PREFIX = "nU";
 
     @Override

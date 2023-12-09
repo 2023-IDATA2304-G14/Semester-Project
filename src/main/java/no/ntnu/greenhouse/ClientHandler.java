@@ -95,6 +95,7 @@ public class ClientHandler extends Thread implements NodeSubscriber {
    * This will close the socket and the socket reader and writer.
    */
   public void close() throws IOException {
+    Logger.info("Closing client handler for " + clientSocket.getRemoteSocketAddress());
     try {
       socketReader.close();
       socketWriter.close();

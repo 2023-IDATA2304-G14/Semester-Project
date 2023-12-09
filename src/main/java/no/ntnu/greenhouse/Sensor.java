@@ -8,8 +8,8 @@ public class Sensor {
   private final SensorReading reading;
   private final int id;
   private final int nodeId;
-  private final double min;
-  private final double max;
+  private double min;
+  private double max;
 
   /**
    * Create a sensor.
@@ -126,5 +126,30 @@ public class Sensor {
   @Override
   public String toString() {
     return reading.toString();
+  }
+
+  /**
+   * Get the ID of the node to which this sensor is attached.
+   *
+   * @return The ID of the node
+   */
+  public int getNodeId() {
+    return nodeId;
+  }
+
+  public void setMin(double min) {
+    if (min > max) {
+      min = max - 1;
+    }
+    this.min = min;
+    ensureValueBoundsAndPrecision(reading.getValue());
+  }
+
+  public void setMax(double max) {
+    if (max < min) {
+      max = min + 1;
+    }
+    this.max = max;
+    ensureValueBoundsAndPrecision(reading.getValue());
   }
 }

@@ -1,7 +1,6 @@
 package no.ntnu.gui.controlpanel;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javafx.application.Application;
@@ -22,7 +21,6 @@ import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
 import no.ntnu.controlpanel.SensorActuatorNodeInfo;
 import no.ntnu.greenhouse.Actuator;
-import no.ntnu.greenhouse.SensorReading;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
 import no.ntnu.listeners.common.CommunicationChannelListener;
@@ -160,11 +158,33 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   }
 
   @Override
-  public void onSensorData(int nodeId, List<SensorReading> sensors) {
+  public void onSensorDataChanged(int nodeId, int sensorId, double value) {
     Logger.info("Sensor data from node " + nodeId);
     SensorPane sensorPane = sensorPanes.get(nodeId);
     if (sensorPane != null) {
-      sensorPane.update(sensors);
+      sensorPane.update(sensorId, value);
+    } else {
+      Logger.error("No sensor section for node " + nodeId);
+    }
+  }
+
+  /**
+   * This event is fired when a sensor changes state or is added to the greenhouse.
+   *
+   * @param nodeId   ID of the node to which the sensor is attached
+   * @param sensorId ID of the sensor
+   * @param type
+   * @param value    The new value of the sensor
+   * @param min      The minimum value of the sensor
+   * @param max      The maximum value of the sensor
+   * @param unit     The unit of the sensor
+   */
+  @Override
+  public void onSensorStateChanged(int nodeId, int sensorId, String type, double value, double min, double max, String unit) {
+    Logger.info("Sensor data from node " + nodeId);
+    SensorPane sensorPane = sensorPanes.get(nodeId);
+    if (sensorPane != null) {
+      sensorPane.update(sensorId, type, value, min, max, unit);
     } else {
       Logger.error("No sensor section for node " + nodeId);
     }

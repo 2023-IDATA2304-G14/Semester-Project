@@ -1,8 +1,6 @@
 package no.ntnu.listeners.controlpanel;
 
-import java.util.List;
 import no.ntnu.controlpanel.SensorActuatorNodeInfo;
-import no.ntnu.greenhouse.SensorReading;
 
 /**
  * Listener of events happening "inside a greenhouse", such as a node appearing, disappearing,
@@ -31,9 +29,22 @@ public interface GreenhouseEventListener {
    * This event is fired when new sensor data is received from a node.
    *
    * @param nodeId  ID of the node
-   * @param sensors List of all current sensor values
+   * @param sensorId ID of the sensor
+   * @param value   The new value of the sensor
    */
-  void onSensorData(int nodeId, List<SensorReading> sensors);
+  void onSensorDataChanged(int nodeId, int sensorId, double value);
+
+  /**
+   * This event is fired when a sensor changes state or is added to the greenhouse.
+   *
+   * @param nodeId ID of the node to which the sensor is attached
+   * @param sensorId ID of the sensor
+   * @param value   The new value of the sensor
+   * @param min   The minimum value of the sensor
+   * @param max   The maximum value of the sensor
+   * @param unit   The unit of the sensor
+   */
+  void onSensorStateChanged(int nodeId, int sensorId, String type, double value, double min, double max, String unit);
 
   /**
    * This event is fired when an actuator changes state.

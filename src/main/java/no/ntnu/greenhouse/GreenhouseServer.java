@@ -153,6 +153,7 @@ public class GreenhouseServer {
     }
 
     try {
+      Logger.info("Closing server socket");
       serverSocket.close();
       serverSocket = null;
     } catch (IOException e) {

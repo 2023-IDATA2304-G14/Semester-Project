@@ -2,7 +2,7 @@ package no.ntnu.message;
 
 import no.ntnu.greenhouse.SensorReading;
 
-public record SensorReadingMessage(int nodeId, int sensorId, SensorReading reading) implements BroadcastMessage {
+public record SensorReadingMessage(int nodeId, int sensorId, SensorReading reading) implements Message {
   public static final String PREFIX = "sD";
 
   @Override
