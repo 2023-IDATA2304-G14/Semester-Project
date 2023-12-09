@@ -4,12 +4,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.control.Accordion;
+import javafx.scene.text.Text;
+import no.ntnu.encryption.PSKGenerator;
 
 
 /**
@@ -41,9 +47,42 @@ public class MainGreenhouseGuiWindow extends Scene {
         for (Map.Entry<Integer, NodeGuiWindow> entry : nodes.entrySet()) {
             nodeDisplay.getChildren().add(entry.getValue());
         }
+        container.setTop(top());
         container.setCenter(scrollPane); // Set the ScrollPane to the center
+
         container.setRight(createInfoLabel());
     }
+
+    private Node top(){
+        HBox hBox = new HBox();
+        Button button = new Button("Add Node");
+        Button newPsk = new Button("Generate new PSK Key");
+        Label label = new Label("PSK key");
+
+        HBox left = new HBox(button);
+        left.setSpacing(10);
+        left.setPadding(new Insets(10,10,10,10));
+
+        HBox right = new HBox(newPsk, label);
+        right.setSpacing(10);
+        right.setPadding(new Insets(10,10,10,10));
+        right.setAlignment(Pos.CENTER_RIGHT);
+        hBox.getChildren().addAll(left, right);
+
+        newPsk.setOnAction(e -> label.setText(PSKGenerator.generateKey()));
+        label.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.SECONDARY) {
+                Clipboard clipboard = Clipboard.getSystemClipboard();
+                ClipboardContent content = new ClipboardContent();
+                content.putString(label.getText());
+                clipboard.setContent(content);
+            }
+        });
+
+        label.setText(PSKGenerator.generateKey());
+        return hBox;
+    }
+
     public void addNode(int nodeId, NodeGuiWindow nodeGui) {
         nodes.put(nodeId, nodeGui);
         accordion.getPanes().add(nodeGui.getTitledPane()); // Add the TitledPane to the Accordion
