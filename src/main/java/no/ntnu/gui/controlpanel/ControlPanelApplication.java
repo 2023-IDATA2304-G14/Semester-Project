@@ -3,12 +3,24 @@ package no.ntnu.gui.controlpanel;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Flow;
+
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
@@ -31,13 +43,17 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   private static final int HEIGHT = 400;
   private static CommunicationChannel channel;
   private BorderPane mainLayout;
-  private VBox nodeDisplayArea;
+  private FlowPane nodeDisplayArea;
   private Scene mainScene;
   private VBox controlArea;
   private final Map<Integer, VBox> nodeBoxes = new HashMap<>();
   private final Map<Integer, SensorPane> sensorPanes = new HashMap<>();
   private final Map<Integer, ActuatorPane> actuatorPanes = new HashMap<>();
   private final Map<Integer, SensorActuatorNodeInfo> nodeInfos = new HashMap<>();
+
+  //Daniel Shenanigans
+  private String passPhrase;
+  private Label label = new Label();
 
   /**
    * Application entrypoint for the GUI of a control panel.
@@ -64,15 +80,20 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
           "No communication channel. See the README on how to use fake event spawner!");
     }
 
+    stage.setTitle("Control Panel");
+
     mainLayout = new BorderPane();
-    nodeDisplayArea = new VBox(10);
+
     controlArea = new VBox(10);
 
-    mainLayout.setLeft(nodeDisplayArea);
+    mainLayout.setTop(top());
+    mainLayout.setCenter(center());
     mainLayout.setRight(controlArea);
 
     mainScene = new Scene(mainLayout, WIDTH, HEIGHT);
     stage.setScene(mainScene);
+
+
     stage.show();
 
     logic.addListener(this);
@@ -80,11 +101,31 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     if (!channel.open()) {
       logic.onCommunicationChannelClosed();
     }
+
+    testData();
+
+  }
+
+  private Node top(){
+    Button openPopupButton = new Button("Set PSK key");
+    openPopupButton.setOnAction(e -> showCustomDialog());
+    HBox hBox = new HBox();
+    hBox.getChildren().addAll(openPopupButton);
+    return hBox;
+  }
+
+  private Node center(){
+    FlowPane flowPane = new FlowPane();
+    flowPane.setAlignment(Pos.CENTER);
+    flowPane.setHgap(5);
+
+    nodeDisplayArea = flowPane;
+    return nodeDisplayArea;
   }
 
   private void addNodeDisplay(SensorActuatorNodeInfo nodeInfo) {
 
-
+    System.out.println(nodeInfo.getId());
     VBox nodeBox = new VBox(5);
     Label nodeLabel = new Label("Node " + nodeInfo.getId());
     nodeBox.getChildren().add(nodeLabel);
@@ -99,6 +140,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
     nodeBoxes.put(nodeInfo.getId(), nodeBox);
     nodeDisplayArea.getChildren().add(nodeBox);
+
   }
 
   private void removeNodeDisplay(int nodeId) {
@@ -168,4 +210,49 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     Logger.info("Communication closed, closing the GUI");
     Platform.runLater(Platform::exit);
   }
+
+  private void showCustomDialog() {
+    Dialog<String> dialog = new Dialog<>();
+    dialog.setTitle("PSK configurator");
+
+    VBox dialogLayout = new VBox(10);
+
+    Label label = new Label("Enter PSK key:");
+    TextField textField = new TextField();
+    Button saveButton = new Button("Save");
+
+    saveButton.setOnAction(e -> {
+      String enteredText = textField.getText();
+      dialog.setResult(enteredText);
+      dialog.close();
+    });
+
+    dialogLayout.getChildren().addAll(label, textField, saveButton);
+
+    dialog.getDialogPane().setContent(dialogLayout);
+
+    dialog.showAndWait().ifPresent(result -> {
+      System.out.println("Entered Text: " + result);
+    });
+  }
+
+  private void testData(){
+    SensorActuatorNodeInfo sensorActuatorNodeInfo1 = new SensorActuatorNodeInfo(1);
+    SensorActuatorNodeInfo sensorActuatorNodeInfo2 = new SensorActuatorNodeInfo(2);
+    SensorActuatorNodeInfo sensorActuatorNodeInfo3 = new SensorActuatorNodeInfo(3);
+    SensorActuatorNodeInfo sensorActuatorNodeInfo4 = new SensorActuatorNodeInfo(4);
+    SensorActuatorNodeInfo sensorActuatorNodeInfo5 = new SensorActuatorNodeInfo(5);
+    SensorActuatorNodeInfo sensorActuatorNodeInfo6 = new SensorActuatorNodeInfo(6);
+
+    sensorActuatorNodeInfo1.addActuator(new Actuator(1, "door", 1));
+    sensorActuatorNodeInfo1.addActuator(new Actuator(1, "door", 5));
+
+    addNodeDisplay(sensorActuatorNodeInfo1);
+    addNodeDisplay(sensorActuatorNodeInfo2);
+    addNodeDisplay(sensorActuatorNodeInfo3);
+    addNodeDisplay(sensorActuatorNodeInfo4);
+    addNodeDisplay(sensorActuatorNodeInfo5);
+    addNodeDisplay(sensorActuatorNodeInfo6);
+  }
+
 }
