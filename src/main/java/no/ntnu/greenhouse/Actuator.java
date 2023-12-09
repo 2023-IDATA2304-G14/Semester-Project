@@ -18,6 +18,10 @@ public class Actuator {
   private ActuatorListener listener;
 
   private boolean on;
+  private int strength;
+  private int maxStrength;
+  private int minStrength;
+  private String unit;
 
   /**
    * Create an actuator. An ID will be auto-generated.
@@ -25,10 +29,14 @@ public class Actuator {
    * @param type   The type of the actuator.
    * @param nodeId ID of the node to which this actuator is connected.
    */
-  public Actuator(String type, int nodeId) {
+  public Actuator(String type, int nodeId, int strength, int maxStrength, int minStrength, String unit) {
     this.type = type;
     this.nodeId = nodeId;
     this.on = false;
+    this.strength = strength;
+    this.maxStrength = maxStrength;
+    this.minStrength = minStrength;
+    this.unit = unit;
     this.id = generateUniqueId();
   }
 
@@ -39,10 +47,14 @@ public class Actuator {
    * @param type   The type of the actuator.
    * @param nodeId ID of the node to which this actuator is connected.
    */
-  public Actuator(int id, String type, int nodeId) {
+  public Actuator(int id, String type, int nodeId, int strength, int maxStrength, int minStrength, String unit) {
     this.type = type;
     this.nodeId = nodeId;
     this.on = false;
+    this.strength = strength;
+    this.maxStrength = maxStrength;
+    this.minStrength = minStrength;
+    this.unit = unit;
     this.id = id;
   }
 
@@ -83,7 +95,7 @@ public class Actuator {
    * @return A clone of this actuator, where all the fields are the same
    */
   public Actuator createClone() {
-    Actuator a = new Actuator(type, nodeId);
+    Actuator a = new Actuator(type, nodeId, strength, maxStrength, minStrength, unit);
     // Note - we pass a reference to the same map! This should not be problem, as long as we
     // don't modify the impacts AFTER creating the template
     a.impacts = impacts;
@@ -124,6 +136,10 @@ public class Actuator {
       double impact = impactEntry.getValue();
       if (!on) {
         impact = -impact;
+      } else {
+//        double normalizedStrength = (double) (strength - minStrength) / (maxStrength - minStrength); // 0.0 - 1.0
+        double normalizedStrength = (double) 2*(strength - minStrength) / (maxStrength - minStrength) - 1; // -1.0 - 1.0
+        impact *= normalizedStrength;
       }
       node.applyActuatorImpact(sensorType, impact);
     }
@@ -132,9 +148,13 @@ public class Actuator {
   @Override
   public String toString() {
     return "Actuator{"
-        + "type='" + type + '\''
-        + ", on=" + on
-        + '}';
+            + "type='" + type + '\''
+            + ", on=" + on + '\''
+            + ", strength=" + strength + '\''
+            + ", unit=" + unit + '\''
+            + ", maxStrength=" + maxStrength + '\''
+            + ", minStrength=" + minStrength + '\''
+            + '}';
   }
 
   /**
@@ -167,6 +187,11 @@ public class Actuator {
     return id;
   }
 
+  /**
+   * Get the ID of the node to which this actuator is connected.
+   *
+   * @return The ID of the node to which this actuator is connected.
+   */
   public int getNodeId() {
     return nodeId;
   }
@@ -183,4 +208,88 @@ public class Actuator {
       turnOff();
     }
   }
+
+  /**
+   * Get the strength of the actuator.
+   * @return The strength of the actuator.
+   */
+  public int getStrength() {
+    return this.strength;
+  }
+
+  /**
+   * Set the strength of the actuator. The strength will be clamped to the range [minStrength, maxStrength].
+   * @param strength The strength to set.
+   */
+  public void setStrength(int strength) {
+    if (strength > maxStrength) {
+      strength = maxStrength;
+    } else if (strength < minStrength) {
+      strength = minStrength;
+    }
+    this.strength = strength;
+  }
+
+  /**
+   * Get the unit of the actuator.
+   * @return The unit of the actuator.
+   */
+  public String getUnit() {
+    return this.unit;
+  }
+
+  /**
+   * Set the unit of the actuator.
+   * @param unit The unit to set.
+   */
+  public void setUnit(String unit) {
+    this.unit = unit;
+  }
+
+  /**
+   * Get the maximum strength of the actuator.
+   * @return The maximum strength of the actuator.
+   */
+  public int getMaxStrength() {
+    return this.maxStrength;
+  }
+
+  /**
+   * Set the maximum strength of the actuator. The maximum strength will automatically clamp the strength to the new range [minStrength, maxStrength].
+   * The maximum strength will automatically be set to minStrength + 1 if the new maximum strength is less than or equal to minStrength.
+   * @param maxStrength The maximum strength to set.
+   */
+  public void setMaxStrength(int maxStrength) {
+    if (maxStrength <= minStrength) {
+      maxStrength = minStrength + 1;
+    }
+    if (strength > maxStrength) {
+      setStrength(maxStrength);
+    }
+    this.maxStrength = maxStrength;
+  }
+
+  /**
+   * Get the minimum strength of the actuator.
+   * @return The minimum strength of the actuator.
+   */
+  public int getMinStrength() {
+    return this.minStrength;
+  }
+
+  /**
+   * Set the minimum strength of the actuator. The minimum strength will automatically clamp the strength to the new range [minStrength, maxStrength].
+   * The minimum strength will automatically be set to maxStrength - 1 if the new minimum strength is greater than or equal to maxStrength.
+   * @param minStrength The minimum strength to set.
+   */
+  public void setMinStrength(int minStrength) {
+    if (minStrength >= maxStrength) {
+      minStrength = maxStrength - 1;
+    }
+    if (strength < minStrength) {
+      setStrength(minStrength);
+    }
+    this.minStrength = minStrength;
+  }
+
 }

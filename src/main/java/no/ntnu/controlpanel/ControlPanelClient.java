@@ -25,7 +25,7 @@ public class ControlPanelClient {
   private PrintWriter socketWriter;
   private final String host;
   private final int port;
-//  TODO: Add the correct listener type
+  //  TODO: Add the correct listener type
   private final GreenhouseEventListener listener;
 
   /**
@@ -51,7 +51,7 @@ public class ControlPanelClient {
     this.port = port;
     this.listener = listener;
     if (!startClient(host, port)) {
-          throw new RuntimeException("Could not connect to server");
+      throw new RuntimeException("Could not connect to server");
     }
     startListeningThread();
   }
@@ -78,24 +78,24 @@ public class ControlPanelClient {
    * Starts a listening thread that listens for responses from the server.
    * #see SOMELISTENER
    */
-    private void startListeningThread() {
-        new Thread(() -> {
-          Message message = null;
-            do {
-                try {
-                  if (socketReader != null) {
-                    String serializedMessage = socketReader.readLine();
-                    message = MessageSerializer.deserialize(serializedMessage);
-                    handleMessage(message, listener);
-                  } else {
-                    message = null;
-                  }
-                } catch (IOException e) {
-                  Logger.error("Error reading from server: " + e.getMessage());
-                }
-            } while (message != null);
-        }).start();
-    }
+  private void startListeningThread() {
+    new Thread(() -> {
+      Message message = null;
+      do {
+        try {
+          if (socketReader != null) {
+            String serializedMessage = socketReader.readLine();
+            message = MessageSerializer.deserialize(serializedMessage);
+            handleMessage(message, listener);
+          } else {
+            message = null;
+          }
+        } catch (IOException e) {
+          Logger.error("Error reading from server: " + e.getMessage());
+        }
+      } while (message != null);
+    }).start();
+  }
 
   /**
    * Handles a message received from the server.
@@ -104,7 +104,7 @@ public class ControlPanelClient {
    * @param listener the listener that will be notified when a response is received.
    */
 //  TODO: Add handling of the different message types
-    private void handleMessage(Message message, GreenhouseEventListener listener) {
+  private void handleMessage(Message message, GreenhouseEventListener listener) {
 //        if (message instanceof ChannelCountMessage channelCountMessage) {
 //          listener.handleChannelCount(channelCountMessage.getChannelCount());
 //        } else if (message instanceof TvStateMessage tvStateMessage) {
@@ -114,9 +114,9 @@ public class ControlPanelClient {
 //        } else if (message instanceof ErrorMessage errorMessage) {
 //          listener.handleErrorMessage(errorMessage.getMessage());
 //        } else {
-      Logger.error("Unhandled message received from server: " + message.getClass().getSimpleName());
+    Logger.error("Unhandled message received from server: " + message.getClass().getSimpleName());
 //        }
-    }
+  }
 
   /**
    * Sends a command to the server.
@@ -124,34 +124,34 @@ public class ControlPanelClient {
    * @param command the command to send to the server.
    * @return true if the command was successfully sent, false otherwise.
    */
-    public boolean sendCommand(Command command) {
-        if (socketWriter != null && socketReader != null) {
-          try {
-            String serializedCommand = MessageSerializer.serialize(command);
-            socketWriter.println(serializedCommand);
-            return true;
-          } catch (Exception e) {
-            Logger.error("Error sending command to server: " + e.getMessage());
-          }
-        }
-        return false;
+  public boolean sendCommand(Command command) {
+    if (socketWriter != null && socketReader != null) {
+      try {
+        String serializedCommand = MessageSerializer.serialize(command);
+        socketWriter.println(serializedCommand);
+        return true;
+      } catch (Exception e) {
+        Logger.error("Error sending command to server: " + e.getMessage());
+      }
     }
+    return false;
+  }
 
   /**
    * Stops the client by closing the socket and resetting the socket reader and writer.
    */
-    public void stopClient() {
-        try {
-          if (socket != null) {
-            socket.close();
-          }
-            socket = null;
-            socketReader = null;
-            socketWriter = null;
-        } catch (IOException e) {
-          Logger.error("Error closing socket: " + e.getMessage());
-        }
+  public void stopClient() {
+    try {
+      if (socket != null) {
+        socket.close();
+      }
+      socket = null;
+      socketReader = null;
+      socketWriter = null;
+    } catch (IOException e) {
+      Logger.error("Error closing socket: " + e.getMessage());
     }
+  }
 
   public void reconnect() throws RuntimeException {
     stopClient();

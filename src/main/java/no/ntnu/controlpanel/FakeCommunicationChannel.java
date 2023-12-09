@@ -61,7 +61,7 @@ public class FakeCommunicationChannel implements CommunicationChannel {
         "Invalid actuator count: " + actuatorInfo[0]);
     String actuatorType = actuatorInfo[1];
     for (int i = 0; i < actuatorCount; ++i) {
-      Actuator actuator = new Actuator(actuatorType, info.getId());
+      Actuator actuator = new Actuator(actuatorType, info.getId(), 25, 100, 0, "test");
       actuator.setListener(logic);
       info.addActuator(actuator);
     }
@@ -178,11 +178,54 @@ public class FakeCommunicationChannel implements CommunicationChannel {
     }, delay * 1000L);
   }
 
+  /**
+   * Request that state of an actuator is changed.
+   *
+   * @param nodeId     ID of the node to which the actuator is attached
+   * @param actuatorId Node-wide unique ID of the actuator
+   * @param isOn       When true, actuator must be turned on; off when false.
+   * @param strength   Strength of the actuator. Different actuators may have different strength levels.
+   */
   @Override
-  public void sendActuatorChange(int nodeId, int actuatorId, boolean isOn) {
+  public void sendActuatorChange(int nodeId, int actuatorId, boolean isOn, int strength) {
     String state = isOn ? "ON" : "off";
     Logger.info("Sending command to greenhouse: turn " + state + " actuator"
-        + "[" + actuatorId + "] on node " + nodeId);
+        + "[" + actuatorId + "] on node " + nodeId + " with strength " + strength);
+  }
+
+  /**
+   * Get the current state of the actuator.
+   * This method is called when the control panel starts up, to get the current state of the
+   * actuators.
+   *
+   * @param nodeId     The ID of the node to which the actuator is attached
+   * @param actuatorId The ID of the actuator
+   */
+  @Override
+  public void getActuatorState(int nodeId, int actuatorId) {
+    Logger.info("Getting current state of actuator[" + actuatorId + "] on node " + nodeId);
+  }
+
+  /**
+   * Gets the current state of the sensor.
+   *
+   * @param nodeId   The ID of the node to which the sensor is attached
+   * @param sensorId The ID of the sensor
+   */
+  @Override
+  public void getSensorState(int nodeId, int sensorId) {
+    Logger.info("Getting current state of sensor[" + sensorId + "] on node " + nodeId);
+  }
+
+  /**
+   * Get the sensor reading for a given sensor.
+   *
+   * @param nodeId   The ID of the node to which the sensor is attached
+   * @param sensorId The ID of the sensor
+   */
+  @Override
+  public void getSensorReading(int nodeId, int sensorId) {
+    Logger.info("Getting current reading of sensor[" + sensorId + "] on node " + nodeId);
   }
 
   @Override

@@ -98,7 +98,7 @@ public class DeviceFactory {
    * @return The window actuator
    */
   public static Actuator createWindow(int nodeId) {
-    Actuator actuator = new Actuator(ACTUATOR_TYPE_WINDOW, nodeId);
+    Actuator actuator = new Actuator(ACTUATOR_TYPE_WINDOW, nodeId, 1, 1, 0, "");
     actuator.setImpact(SENSOR_TYPE_TEMPERATURE, -5.0);
     actuator.setImpact(SENSOR_TYPE_HUMIDITY, -10.0);
     return actuator;
@@ -111,7 +111,7 @@ public class DeviceFactory {
    * @return The fan actuator
    */
   public static Actuator createFan(int nodeId) {
-    Actuator actuator = new Actuator(ACTUATOR_TYPE_FAN, nodeId);
+    Actuator actuator = new Actuator(ACTUATOR_TYPE_FAN, nodeId, 50, 100, 0, "%");
     actuator.setImpact(SENSOR_TYPE_TEMPERATURE, -1.0);
     return actuator;
   }
@@ -123,7 +123,7 @@ public class DeviceFactory {
    * @return The heater actuator
    */
   public static Actuator createHeater(int nodeId) {
-    Actuator actuator = new Actuator(ACTUATOR_TYPE_HEATER, nodeId);
+    Actuator actuator = new Actuator(ACTUATOR_TYPE_HEATER, nodeId, 20, 40, 0, "°C");
     actuator.setImpact(SENSOR_TYPE_TEMPERATURE, 4.0);
     return actuator;
   }

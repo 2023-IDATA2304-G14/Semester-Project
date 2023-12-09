@@ -20,7 +20,7 @@ import no.ntnu.tools.Logger;
  * though you may have no real control-panel logic in your projects.
  */
 public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListener,
-    CommunicationChannelListener {
+        CommunicationChannelListener {
   private final List<GreenhouseEventListener> listeners = new LinkedList<>();
 
   private CommunicationChannel communicationChannel;
@@ -75,13 +75,14 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
     listeners.forEach(listener -> listener.onActuatorStateChanged(nodeId, actuatorId, isOn));
   }
 
+  //  TODO: Implement updating the state from the response of the command instead
   @Override
   public void actuatorUpdated(int nodeId, Actuator actuator) {
     if (communicationChannel != null) {
-      communicationChannel.sendActuatorChange(nodeId, actuator.getId(), actuator.isOn());
+      communicationChannel.sendActuatorChange(nodeId, actuator.getId(), actuator.isOn(), actuator.getStrength());
     }
     listeners.forEach(listener ->
-        listener.onActuatorStateChanged(nodeId, actuator.getId(), actuator.isOn())
+            listener.onActuatorStateChanged(nodeId, actuator.getId(), actuator.isOn())
     );
   }
 

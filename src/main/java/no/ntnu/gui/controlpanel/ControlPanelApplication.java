@@ -244,8 +244,8 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     SensorActuatorNodeInfo sensorActuatorNodeInfo5 = new SensorActuatorNodeInfo(5);
     SensorActuatorNodeInfo sensorActuatorNodeInfo6 = new SensorActuatorNodeInfo(6);
 
-    sensorActuatorNodeInfo1.addActuator(new Actuator(1, "door", 1));
-    sensorActuatorNodeInfo1.addActuator(new Actuator(1, "door", 5));
+    sensorActuatorNodeInfo1.addActuator(new Actuator(1, "door", 1, 1, 1, 0, ""));
+    sensorActuatorNodeInfo1.addActuator(new Actuator(2, "door", 1, 1, 1, 0, ""));
 
     addNodeDisplay(sensorActuatorNodeInfo1);
     addNodeDisplay(sensorActuatorNodeInfo2);
