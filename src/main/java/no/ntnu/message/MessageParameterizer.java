@@ -6,15 +6,24 @@ public class MessageParameterizer {
   private String itemId;
   private String type;
   private String value;
+  private String secondaryValue;
+  private String min;
+  private String max;
+  private String unit;
+
   public static final String NODE_ID_PARAMETER = "nId";
   public static final String ITEM_ID_PARAMETER = "iId";
   public static final String TYPE_PARAMETER = "t";
   public static final String VALUE_PARAMETER = "v";
+  public static final String SECONDARY_VALUE_PARAMETER = "sv";
+  public static final String MIN_PARAMETER = "mi";
+  public static final String MAX_PARAMETER = "ma";
+  public static final String UNIT_PARAMETER = "u";
 
-    /**
-     * Creates a new MessageParameterizer with the given prefix.
-     * @param prefix The prefix of the message.
-     */
+  /**
+   * Creates a new MessageParameterizer with the given prefix.
+   * @param prefix The prefix of the message.
+   */
   public MessageParameterizer(String prefix) {
     this.prefix = prefix;
   }
@@ -92,11 +101,81 @@ public class MessageParameterizer {
   }
 
   /**
+   * Sets the secondaryValue parameter. Either a sensorValue, actuatorValue or similar depending on the message.
+   * @param secondaryValue The secondaryValue to set.
+   * @return The MessageParameterizer object.
+   */
+  public MessageParameterizer setSecondaryValue(String secondaryValue) {
+    this.secondaryValue = secondaryValue;
+    return this;
+  }
+
+  /**
+   * Gets the secondaryValue parameter. Either a sensorValue, actuatorValue or similar depending on the message.
+   * @return The secondaryValue parameter.
+   */
+  public String getSecondaryValue() {
+    return secondaryValue;
+  }
+
+  /**
+   * Sets the min parameter. Either a sensorMin, actuatorMin or similar depending on the message.
+   * @param min The min to set.
+   */
+  private MessageParameterizer setMin(String min) {
+    this.min = min;
+    return this;
+  }
+
+  /**
+   * Gets the min parameter. Either a sensorMin, actuatorMin or similar depending on the message.
+   * @return The min parameter.
+   */
+  public String getMin() {
+    return min;
+  }
+
+  /**
+   * Sets the max parameter. Either a sensorMax, actuatorMax or similar depending on the message.
+   * @param max The max to set.
+   */
+  private MessageParameterizer setMax(String max) {
+    this.max = max;
+    return this;
+  }
+
+  /**
+   * Gets the max parameter. Either a sensorMax, actuatorMax or similar depending on the message.
+   * @return The max parameter.
+   */
+  public String getMax() {
+    return max;
+  }
+
+  /**
+   * Sets the unit parameter. Either a sensorUnit, actuatorUnit or similar depending on the message.
+   * @param unit The unit to set.
+   */
+  public MessageParameterizer setUnit(String unit) {
+    this.unit = unit;
+    return this;
+  }
+
+  /**
+   * Gets the unit parameter. Either a sensorUnit, actuatorUnit or similar depending on the message.
+   * @return The unit parameter.
+   */
+  public String getUnit() {
+    return unit;
+  }
+
+  /**
    * Gets the prefix of the message.
    * @param prefix The prefix to set.
    */
-  private void setPrefix(String prefix) {
+  private MessageParameterizer setPrefix(String prefix) {
     this.prefix = prefix;
+    return this;
   }
 
   /**
@@ -108,8 +187,8 @@ public class MessageParameterizer {
   }
 
   /**
-   * Parameterizes the given prefix and variables into a message. In the style of URL parameters.
-   * @return The parameterized message.
+   * Parameterizes the set prefix and variables into a message string. In the style of URL parameters.
+   * @return The parameterized message as a String.
    */
   public String parameterize() {
     String message = "?";
@@ -125,6 +204,18 @@ public class MessageParameterizer {
     if (value != null) {
       message += VALUE_PARAMETER + "=" + value + "&";
     }
+    if (secondaryValue != null) {
+      message += SECONDARY_VALUE_PARAMETER + "=" + secondaryValue + "&";
+    }
+    if (min != null) {
+      message += MIN_PARAMETER + "=" + min + "&";
+    }
+    if (max != null) {
+      message += MAX_PARAMETER + "=" + max + "&";
+    }
+    if (unit != null) {
+      message += UNIT_PARAMETER + "=" + unit + "&";
+    }
     return prefix + message.substring(0, message.length() - 1);
   }
 
@@ -135,8 +226,7 @@ public class MessageParameterizer {
    */
   public MessageParameterizer deparameterize(String message) throws IllegalArgumentException {
     clearParameters();
-    String prefix = message.substring(0, message.indexOf("?"));
-    setPrefix(prefix);
+    setPrefix(getPrefix(message));
     String[] parameters = message.substring(message.indexOf("?") + 1).split("&");
     for (String parameter : parameters) {
       String[] keyValue = parameter.split("=");
@@ -153,6 +243,18 @@ public class MessageParameterizer {
         case VALUE_PARAMETER:
           setValue(keyValue[1]);
           break;
+        case SECONDARY_VALUE_PARAMETER:
+          setSecondaryValue(keyValue[1]);
+          break;
+        case MIN_PARAMETER:
+          setMin(keyValue[1]);
+          break;
+        case MAX_PARAMETER:
+          setMax(keyValue[1]);
+          break;
+        case UNIT_PARAMETER:
+          setUnit(keyValue[1]);
+          break;
         default:
           throw new IllegalArgumentException("Unknown parameter: " + keyValue[0]);
       }
@@ -168,5 +270,9 @@ public class MessageParameterizer {
     itemId = null;
     type = null;
     value = null;
+  }
+
+  public static String getPrefix(String message) throws IndexOutOfBoundsException {
+    return message.substring(0, message.indexOf("?"));
   }
 }

@@ -1,6 +1,7 @@
 package no.ntnu.greenhouse;
 
 import no.ntnu.message.*;
+import no.ntnu.subcribers.NodeSubscriber;
 import no.ntnu.tools.Logger;
 
 import java.io.BufferedReader;
@@ -8,12 +9,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ClientHandler extends Thread {
+public class ClientHandler extends Thread implements NodeSubscriber {
   private final Socket clientSocket;
   private final GreenhouseServer greenhouseServer;
   private final BufferedReader socketReader;
   private final PrintWriter socketWriter;
+  private final List<GreenhouseNode> subscribedNodes = new ArrayList<>();
 
   /**
    * Create a client handler.
@@ -98,5 +102,31 @@ public class ClientHandler extends Thread {
     } catch (IOException e) {
       Logger.error("Could not close client socket: " + e.getMessage());
     }
+  }
+
+  /**
+   * An event that is fired every time an actuator changes state.
+   *
+   * @param nodeId   ID of the node on which this actuator is placed
+   * @param actuator The actuator that has changed its state
+   */
+  @Override
+  public void actuatorUpdated(int nodeId, Actuator actuator) {
+
+  }
+
+  /**
+   * An event that is fired every time sensor values are updated.
+   *
+   * @param sensors A list of sensors having new values (readings)
+   */
+  @Override
+  public void sensorsUpdated(SensorCollection sensors) {
+
+  }
+
+  @Override
+  public List<GreenhouseNode> getSubscribedNodes() {
+    return subscribedNodes;
   }
 }

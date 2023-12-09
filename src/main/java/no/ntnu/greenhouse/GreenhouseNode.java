@@ -18,6 +18,7 @@ public class GreenhouseNode implements ActuatorListener, CommunicationChannelLis
   // How often to generate new sensor values, in seconds.
   private static final long SENSING_DELAY = 5000;
   private final int id;
+  private String name;
 
   private final SensorCollection sensors = new SensorCollection();
   private final ActuatorCollection actuators = new ActuatorCollection();
@@ -37,9 +38,10 @@ public class GreenhouseNode implements ActuatorListener, CommunicationChannelLis
    *
    * @param id A unique ID of the node
    */
-  public GreenhouseNode(int id) {
+  public GreenhouseNode(int id, String name) {
     this.id = id;
     this.running = false;
+    this.name = name;
   }
 
   /**
@@ -49,6 +51,24 @@ public class GreenhouseNode implements ActuatorListener, CommunicationChannelLis
    */
   public int getId() {
     return id;
+  }
+
+  /**
+   * Get the name of the node.
+   *
+   * @return the name
+   */
+  public String getName() {
+    return name;
+  }
+
+  /**
+   * Set the name of the node.
+   *
+   * @param name the name to set
+   */
+  public void setName(String name) {
+    this.name = name;
   }
 
   /**

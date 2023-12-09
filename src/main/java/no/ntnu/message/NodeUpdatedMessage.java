@@ -1,12 +1,7 @@
 package no.ntnu.message;
 
-public record ActuatorRemoveMessage(int nodeId, int actuatorId) implements Message {
-    private static final String PREFIX = "aR";
-    public ActuatorRemoveMessage {
-        if (nodeId < 0 || actuatorId < 0) {
-            throw new IllegalArgumentException("Node ID and Actuator ID must be non-negative.");
-        }
-    }
+public record NodeUpdatedMessage(int nodeId, String name) implements Message {
+    public static final String PREFIX = "nU";
 
     @Override
     public String getPrefix() {
@@ -17,7 +12,7 @@ public record ActuatorRemoveMessage(int nodeId, int actuatorId) implements Messa
     public String serialize() {
         return new MessageParameterizer(PREFIX)
                 .setNodeId(String.valueOf(nodeId()))
-                .setItemId(String.valueOf(actuatorId()))
+                .setValue(name())
                 .parameterize();
     }
 
@@ -28,9 +23,9 @@ public record ActuatorRemoveMessage(int nodeId, int actuatorId) implements Messa
         }
         MessageParameterizer parameterizer = new MessageParameterizer(PREFIX).deparameterize(message);
 
-        return new ActuatorRemoveMessage(
+        return new NodeUpdatedMessage(
                 Integer.parseInt(parameterizer.getNodeId()),
-                Integer.parseInt(parameterizer.getItemId())
+                parameterizer.getValue()
         );
     }
 }

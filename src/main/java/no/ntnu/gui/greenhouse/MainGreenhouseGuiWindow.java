@@ -75,7 +75,7 @@ public class MainGreenhouseGuiWindow extends Scene {
         button.setOnAction(e -> {
             System.out.println("Create new Node!");
             GreenhouseNode node = DeviceFactory.createNode(
-                    1, 1, 1, 1, 1);
+                    1, 1, 1, 1, 1, "TestNode");
             NodeGuiWindow nodeGuiWindow = new NodeGuiWindow(node);
             addNode(node.getId(), nodeGuiWindow);
         });

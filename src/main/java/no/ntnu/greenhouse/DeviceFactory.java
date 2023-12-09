@@ -37,8 +37,8 @@ public class DeviceFactory {
    * @return The created sensor/actuator device, with a unique ID
    */
   public static GreenhouseNode createNode(int temperatureSensorCount, int humiditySensorCount,
-                                          int windowCount, int fanCount, int heaterCount) {
-    GreenhouseNode node = new GreenhouseNode(generateUniqueNodeId());
+                                          int windowCount, int fanCount, int heaterCount, String name) {
+    GreenhouseNode node = new GreenhouseNode(generateUniqueNodeId(), name);
     if (temperatureSensorCount > 0) {
       node.addSensors(DeviceFactory.createTemperatureSensor(node.getId()), temperatureSensorCount);
     }

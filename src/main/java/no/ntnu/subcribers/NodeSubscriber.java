@@ -7,14 +7,25 @@ import no.ntnu.listeners.greenhouse.SensorListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class NodeSubscriber implements ActuatorListener, SensorListener {
-    private final List<GreenhouseNode> nodeSubscribers = new ArrayList<>();
+public interface NodeSubscriber extends ActuatorListener, SensorListener {
 
-    public void addNodeToSubscribers(GreenhouseNode node) {
-        nodeSubscribers.add(node);
+    List<GreenhouseNode> getSubscribedNodes();
+
+    /**
+     * Add a node to the list of nodes that this subscriber is subscribed to.
+     * @param node The node to add.
+     */
+    default void addNodeToSubscribers(GreenhouseNode node) {
+        if (!getSubscribedNodes().contains(node)) {
+            getSubscribedNodes().add(node);
+        }
     }
 
-    public void removeNodeFromSubscribers(GreenhouseNode node) {
-        nodeSubscribers.remove(node);
+    /**
+     * Remove a node from the list of nodes that this subscriber is subscribed to.
+     * @param node The node to remove.
+     */
+    default void removeNodeFromSubscribers(GreenhouseNode node) {
+        getSubscribedNodes().remove(node);
     }
 }

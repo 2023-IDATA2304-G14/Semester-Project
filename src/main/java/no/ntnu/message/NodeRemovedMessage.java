@@ -1,8 +1,8 @@
 package no.ntnu.message;
 
-public record SensorRemoveMessage(int nodeId, int sensorId) implements Message {
+public record NodeRemovedMessage(int nodeId) implements Message {
 
-  public static final String PREFIX = "sR";
+  public static final String PREFIX = "nR";
 
   @Override
   public String getPrefix() {
@@ -13,7 +13,6 @@ public record SensorRemoveMessage(int nodeId, int sensorId) implements Message {
   public String serialize() {
     return new MessageParameterizer(PREFIX)
         .setNodeId(String.valueOf(nodeId()))
-        .setItemId(String.valueOf(sensorId()))
         .parameterize();
   }
 
@@ -24,9 +23,8 @@ public record SensorRemoveMessage(int nodeId, int sensorId) implements Message {
     }
     MessageParameterizer parameterizer = new MessageParameterizer(PREFIX).deparameterize(message);
 
-    return new SensorRemoveMessage(
-        Integer.parseInt(parameterizer.getNodeId()),
-        Integer.parseInt(parameterizer.getItemId())
+    return new NodeRemovedMessage(
+        Integer.parseInt(parameterizer.getNodeId())
     );
   }
 }
