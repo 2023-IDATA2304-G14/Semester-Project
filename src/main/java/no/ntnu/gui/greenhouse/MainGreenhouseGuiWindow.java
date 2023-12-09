@@ -17,6 +17,7 @@ import javafx.scene.layout.VBox;
 import no.ntnu.encryption.PSKGenerator;
 import no.ntnu.greenhouse.DeviceFactory;
 import no.ntnu.greenhouse.GreenhouseNode;
+import no.ntnu.greenhouse.GreenhouseSimulator;
 
 
 /**
@@ -31,7 +32,7 @@ public class MainGreenhouseGuiWindow extends Scene {
     private ScrollPane scrollPane;
     private Accordion accordion;
 
-
+    GreenhouseSimulator greenhouseSimulator;
 
     public MainGreenhouseGuiWindow() {
         super(new BorderPane(), WIDTH, HEIGHT);
@@ -78,6 +79,7 @@ public class MainGreenhouseGuiWindow extends Scene {
                     1, 1, 1, 1, 1, "TestNode");
             NodeGuiWindow nodeGuiWindow = new NodeGuiWindow(node);
             addNode(node.getId(), nodeGuiWindow);
+            //greenhouseSimulator.addNode(node);
         });
 
         //Copy PSK key with secoundary click.

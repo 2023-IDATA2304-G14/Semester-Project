@@ -33,9 +33,9 @@ public class SensorPane extends TitledPane {
 
   private void initialize(SensorCollection sensors) {
     setText("Sensors");
-    sensors.forEach(sensor ->
-        contentBox.getChildren().add(createAndRememberSensorLabel(sensor.getReading()))
-    );
+    sensors.forEach(sensor ->{
+        contentBox.getChildren().add(createAndRememberSensorLabel(sensor.getReading()));
+    });
     setContent(contentBox);
   }
 

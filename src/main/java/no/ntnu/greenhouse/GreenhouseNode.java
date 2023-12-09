@@ -93,6 +93,7 @@ public class GreenhouseNode implements ActuatorListener, CommunicationChannelLis
 
     for (int i = 0; i < n; ++i) {
       sensors.add(template.createClone());
+      Logger.info("Created " + template.getType() + "[" + template.getId() + "] on node " + id);
     }
   }
 

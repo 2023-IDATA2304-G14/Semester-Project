@@ -98,7 +98,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
       logic.onCommunicationChannelClosed();
     }
 
-    testData();
+    //testData();
 
   }
 
