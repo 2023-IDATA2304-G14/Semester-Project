@@ -14,8 +14,9 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import no.ntnu.encryption.PSKGenerator;
+import no.ntnu.greenhouse.DeviceFactory;
+import no.ntnu.greenhouse.GreenhouseNode;
 
 
 /**
@@ -56,6 +57,7 @@ public class MainGreenhouseGuiWindow extends Scene {
     private Node top(){
         HBox hBox = new HBox();
         Button button = new Button("Add Node");
+
         Button newPsk = new Button("Generate new PSK Key");
         Label label = new Label("PSK key");
 
@@ -69,6 +71,16 @@ public class MainGreenhouseGuiWindow extends Scene {
         right.setAlignment(Pos.CENTER_RIGHT);
         hBox.getChildren().addAll(left, right);
 
+        //Code to add a new Node to the GreenHouse.
+        button.setOnAction(e -> {
+            System.out.println("Create new Node!");
+            GreenhouseNode node = DeviceFactory.createNode(
+                    1, 1, 1, 1, 1);
+            NodeGuiWindow nodeGuiWindow = new NodeGuiWindow(node);
+            addNode(node.getId(), nodeGuiWindow);
+        });
+
+        //Copy PSK key with secoundary click.
         newPsk.setOnAction(e -> label.setText(PSKGenerator.generateKey()));
         label.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
