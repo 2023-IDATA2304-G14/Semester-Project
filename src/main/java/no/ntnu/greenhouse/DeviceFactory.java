@@ -76,8 +76,8 @@ public class DeviceFactory {
    *
    * @return A typical temperature sensor, which can be used as a template
    */
-  public static Sensor createTemperatureSensor(int id) {
-    return new Sensor(SENSOR_TYPE_TEMPERATURE, id, MIN_TEMPERATURE, MAX_TEMPERATURE,
+  public static Sensor createTemperatureSensor(int nodeId) {
+    return new Sensor(nodeId, SENSOR_TYPE_TEMPERATURE, MIN_TEMPERATURE, MAX_TEMPERATURE,
         randomize(NORMAL_GREENHOUSE_TEMPERATURE, 1.0), TEMPERATURE_UNIT);
   }
 
@@ -86,8 +86,8 @@ public class DeviceFactory {
    *
    * @return A typical humidity sensor which can be used as a template
    */
-  public static Sensor createHumiditySensor(int id) {
-    return new Sensor(SENSOR_TYPE_HUMIDITY, id, MIN_HUMIDITY, MAX_HUMIDITY,
+  public static Sensor createHumiditySensor(int nodeId) {
+    return new Sensor(nodeId, SENSOR_TYPE_HUMIDITY, MIN_HUMIDITY, MAX_HUMIDITY,
         randomize(NORMAL_GREENHOUSE_HUMIDITY, 5.0), HUMIDITY_UNIT);
   }
 
