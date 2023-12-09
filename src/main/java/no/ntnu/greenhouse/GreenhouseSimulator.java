@@ -14,6 +14,8 @@ import no.ntnu.gui.greenhouse.NodeGuiWindow;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.tools.Logger;
 
+import static javafx.application.Platform.runLater;
+
 /**
  * Application entrypoint - a simulator for a greenhouse.
  */
@@ -25,22 +27,6 @@ public class GreenhouseSimulator {
   private ExecutorService serverExecutor;
 
   private MainGreenhouseGuiWindow guiWindow;
-
-  public GreenhouseNode addNewNode(int temperatureSensorCount, int humiditySensorCount,
-                                   int windowCount, int fanCount, int heaterCount) {
-    GreenhouseNode newNode = DeviceFactory.createNode(
-            temperatureSensorCount, humiditySensorCount, windowCount, fanCount, heaterCount);
-    nodes.put(newNode.getId(), newNode);
-
-    if (guiWindow != null) {
-      Platform.runLater(() -> {
-        NodeGuiWindow nodeGui = new NodeGuiWindow(newNode);
-        guiWindow.addNode(newNode.getId(), nodeGui);
-      });
-    }
-
-    return newNode;
-  }
 
 
   /**
@@ -64,10 +50,10 @@ public class GreenhouseSimulator {
    *
    * @param port The port to listen on. 0 means that the server will automatically pick a free port.
    */
-    public GreenhouseSimulator(int port) {
-        this.fake = false;
-        this.greenhouseServer = new GreenhouseServer(this, port);
-    }
+  public GreenhouseSimulator(int port) {
+    this.fake = false;
+    this.greenhouseServer = new GreenhouseServer(this, port);
+  }
 
   /**
    * Initialise the greenhouse but don't start the simulation just yet.
@@ -173,10 +159,10 @@ public class GreenhouseSimulator {
         periodicSwitch.stop();
       }
     } else {
-        greenhouseServer.stopServer();
-        if (serverExecutor != null) {
-          serverExecutor.shutdown();
-        }
+      greenhouseServer.stopServer();
+      if (serverExecutor != null) {
+        serverExecutor.shutdown();
+      }
     }
   }
 

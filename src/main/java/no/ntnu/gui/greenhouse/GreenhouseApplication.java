@@ -1,5 +1,7 @@
 package no.ntnu.gui.greenhouse;
 
+import java.util.HashMap;
+import java.util.Map;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -11,24 +13,24 @@ import no.ntnu.tools.Logger;
 /**
  * Run a greenhouse simulation with a graphical user interface (GUI), with JavaFX.
  */
-public class GreenhouseApplication extends Application {
+public class GreenhouseApplication extends Application implements NodeStateListener {
   private static GreenhouseSimulator simulator;
   private Stage mainStage;
-  private MainGreenhouseGuiWindow mainWindow;
 
+  private MainGreenhouseGuiWindow mainWindow = new MainGreenhouseGuiWindow();
   @Override
   public void start(Stage mainStage) {
     this.mainStage = mainStage;
-    simulator = new GreenhouseSimulator(false); // Or true, depending on your application logic
-    mainWindow = new MainGreenhouseGuiWindow(simulator); // Pass the simulator to the constructor
-
     mainStage.setScene(mainWindow);
     mainStage.setMinWidth(MainGreenhouseGuiWindow.WIDTH);
     mainStage.setMinHeight(MainGreenhouseGuiWindow.HEIGHT);
-    mainStage.setTitle("Greenhouse Simulator");
+    mainStage.setTitle("Greenhouse simulator");
     mainStage.show();
-
-    // Additional setup if needed
+    Logger.info("GUI subscribes to lifecycle events");
+    simulator.initialize();
+    simulator.subscribeToLifecycleUpdates(this);
+    mainStage.setOnCloseRequest(event -> closeApplication());
+    simulator.start();
   }
 
   private void closeApplication() {
@@ -52,7 +54,7 @@ public class GreenhouseApplication extends Application {
     launch();
   }
 
-
+  @Override
   public void onNodeReady(GreenhouseNode node) {
     Logger.info("Node " + node.getId() + " is ready");
     Platform.runLater(() -> {
