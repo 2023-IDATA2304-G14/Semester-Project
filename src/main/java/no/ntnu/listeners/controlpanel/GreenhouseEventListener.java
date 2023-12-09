@@ -14,11 +14,11 @@ import no.ntnu.greenhouse.SensorReading;
  */
 public interface GreenhouseEventListener {
   /**
-   * This event is fired when a new node is added to the greenhouse.
+   * This event is fired when a new node is updated or added to the greenhouse.
    *
    * @param nodeInfo Information about the added node
    */
-  void onNodeAdded(SensorActuatorNodeInfo nodeInfo);
+  void onNodeUpdated(SensorActuatorNodeInfo nodeInfo);
 
   /**
    * This event is fired when a node is removed from the greenhouse.
@@ -42,5 +42,18 @@ public interface GreenhouseEventListener {
    * @param actuatorId ID of the actuator
    * @param isOn  When true, actuator is on; off when false.
    */
-  void onActuatorStateChanged(int nodeId, int actuatorId, boolean isOn);
+  void onActuatorReadingChanged(int nodeId, int actuatorId, boolean isOn, int strength);
+
+  /**
+   * This event is fired when an actuator changes state or is added to the greenhouse.
+   *
+   * @param nodeId ID of the node to which the actuator is attached
+   * @param actuatorId ID of the actuator
+   * @param isOn  When true, actuator is on; off when false.
+   * @param strength  Strength of the actuator
+   * @param minStrength  Minimum strength of the actuator
+   * @param maxStrength  Maximum strength of the actuator
+   * @param unit  Unit of the actuator
+   */
+    void onActuatorStateChanged(int nodeId, int actuatorId, String type, boolean isOn, int strength, int minStrength, int maxStrength, String unit);
 }

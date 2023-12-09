@@ -303,7 +303,7 @@ public class GreenhouseNode implements ActuatorListener, CommunicationChannelLis
   public void setActuator(int actuatorId, boolean on) {
     Actuator actuator = getActuator(actuatorId);
     if (actuator != null) {
-      actuator.set(on);
+      actuator.setOn(on);
     }
   }
 
@@ -314,7 +314,7 @@ public class GreenhouseNode implements ActuatorListener, CommunicationChannelLis
    */
   public void setAllActuators(boolean on) {
     for (Actuator actuator : actuators) {
-      actuator.set(on);
+      actuator.setOn(on);
     }
   }
 }

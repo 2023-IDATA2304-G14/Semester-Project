@@ -15,7 +15,7 @@ public class ControlPanelModel implements GreenhouseEventListener {
      * @param nodeInfo Information about the added node
      */
     @Override
-    public void onNodeAdded(SensorActuatorNodeInfo nodeInfo) {
+    public void onNodeUpdated(SensorActuatorNodeInfo nodeInfo) {
         // TODO: Implement
     }
 
@@ -48,7 +48,23 @@ public class ControlPanelModel implements GreenhouseEventListener {
      * @param isOn       When true, actuator is on; off when false.
      */
     @Override
-    public void onActuatorStateChanged(int nodeId, int actuatorId, boolean isOn) {
+    public void onActuatorReadingChanged(int nodeId, int actuatorId, boolean isOn, int strength) {
         // TODO: Implement
+    }
+
+    /**
+     * This event is fired when an actuator changes state.
+     *
+     * @param nodeId      ID of the node to which the actuator is attached
+     * @param actuatorId  ID of the actuator
+     * @param isOn        When true, actuator is on; off when false.
+     * @param strength    Strength of the actuator
+     * @param minStrength Minimum strength of the actuator
+     * @param maxStrength Maximum strength of the actuator
+     * @param unit        Unit of the actuator
+     */
+    @Override
+    public void onActuatorStateChanged(int nodeId, int actuatorId, String type, boolean isOn, int strength, int minStrength, int maxStrength, String unit) {
+//        TODO: Implement
     }
 }

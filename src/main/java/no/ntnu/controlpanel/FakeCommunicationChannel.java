@@ -61,7 +61,7 @@ public class FakeCommunicationChannel implements CommunicationChannel {
         "Invalid actuator count: " + actuatorInfo[0]);
     String actuatorType = actuatorInfo[1];
     for (int i = 0; i < actuatorCount; ++i) {
-      Actuator actuator = new Actuator(actuatorType, info.getId(), 25, 100, 0, "test");
+      Actuator actuator = new Actuator(info.getId(), actuatorType, 25, 100, 0, "test");
       actuator.setListener(logic);
       info.addActuator(actuator);
     }
@@ -83,7 +83,7 @@ public class FakeCommunicationChannel implements CommunicationChannel {
     timer.schedule(new TimerTask() {
       @Override
       public void run() {
-        logic.onNodeAdded(nodeInfo);
+        logic.onNodeUpdated(nodeInfo);
       }
     }, delay * 1000L);
   }
@@ -168,12 +168,12 @@ public class FakeCommunicationChannel implements CommunicationChannel {
    * @param on         When true, actuator is on; off when false.
    * @param delay      The delay in seconds after which the advertisement will be generated
    */
-  public void advertiseActuatorState(int nodeId, int actuatorId, boolean on, int delay) {
+  public void advertiseActuatorState(int nodeId, int actuatorId, boolean on, int strength, int delay) {
     Timer timer = new Timer();
     timer.schedule(new TimerTask() {
       @Override
       public void run() {
-        logic.onActuatorStateChanged(nodeId, actuatorId, on);
+        logic.onActuatorReadingChanged(nodeId, actuatorId, on, strength);
       }
     }, delay * 1000L);
   }

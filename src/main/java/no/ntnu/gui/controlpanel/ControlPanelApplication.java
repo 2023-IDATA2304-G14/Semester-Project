@@ -3,11 +3,9 @@ package no.ntnu.gui.controlpanel;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Flow;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -19,8 +17,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
@@ -154,7 +150,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   }
 
   @Override
-  public void onNodeAdded(SensorActuatorNodeInfo nodeInfo) {
+  public void onNodeUpdated(SensorActuatorNodeInfo nodeInfo) {
     Platform.runLater(() -> addNodeDisplay(nodeInfo));
   }
 
@@ -175,7 +171,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   }
 
   @Override
-  public void onActuatorStateChanged(int nodeId, int actuatorId, boolean isOn) {
+  public void onActuatorReadingChanged(int nodeId, int actuatorId, boolean isOn, int strength) {
     String state = isOn ? "ON" : "off";
     Logger.info("actuator[" + actuatorId + "] on node " + nodeId + " is " + state);
     ActuatorPane actuatorPane = actuatorPanes.get(nodeId);
@@ -187,12 +183,52 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
         } else {
           actuator.turnOff();
         }
+        actuator.setStrength(strength);
         actuatorPane.update(actuator);
       } else {
         Logger.error(" actuator not found");
       }
     } else {
       Logger.error("No actuator section for node " + nodeId);
+    }
+  }
+
+  /**
+   * This event is fired when an actuator changes state.
+   *
+   * @param nodeId      ID of the node to which the actuator is attached
+   * @param actuatorId  ID of the actuator
+   * @param isOn        When true, actuator is on; off when false.
+   * @param strength    Strength of the actuator
+   * @param minStrength Minimum strength of the actuator
+   * @param maxStrength Maximum strength of the actuator
+   * @param unit        Unit of the actuator
+   */
+  @Override
+  public void onActuatorStateChanged(int nodeId, int actuatorId, String type, boolean isOn, int strength, int minStrength, int maxStrength, String unit) {
+    Logger.info("actuator[" + actuatorId + "] on node " + nodeId + " is " + isOn);
+    ActuatorPane actuatorPane = actuatorPanes.get(nodeId);
+    Actuator actuator;
+    if (actuatorPane != null) {
+      actuator = getStoredActuator(nodeId, actuatorId);
+      if (actuator != null) {
+        if (isOn) {
+          actuator.turnOn();
+        } else {
+          actuator.turnOff();
+        }
+        actuator.setStrength(strength);
+        actuator.setMinStrength(minStrength);
+        actuator.setMaxStrength(maxStrength);
+        actuator.setUnit(unit);
+        actuator.setType(type);
+      } else {
+        actuator = new Actuator(nodeId, actuatorId, type, strength, minStrength, maxStrength, unit);
+        actuator.setOn(isOn);
+      }
+    actuatorPane.update(actuator);
+    } else {
+        Logger.error("No actuator section for node " + nodeId);
     }
   }
 
@@ -244,8 +280,8 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     SensorActuatorNodeInfo sensorActuatorNodeInfo5 = new SensorActuatorNodeInfo(5);
     SensorActuatorNodeInfo sensorActuatorNodeInfo6 = new SensorActuatorNodeInfo(6);
 
-    sensorActuatorNodeInfo1.addActuator(new Actuator(1, "door", 1, 1, 1, 0, ""));
-    sensorActuatorNodeInfo1.addActuator(new Actuator(2, "door", 1, 1, 1, 0, ""));
+    sensorActuatorNodeInfo1.addActuator(new Actuator(1, 1, "door", 1, 1, 0, ""));
+    sensorActuatorNodeInfo1.addActuator(new Actuator(1, 2, "door", 1, 1, 0, ""));
 
     addNodeDisplay(sensorActuatorNodeInfo1);
     addNodeDisplay(sensorActuatorNodeInfo2);

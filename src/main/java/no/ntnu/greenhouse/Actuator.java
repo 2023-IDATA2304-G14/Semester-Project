@@ -10,7 +10,7 @@ import no.ntnu.listeners.common.ActuatorListener;
  */
 public class Actuator {
   private static int nextId = 1;
-  private final String type;
+  private String type;
   private final int nodeId;
   private final int id;
   private Map<String, Double> impacts = new HashMap<>();
@@ -26,16 +26,16 @@ public class Actuator {
   /**
    * Create an actuator. An ID will be auto-generated.
    *
-   * @param type   The type of the actuator.
    * @param nodeId ID of the node to which this actuator is connected.
+   * @param type   The type of the actuator.
    */
-  public Actuator(String type, int nodeId, int strength, int maxStrength, int minStrength, String unit) {
+  public Actuator(int nodeId, String type, int strength, int maxStrength, int minStrength, String unit) {
     this.type = type;
     this.nodeId = nodeId;
     this.on = false;
-    this.strength = strength;
-    this.maxStrength = maxStrength;
-    this.minStrength = minStrength;
+    setMinStrength(minStrength);
+    setMaxStrength(maxStrength);
+    setStrength(strength);
     this.unit = unit;
     this.id = generateUniqueId();
   }
@@ -43,17 +43,21 @@ public class Actuator {
   /**
    * Create an actuator.
    *
+   * @param nodeId ID of the node to which this actuator is connected.
    * @param id     The desired ID of the node.
    * @param type   The type of the actuator.
-   * @param nodeId ID of the node to which this actuator is connected.
+   * @param strength The strength of the actuator.
+   * @param maxStrength The maximum strength of the actuator.
+   * @param minStrength The minimum strength of the actuator.
+   * @param unit The unit of the actuator.
    */
-  public Actuator(int id, String type, int nodeId, int strength, int maxStrength, int minStrength, String unit) {
+  public Actuator(int nodeId, int id, String type, int strength, int maxStrength, int minStrength, String unit) {
     this.type = type;
     this.nodeId = nodeId;
     this.on = false;
-    this.strength = strength;
-    this.maxStrength = maxStrength;
-    this.minStrength = minStrength;
+    setMinStrength(minStrength);
+    setMaxStrength(maxStrength);
+    setStrength(strength);
     this.unit = unit;
     this.id = id;
   }
@@ -85,9 +89,6 @@ public class Actuator {
     impacts.put(sensorType, diffWhenActive);
   }
 
-  public String getType() {
-    return type;
-  }
 
   /**
    * Create a clone of this actuator.
@@ -95,7 +96,7 @@ public class Actuator {
    * @return A clone of this actuator, where all the fields are the same
    */
   public Actuator createClone() {
-    Actuator a = new Actuator(type, nodeId, strength, maxStrength, minStrength, unit);
+    Actuator a = new Actuator(nodeId, type, strength, maxStrength, minStrength, unit);
     // Note - we pass a reference to the same map! This should not be problem, as long as we
     // don't modify the impacts AFTER creating the template
     a.impacts = impacts;
@@ -201,7 +202,7 @@ public class Actuator {
    *
    * @param on Turn on when true, turn off when false
    */
-  public void set(boolean on) {
+  public void setOn(boolean on) {
     if (on) {
       turnOn();
     } else {
@@ -292,4 +293,19 @@ public class Actuator {
     this.minStrength = minStrength;
   }
 
+  /**
+   * Get the type of the actuator.
+   * @return The type of the actuator.
+   */
+    public String getType() {
+      return this.type;
+    }
+
+    /**
+     * Set the type of the actuator.
+     * @param type The type to set.
+     */
+    public void setType(String type) {
+      this.type = type;
+    }
 }

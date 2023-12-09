@@ -56,8 +56,8 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
   }
 
   @Override
-  public void onNodeAdded(SensorActuatorNodeInfo nodeInfo) {
-    listeners.forEach(listener -> listener.onNodeAdded(nodeInfo));
+  public void onNodeUpdated(SensorActuatorNodeInfo nodeInfo) {
+    listeners.forEach(listener -> listener.onNodeUpdated(nodeInfo));
   }
 
   @Override
@@ -71,8 +71,24 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
   }
 
   @Override
-  public void onActuatorStateChanged(int nodeId, int actuatorId, boolean isOn) {
-    listeners.forEach(listener -> listener.onActuatorStateChanged(nodeId, actuatorId, isOn));
+  public void onActuatorReadingChanged(int nodeId, int actuatorId, boolean isOn, int strength) {
+    listeners.forEach(listener -> listener.onActuatorReadingChanged(nodeId, actuatorId, isOn, strength));
+  }
+
+  /**
+   * This event is fired when an actuator changes state.
+   *
+   * @param nodeId      ID of the node to which the actuator is attached
+   * @param actuatorId  ID of the actuator
+   * @param isOn        When true, actuator is on; off when false.
+   * @param strength    Strength of the actuator
+   * @param minStrength Minimum strength of the actuator
+   * @param maxStrength Maximum strength of the actuator
+   * @param unit        Unit of the actuator
+   */
+  @Override
+  public void onActuatorStateChanged(int nodeId, int actuatorId, String type, boolean isOn, int strength, int minStrength, int maxStrength, String unit) {
+    listeners.forEach(listener -> listener.onActuatorStateChanged(nodeId, actuatorId, type, isOn, strength, minStrength, maxStrength, unit));
   }
 
   //  TODO: Implement updating the state from the response of the command instead
@@ -82,7 +98,7 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
       communicationChannel.sendActuatorChange(nodeId, actuator.getId(), actuator.isOn(), actuator.getStrength());
     }
     listeners.forEach(listener ->
-            listener.onActuatorStateChanged(nodeId, actuator.getId(), actuator.isOn())
+            listener.onActuatorReadingChanged(nodeId, actuator.getId(), actuator.isOn(), actuator.getStrength())
     );
   }
 
