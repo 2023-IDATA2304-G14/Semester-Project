@@ -139,7 +139,7 @@ public class ControlPanelClient {
    * @return true if the command was successfully sent, false otherwise.
    */
   public boolean sendCommand(Message command) {
-    if (!(command instanceof Command) && !(command instanceof NodeSubscriptionCommand)) {
+    if (!(command instanceof Command) && !(command instanceof NodeSubscriptionCommand) && !(command instanceof ListCommand)) {
       throw new IllegalArgumentException("Message must be a command");
     }
     if (socketWriter != null && socketReader != null) {

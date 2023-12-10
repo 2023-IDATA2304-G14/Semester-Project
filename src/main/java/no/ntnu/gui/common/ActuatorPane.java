@@ -1,5 +1,10 @@
 package no.ntnu.gui.common;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -14,15 +19,18 @@ import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.ActuatorCollection;
 import no.ntnu.tools.Logger;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.util.Map;
-import java.util.HashMap;
+/**
+ * A GUI component which displays a list of actuators and allows to control them.
+ */
 public class ActuatorPane extends TitledPane {
   private final Map<Actuator, SimpleStringProperty> actuatorValue = new HashMap<>();
   private final Map<Actuator, SimpleBooleanProperty> actuatorActive = new HashMap<>();
 
+  /**
+   * Create a new actuator pane.
+   *
+   * @param actuators The actuators to display
+   */
   public ActuatorPane(ActuatorCollection actuators) {
     super();
     setText("Actuators");
@@ -74,6 +82,11 @@ public class ActuatorPane extends TitledPane {
     return actuator.getType() + ": " + onOff;
   }
 
+  /**
+   * Update the GUI to reflect the current state of the actuators.
+   *
+   * @param actuator The actuator to update
+   */
   public void update(Actuator actuator) {
     SimpleStringProperty actuatorText = actuatorValue.get(actuator);
     SimpleBooleanProperty actuatorSelected = actuatorActive.get(actuator);
@@ -105,6 +118,7 @@ public class ActuatorPane extends TitledPane {
 
   /**
    * Remove an actuator from the GUI.
+
    * @param actuatorId ID of the actuator to remove
    */
   public void remove(int actuatorId) {
@@ -115,6 +129,6 @@ public class ActuatorPane extends TitledPane {
               actuatorValue.remove(actuator);
               actuatorActive.remove(actuator);
             });
-//    TODO: Implement a way of removing the existing labels
+    //    TODO: Implement a way of removing the existing labels
   }
 }
