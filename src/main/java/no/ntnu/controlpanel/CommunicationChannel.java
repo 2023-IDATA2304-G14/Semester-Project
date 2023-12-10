@@ -17,6 +17,13 @@ public interface CommunicationChannel {
   void sendActuatorChange(int nodeId, int actuatorId, boolean isOn, int strength);
 
   /**
+   * Get the actuator data for a given actuator.
+   * @param nodeId The ID of the node to which the actuator is attached
+   * @param actuatorId The ID of the actuator
+   */
+  void getActuatorData(int nodeId, int actuatorId);
+
+  /**
    * Get the current state of the actuator.
    * This method is called when the control panel starts up, to get the current state of the
    * actuators.
@@ -33,11 +40,23 @@ public interface CommunicationChannel {
   void getSensorState(int nodeId, int sensorId);
 
   /**
-   * Get the sensor reading for a given sensor.
+   * Get the sensor data for a given sensor.
    * @param nodeId The ID of the node to which the sensor is attached
    * @param sensorId The ID of the sensor
    */
-  void getSensorReading(int nodeId, int sensorId);
+  void getSensorData(int nodeId, int sensorId);
+
+  /**
+   * Subscribe to data for a node.
+   * @param nodeId The ID of the node to which the sensor is attached
+   */
+  void subscribeToNode(int nodeId);
+
+  /**
+   * Unsubscribe to data for a node.
+   * @param nodeId The ID of the node to which the sensor is attached
+   */
+  void unsubscribeToNode(int nodeId);
 
   /**
    * Open the communication channel.

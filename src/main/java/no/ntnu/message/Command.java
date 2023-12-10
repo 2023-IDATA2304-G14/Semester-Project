@@ -2,6 +2,7 @@ package no.ntnu.message;
 
 
 import no.ntnu.greenhouse.GreenhouseSimulator;
+import no.ntnu.subcribers.NodeSubscriber;
 
 /**
  * A command sent from the client to the server (from controlPanel to GreenhouseNode).

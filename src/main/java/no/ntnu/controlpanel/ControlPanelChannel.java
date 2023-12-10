@@ -1,8 +1,6 @@
 package no.ntnu.controlpanel;
 
-import no.ntnu.message.GetActuatorStateCommand;
-import no.ntnu.message.GetSensorStateCommand;
-import no.ntnu.message.SetActuatorCommand;
+import no.ntnu.message.*;
 
 public class ControlPanelChannel implements CommunicationChannel {
 
@@ -29,6 +27,17 @@ public class ControlPanelChannel implements CommunicationChannel {
   @Override
   public void sendActuatorChange(int nodeId, int actuatorId, boolean isOn, int strength) {
     client.sendCommand(new SetActuatorCommand(nodeId, actuatorId, isOn, strength));
+  }
+
+  /**
+   * Get the actuator data for a given actuator.
+   *
+   * @param nodeId     The ID of the node to which the actuator is attached
+   * @param actuatorId The ID of the actuator
+   */
+  @Override
+  public void getActuatorData(int nodeId, int actuatorId) {
+    client.sendCommand(new GetActuatorDataCommand(nodeId, actuatorId));
   }
 
   /**
@@ -62,7 +71,27 @@ public class ControlPanelChannel implements CommunicationChannel {
    * @param sensorId The ID of the sensor
    */
   @Override
-  public void getSensorReading(int nodeId, int sensorId) {
+  public void getSensorData(int nodeId, int sensorId) {
+    client.sendCommand(new GetSensorDataCommand(nodeId, sensorId));
+  }
+
+  /**
+   * Subscribe to data for a node.
+   *
+   * @param nodeId The ID of the node to which the sensor is attached
+   */
+  @Override
+  public void subscribeToNode(int nodeId) {
+    client.sendCommand(new SubscribeNodeCommand(nodeId));
+  }
+
+  /**
+   * Unsubscribe to data for a node.
+   *
+   * @param nodeId The ID of the node to which the sensor is attached
+   */
+  @Override
+  public void unsubscribeToNode(int nodeId) {
 
   }
 

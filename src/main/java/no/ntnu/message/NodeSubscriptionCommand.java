@@ -9,5 +9,5 @@ public interface NodeSubscriptionCommand extends Message {
      * GreenhouseSimulator logic to be affected by this command
      * NodeSubscriber subscriber to be affected by this command
      */
-    public Message execute(GreenhouseSimulator logic, NodeSubscriber subscriber);
+    public abstract Message execute(GreenhouseSimulator logic, NodeSubscriber subscriber);
 }

@@ -136,7 +136,10 @@ public class ControlPanelClient {
    * @param command the command to send to the server.
    * @return true if the command was successfully sent, false otherwise.
    */
-  public boolean sendCommand(Command command) {
+  public boolean sendCommand(Message command) {
+    if (!(command instanceof Command) && !(command instanceof NodeSubscriptionCommand)) {
+      throw new IllegalArgumentException("Message must be a command");
+    }
     if (socketWriter != null && socketReader != null) {
       try {
         String serializedCommand = MessageSerializer.serialize(command);
