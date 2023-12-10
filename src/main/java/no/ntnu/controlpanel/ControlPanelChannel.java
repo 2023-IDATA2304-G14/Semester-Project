@@ -11,6 +11,11 @@ public class ControlPanelChannel implements CommunicationChannel {
     this.logic = logic;
     this.client = new ControlPanelClient(this);
   }
+
+  public ControlPanelChannel(ControlPanelLogic logic, String host, int port) {
+    this.logic = logic;
+    this.client = new ControlPanelClient(host, port, this);
+  }
   /**
    * Request that state of an actuator is changed.
    *

@@ -37,7 +37,9 @@ public class ControlPanelStarter {
   }
 
 
-  private void initiateSocketCommunication(ControlPanelLogic logic) {
+  private void initiateSocketCommunication(ControlPanelLogic logic/*, String host, int port*/) {
+//    TODO: Add a way for the user to input the host and port
+//    channel = new ControlPanelChannel(logic, host, port);
     channel = new ControlPanelChannel(logic);
     logic.setCommunicationChannel(channel);
   }
