@@ -185,13 +185,13 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
   /**
    * An event that is fired every time an actuator changes state.
    *
-   * @param nodeId   ID of the node on which this actuator is placed
    * @param actuator The actuator that has changed its state
    */
   @Override
-  public void actuatorUpdated(int nodeId, Actuator actuator) {
+  public void actuatorDataUpdated(Actuator actuator) {
     if (communicationChannel != null) {
-      communicationChannel.sendActuatorChange(nodeId, actuator.getId(), actuator.isOn(), actuator.getStrength());
+      communicationChannel.sendActuatorChange(actuator.getNodeId(), actuator.getId(), actuator.isOn(), actuator.getStrength());
     }
   }
+
 }

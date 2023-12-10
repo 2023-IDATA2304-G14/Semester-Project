@@ -1,7 +1,10 @@
 package no.ntnu.greenhouse;
 
+import no.ntnu.listeners.common.ActuatorListener;
+import no.ntnu.listeners.common.NodeListener;
+import no.ntnu.listeners.common.SensorListener;
+import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.message.*;
-import no.ntnu.subcribers.NodeSubscriber;
 import no.ntnu.tools.Logger;
 
 import java.io.BufferedReader;
@@ -9,15 +12,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
-public class ClientHandler extends Thread implements NodeSubscriber {
+public class ClientHandler extends Thread implements ActuatorListener, SensorListener, NodeListener, NodeStateListener {
   private final Socket clientSocket;
   private final GreenhouseServer greenhouseServer;
   private final BufferedReader socketReader;
   private final PrintWriter socketWriter;
-  private final List<GreenhouseNode> subscribedNodes = new ArrayList<>();
 
   /**
    * Create a client handler.
@@ -39,10 +39,17 @@ public class ClientHandler extends Thread implements NodeSubscriber {
   public void run() {
     Message response;
     do {
-      Command clientCommand = readClientRequest();
+      Message clientCommand = readClientRequest();
       if (clientCommand != null) {
         Logger.info("Received from client: " + clientCommand);
-        response = clientCommand.execute(greenhouseServer.getGreenhouseSimulator());
+        if (clientCommand instanceof NodeSubscriptionCommand nodeSubscriptionCommand) {
+          response = nodeSubscriptionCommand.execute(greenhouseServer.getGreenhouseSimulator(), this);
+        } else if (clientCommand instanceof Command command) {
+          response = command.execute(greenhouseServer.getGreenhouseSimulator());
+        } else {
+          Logger.error("Received invalid request from client: " + clientCommand);
+          response = null;
+        }
         if (response != null) {
           if (!(clientCommand instanceof GetCommand) && response instanceof BroadcastMessage) {
             greenhouseServer.broadcastMessage(response);
@@ -63,7 +70,7 @@ public class ClientHandler extends Thread implements NodeSubscriber {
    * Read a command from the client.
    * @return The command read from the client, or null if the client disconnected.
    */
-  private Command readClientRequest() {
+  private Message readClientRequest() {
     Message clientCommand = null;
     try {
       String rawClientRequest = socketReader.readLine();
@@ -71,14 +78,14 @@ public class ClientHandler extends Thread implements NodeSubscriber {
         return null;
       }
       clientCommand = MessageSerializer.deserialize(rawClientRequest);
-      if (!(clientCommand instanceof Command)) {
+      if (!(clientCommand instanceof Command) && !(clientCommand instanceof NodeSubscriptionCommand)) {
         Logger.error("Received invalid request from client: " + clientCommand);
         clientCommand = null;
       }
     } catch (IOException e) {
       Logger.error("Could not read from client socket: " + e.getMessage());
     }
-    return (Command) clientCommand;
+    return clientCommand;
   }
 
   /**
@@ -108,26 +115,86 @@ public class ClientHandler extends Thread implements NodeSubscriber {
   /**
    * An event that is fired every time an actuator changes state.
    *
-   * @param nodeId   ID of the node on which this actuator is placed
    * @param actuator The actuator that has changed its state
    */
   @Override
-  public void actuatorUpdated(int nodeId, Actuator actuator) {
-
+  public void actuatorDataUpdated(Actuator actuator) {
+    sendMessageToClient(new ActuatorDataMessage(actuator.getNodeId(), actuator.getId(), actuator.isOn(), actuator.getStrength()));
   }
 
   /**
    * An event that is fired every time sensor values are updated.
    *
-   * @param sensors A list of sensors having new values (readings)
+   * @param sensor A list of sensors having new values (readings)
    */
   @Override
-  public void sensorsUpdated(SensorCollection sensors) {
-
+  public void sensorDataUpdated(Sensor sensor) {
+    SensorReading reading = sensor.getReading();
+    sendMessageToClient(new SensorDataMessage(sensor.getNodeId(), sensor.getId(), reading.getValue(), reading.getUnit(), reading.getType()));
   }
 
+
+  /**
+   * An event that is fired every time an actuator is removed from a node.
+   *
+   * @param nodeId     ID of the node on which this actuator is placed
+   * @param actuatorId ID of the actuator that has been removed
+   */
   @Override
-  public List<GreenhouseNode> getSubscribedNodes() {
-    return subscribedNodes;
+  public void actuatorRemoved(int nodeId, int actuatorId) {
+    sendMessageToClient(new ActuatorRemovedMessage(nodeId, actuatorId));
+  }
+
+  /**
+   * An event that is fired every time a sensor is removed from a node.
+   *
+   * @param nodeId   ID of the node on which this sensor is placed
+   * @param sensorId ID of the sensor that has been removed
+   */
+  @Override
+  public void sensorRemoved(int nodeId, int sensorId) {
+    sendMessageToClient(new SensorRemovedMessage(nodeId, sensorId));
+  }
+
+  /**
+   * An event that is fired every time an actuator changes state.
+   *
+   * @param actuator The actuator that has changed its state
+   */
+  @Override
+  public void actuatorStateUpdated(Actuator actuator) {
+    sendMessageToClient(new ActuatorStateMessage(actuator.getNodeId(), actuator.getId(), actuator.isOn(), actuator.getStrength(), actuator.getMinStrength(), actuator.getMaxStrength(), actuator.getUnit(), actuator.getType()));
+  }
+
+  /**
+   * An event that is fired every time a sensor changes state.
+   *
+   * @param sensor The sensor that has changed its state
+   */
+  @Override
+  public void sensorStateUpdated(Sensor sensor) {
+    SensorReading reading = sensor.getReading();
+    sendMessageToClient(new SensorStateMessage(sensor.getNodeId(), sensor.getId(), reading.getType(), sensor.getMin(), sensor.getMax(), reading.getValue(), reading.getUnit()));
+  }
+
+  /**
+   * This event is fired when a sensor/actuator node has finished the starting procedure and
+   * has entered the "ready" state.
+   *
+   * @param node the node which is ready now
+   */
+  @Override
+  public void onNodeReady(GreenhouseNode node) {
+    sendMessageToClient(new NodeStateMessage(node.getId(), node.getName()));
+  }
+
+  /**
+   * This event is fired when a sensor/actuator node has stopped (shut down_.
+   *
+   * @param node The node which is stopped
+   */
+  @Override
+  public void onNodeStopped(GreenhouseNode node) {
+    sendMessageToClient(new NodeRemovedMessage(node.getId()));
   }
 }

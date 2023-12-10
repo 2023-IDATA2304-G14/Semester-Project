@@ -1,8 +1,10 @@
 package no.ntnu.greenhouse;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import no.ntnu.listeners.common.ActuatorListener;
+import no.ntnu.listeners.common.NodeListener;
 
 /**
  * An actuator that can change the environment in a way. The actuator will make impact on the
@@ -15,7 +17,8 @@ public class Actuator {
   private final int id;
   private Map<String, Double> impacts = new HashMap<>();
 
-  private ActuatorListener listener;
+  private List<ActuatorListener> listeners;
+  private List<NodeListener> stateListeners;
 
   private boolean on;
   private int strength;
@@ -67,12 +70,40 @@ public class Actuator {
   }
 
   /**
-   * Set the listener which will be notified when actuator state changes.
+   * Add the given ActuatorListener which will be notified when actuator data changes.
    *
+   * @param listener The listener of data change events
+   */
+  public void addActuatorListener(ActuatorListener listener) {
+    if (!listeners.contains(listener)) {
+      listeners.add(listener);
+    }
+  }
+
+  /**
+   * Remove the given ActuatorListener.
+   * @param listener The listener to remove
+   */
+  public void removeActuatorListener(ActuatorListener listener) {
+    listeners.remove(listener);
+  }
+
+  /**
+   * Add the given NodeListener which will be notified when actuator state changes.
    * @param listener The listener of state change events
    */
-  public void setListener(ActuatorListener listener) {
-    this.listener = listener;
+  public void addStateListener(NodeListener listener) {
+    if (!stateListeners.contains(listener)) {
+      stateListeners.add(listener);
+    }
+  }
+
+  /**
+   * Remove the given NodeListener.
+   * @param listener The listener to remove
+   */
+  public void removeStateListener(NodeListener listener) {
+    stateListeners.remove(listener);
   }
 
   /**
@@ -108,12 +139,22 @@ public class Actuator {
    */
   public void toggle() {
     this.on = !this.on;
-    notifyChanges();
+    notifyDataChanges();
   }
 
-  private void notifyChanges() {
-    if (listener != null) {
-      listener.actuatorUpdated(this.nodeId, this);
+  private void notifyDataChanges() {
+    if (listeners != null) {
+      for (ActuatorListener listener : listeners) {
+        listener.actuatorDataUpdated(this);
+      }
+    }
+  }
+
+  private void notifyStateChanges() {
+    if (stateListeners != null) {
+      for (NodeListener listener : stateListeners) {
+        listener.actuatorStateUpdated(this);
+      }
     }
   }
 
@@ -164,7 +205,7 @@ public class Actuator {
   public void turnOn() {
     if (!on) {
       on = true;
-      notifyChanges();
+      notifyDataChanges();
     }
   }
 
@@ -174,7 +215,7 @@ public class Actuator {
   public void turnOff() {
     if (on) {
       on = false;
-      notifyChanges();
+      notifyDataChanges();
     }
   }
 
@@ -229,6 +270,7 @@ public class Actuator {
       strength = minStrength;
     }
     this.strength = strength;
+    notifyDataChanges();
   }
 
   /**
@@ -245,6 +287,7 @@ public class Actuator {
    */
   public void setUnit(String unit) {
     this.unit = unit;
+    notifyStateChanges();
   }
 
   /**
@@ -268,6 +311,7 @@ public class Actuator {
       setStrength(maxStrength);
     }
     this.maxStrength = maxStrength;
+    notifyStateChanges();
   }
 
   /**
@@ -291,6 +335,7 @@ public class Actuator {
       setStrength(minStrength);
     }
     this.minStrength = minStrength;
+    notifyStateChanges();
   }
 
   /**
@@ -307,5 +352,14 @@ public class Actuator {
      */
     public void setType(String type) {
       this.type = type;
+      notifyStateChanges();
     }
+
+  public void setListeners(List<ActuatorListener> actuatorListeners) {
+    this.listeners = actuatorListeners;
+  }
+
+  public void setStateListeners(List<NodeListener> stateListeners) {
+    this.stateListeners = stateListeners;
+  }
 }

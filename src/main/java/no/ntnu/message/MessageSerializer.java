@@ -21,13 +21,13 @@ public class MessageSerializer {
 // TODO: Add all message classes here
     Set<Class<? extends Message>> messageClasses = Set.of(
         ActuatorDataMessage.class,
-        ActuatorRemoveMessage.class,
+        ActuatorRemovedMessage.class,
         ErrorMessage.class,
         GetSensorDataCommand.class,
         NodeRemovedMessage.class,
         NodeStateMessage.class,
         SensorDataMessage.class,
-        SensorRemoveMessage.class,
+        SensorRemovedMessage.class,
         SubscribeNodeCommand.class,
         SubscribeNodeMessage.class,
         UnknownMessage.class,

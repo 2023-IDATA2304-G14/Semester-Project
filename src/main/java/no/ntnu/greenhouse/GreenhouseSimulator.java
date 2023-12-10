@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 import javafx.application.Platform;
 import no.ntnu.gui.greenhouse.MainGreenhouseGuiWindow;
 import no.ntnu.gui.greenhouse.NodeGuiWindow;
+import no.ntnu.listeners.common.NodeListener;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.tools.Logger;
 
@@ -171,7 +172,7 @@ public class GreenhouseSimulator {
    *
    * @param listener The listener which will receive notifications
    */
-  public void subscribeToLifecycleUpdates(NodeStateListener listener) {
+  public void subscribeToLifecycleUpdates(NodeListener listener) {
     for (GreenhouseNode node : nodes.values()) {
       node.addStateListener(listener);
     }

@@ -13,15 +13,11 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import no.ntnu.encryption.PSKGenerator;
 import no.ntnu.greenhouse.*;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
 import no.ntnu.gui.greenhouse.helper.NodeView;
-import no.ntnu.listeners.common.ActuatorListener;
-import no.ntnu.listeners.greenhouse.SensorListener;
 
 public class GreenHouseView {
   private GreenHouseModel model;

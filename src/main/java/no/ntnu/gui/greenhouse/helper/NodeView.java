@@ -3,13 +3,12 @@ package no.ntnu.gui.greenhouse.helper;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import no.ntnu.greenhouse.*;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
 import no.ntnu.listeners.common.ActuatorListener;
-import no.ntnu.listeners.greenhouse.SensorListener;
+import no.ntnu.listeners.common.SensorListener;
 
 /**
  * Window with GUI for overview and control of one specific sensor/actuator node.
@@ -86,16 +85,9 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
   }
 
   @Override
-  public void sensorsUpdated(SensorCollection sensors) {
+  public void sensorDataUpdated(Sensor sensor) {
     if (sensorPane != null) {
-      sensorPane.update(sensors);
-    }
-  }
-
-  @Override
-  public void actuatorUpdated(int nodeId, Actuator actuator) {
-    if (actuatorPane != null) {
-      actuatorPane.update(actuator);
+      sensorPane.update(sensor);
     }
   }
 
@@ -181,6 +173,18 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
       return number >= 1;
     } catch (NumberFormatException e) {
       return false; // The string does not represent a valid integer
+    }
+  }
+
+  /**
+   * An event that is fired every time an actuator changes data.
+   *
+   * @param actuator The actuator that has changed its state
+   */
+  @Override
+  public void actuatorDataUpdated(Actuator actuator) {
+    if (actuatorPane != null) {
+      actuatorPane.update(actuator);
     }
   }
 }

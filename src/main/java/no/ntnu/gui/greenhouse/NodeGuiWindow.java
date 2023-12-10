@@ -1,22 +1,17 @@
 package no.ntnu.gui.greenhouse;
 
-import java.util.List;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.Sensor;
 import no.ntnu.greenhouse.GreenhouseNode;
-import no.ntnu.greenhouse.SensorCollection;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
 import no.ntnu.listeners.common.ActuatorListener;
-import no.ntnu.listeners.greenhouse.SensorListener;
+import no.ntnu.listeners.common.SensorListener;
 
 /**
  * Window with GUI for overview and control of one specific sensor/actuator node.
@@ -92,16 +87,32 @@ public class NodeGuiWindow extends VBox implements SensorListener, ActuatorListe
   }
 
   @Override
-  public void sensorsUpdated(SensorCollection sensors) {
+  public void sensorDataUpdated(Sensor sensor) {
     if (sensorPane != null) {
-      sensorPane.update(sensors);
+      sensorPane.update(sensor);
     }
   }
 
   @Override
-  public void actuatorUpdated(int nodeId, Actuator actuator) {
+  public void actuatorDataUpdated(Actuator actuator) {
     if (actuatorPane != null) {
       actuatorPane.update(actuator);
     }
+  }
+
+  public void removeActuator(int actuatorId) {
+    actuatorPane.remove(actuatorId);
+  }
+
+  public void removeSensor(int sensorId) {
+    sensorPane.remove(sensorId);
+  }
+
+  public void updateActuator(Actuator actuator) {
+    actuatorPane.update(actuator);
+  }
+
+  public void updateSensor(Sensor sensor) {
+    sensorPane.update(sensor);
   }
 }

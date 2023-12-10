@@ -115,5 +115,9 @@ public class MainGreenhouseGuiWindow extends Scene {
         l.setPadding(new Insets(0, 0, 10, 0));
         return l;
     }
+
+  public NodeGuiWindow getNode(int nodeId) {
+        return nodes.get(nodeId);
+  }
 }
 
