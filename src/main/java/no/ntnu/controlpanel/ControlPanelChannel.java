@@ -11,12 +11,12 @@ public class ControlPanelChannel implements CommunicationChannel {
 
   public ControlPanelChannel(ControlPanelLogic logic) {
     this.logic = logic;
-    this.client = new ControlPanelClient(this);
+    this.client = new ControlPanelClient(logic);
   }
 
   public ControlPanelChannel(ControlPanelLogic logic, String host, int port) {
     this.logic = logic;
-    this.client = new ControlPanelClient(host, port, this);
+    this.client = new ControlPanelClient(host, port, logic);
   }
   /**
    * Request that state of an actuator is changed.
@@ -82,29 +82,5 @@ public class ControlPanelChannel implements CommunicationChannel {
   @Override
   public void close() {
     client.stopClient();
-  }
-
-  /**
-   * Called when the reading of an actuator has changed.
-   *
-   * @param nodeId     The ID of the node to which the actuator is attached
-   * @param actuatorId The ID of the actuator
-   * @param on         True if the actuator is on, false otherwise
-   * @param strength   The strength of the actuator
-   */
-  @Override
-  public void onActuatorReadingChanged(int nodeId, int actuatorId, boolean on, int strength) {
-    logic.onActuatorDataChanged(nodeId, actuatorId, on, strength);
-  }
-
-  /**
-   * Called when an actuator has been removed from the node.
-   *
-   * @param nodeId     The ID of the node to which the actuator was attached
-   * @param actuatorId The ID of the actuator
-   */
-  @Override
-  public void onActuatorRemoved(int nodeId, int actuatorId) {
-    logic.onActuatorRemoved(nodeId, actuatorId);
   }
 }

@@ -75,4 +75,42 @@ public interface GreenhouseEventListener {
    * @param actuatorId ID of the actuator
    */
   void onActuatorRemoved(int nodeId, int actuatorId);
+
+  /**
+   * This event is fired when a node is changed or added to the greenhouse.
+   * @param nodeId ID of the node
+   * @param name Name of the node
+   */
+  void onNodeStateChanged(int nodeId, String name);
+
+  /**
+   * This event is fired when a node is removed from the greenhouse.
+   * @param nodeId ID of the node
+   * @param sensorId ID of the sensor
+   */
+  void onSensorRemoved(int nodeId, int sensorId);
+
+  /**
+   * This event is fired when the client has successfully subscribed to a node.
+   * @param nodeId ID of the node to which the client has subscribed
+   */
+  void onSubscribeNode(int nodeId);
+
+  /**
+   * This event is fired when the client has successfully unsubscribed from a node.
+   * @param nodeId ID of the node from which the client has unsubscribed
+   */
+  void onUnsubscribeNode(int nodeId);
+
+  /**
+   * This event is fired when an error message is received from the server.
+   * @param message The error message
+   */
+  void onErrorReceived(String message);
+
+  /**
+   * This event is fired when an error message for an unknown message is received from the server.
+   * @param message The unknown message
+   */
+  void onUnknownMessageReceived(String message);
 }

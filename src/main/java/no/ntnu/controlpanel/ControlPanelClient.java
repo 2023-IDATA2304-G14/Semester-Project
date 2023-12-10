@@ -1,6 +1,7 @@
 package no.ntnu.controlpanel;
 
 import no.ntnu.greenhouse.GreenhouseServer;
+import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
 import no.ntnu.message.*;
 import no.ntnu.tools.Logger;
 
@@ -22,16 +23,16 @@ public class ControlPanelClient {
   private PrintWriter socketWriter;
   private final String host;
   private final int port;
-  private final CommunicationChannel channel;
+  private final GreenhouseEventListener logic;
 
   /**
    * Construct a ControlPanel client with default hostname and port.
    *
-   * @param channel The channel of the ControlPanel client
+   * @param logic The logic of the ControlPanel client
    */
 //  TODO: Add the correct listener type
-  public ControlPanelClient(CommunicationChannel channel) {
-    this(GreenhouseServer.DEFAULT_HOSTNAME, GreenhouseServer.DEFAULT_PORT, channel);
+  public ControlPanelClient(GreenhouseEventListener logic) {
+    this(GreenhouseServer.DEFAULT_HOSTNAME, GreenhouseServer.DEFAULT_PORT, logic);
   }
 
   /**
@@ -39,13 +40,13 @@ public class ControlPanelClient {
    *
    * @param host The IP tp the host.
    * @param port The port tp the host.
-   * @param channel The channel of the ControlPanel client.
+   * @param logic The logic of the ControlPanel client.
    * @throws RuntimeException Throws a RuntimeException if there is an error.
    */
-  public ControlPanelClient(String host, int port, CommunicationChannel channel) throws RuntimeException {
+  public ControlPanelClient(String host, int port, GreenhouseEventListener logic) throws RuntimeException {
     this.host = host;
     this.port = port;
-    this.channel = channel;
+    this.logic = logic;
     if (!startClient(host, port)) {
       throw new RuntimeException("Could not connect to server");
     }
@@ -72,7 +73,8 @@ public class ControlPanelClient {
 
   /**
    * Starts a listening thread that listens for responses from the server.
-   * #see SOMELISTENER
+   * When a response is received, the logic is notified by the handleMessage method.
+   * #see handleMessage
    */
   private void startListeningThread() {
     new Thread(() -> {
@@ -82,7 +84,7 @@ public class ControlPanelClient {
           if (socketReader != null) {
             String serializedMessage = socketReader.readLine();
             message = MessageSerializer.deserialize(serializedMessage);
-            handleMessage(message, channel);
+            handleMessage(message);
           } else {
             message = null;
           }
@@ -97,14 +99,32 @@ public class ControlPanelClient {
    * Handles a message received from the server.
    *
    * @param message the message received from the server.
-   * @param listener the listener that will be notified when a response is received.
    */
-//  TODO: Add handling of the different message types
-  private void handleMessage(Message message, CommunicationChannel listener) {
+  private void handleMessage(Message message) {
         if (message instanceof ActuatorDataMessage actuatorDataMessage) {
-          listener.onActuatorReadingChanged(actuatorDataMessage.nodeId(), actuatorDataMessage.actuatorId(), actuatorDataMessage.isOn(), actuatorDataMessage.strength());
+          logic.onActuatorDataChanged(actuatorDataMessage.nodeId(), actuatorDataMessage.actuatorId(), actuatorDataMessage.isOn(), actuatorDataMessage.strength());
         } else if (message instanceof ActuatorRemoveMessage actuatorRemoveMessage) {
-          listener.onActuatorRemoved(actuatorRemoveMessage.nodeId(), actuatorRemoveMessage.actuatorId());
+          logic.onActuatorRemoved(actuatorRemoveMessage.nodeId(), actuatorRemoveMessage.actuatorId());
+        } else if (message instanceof ActuatorStateMessage actuatorStateMessage) {
+          logic.onActuatorStateChanged(actuatorStateMessage.nodeId(), actuatorStateMessage.actuatorId(), actuatorStateMessage.type(), actuatorStateMessage.on(), actuatorStateMessage.strength(), actuatorStateMessage.minStrength(), actuatorStateMessage.maxStrength(), actuatorStateMessage.unit());
+        } else if (message instanceof NodeRemovedMessage nodeRemovedMessage) {
+          logic.onNodeRemoved(nodeRemovedMessage.nodeId());
+        } else if (message instanceof NodeStateMessage nodeStateMessage) {
+          logic.onNodeStateChanged(nodeStateMessage.nodeId(), nodeStateMessage.name());
+        } else if (message instanceof SensorDataMessage sensorDataMessage) {
+          logic.onSensorDataChanged(sensorDataMessage.nodeId(), sensorDataMessage.sensorId(), sensorDataMessage.value());
+        } else if (message instanceof SensorRemoveMessage sensorStateMessage) {
+          logic.onSensorRemoved(sensorStateMessage.nodeId(), sensorStateMessage.sensorId());
+        } else if (message instanceof SensorStateMessage sensorStateMessage) {
+          logic.onSensorStateChanged(sensorStateMessage.nodeId(), sensorStateMessage.sensorId(), sensorStateMessage.type(), sensorStateMessage.value(), sensorStateMessage.min(), sensorStateMessage.max(), sensorStateMessage.unit());
+        } else if (message instanceof SubscribeNodeMessage subscribeNodeMessage) {
+          logic.onSubscribeNode(subscribeNodeMessage.nodeId());
+        } else if (message instanceof UnsubscribeNodeMessage unsubscribeNodeMessage) {
+          logic.onUnsubscribeNode(unsubscribeNodeMessage.nodeId());
+        } else if (message instanceof ErrorMessage errorMessage) {
+          logic.onErrorReceived(errorMessage.message());
+        } else if (message instanceof UnknownMessage unknownMessage) {
+          logic.onUnknownMessageReceived(unknownMessage.message());
         } else {
           Logger.error("Unhandled message received from server: " + message.getClass().getSimpleName());
         }

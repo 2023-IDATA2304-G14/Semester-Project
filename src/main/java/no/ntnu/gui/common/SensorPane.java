@@ -132,4 +132,14 @@ public class SensorPane extends TitledPane {
       }
     }
   }
+
+  public void remove(int sensorId) {
+//    TODO: Implement a way of removing the existing labels
+    sensorValues.keySet().stream()
+        .filter(actuator -> actuator.getId() == sensorId)
+        .findFirst()
+        .ifPresent(sensor -> {
+          sensorValues.remove(sensor);
+        });
+  }
 }

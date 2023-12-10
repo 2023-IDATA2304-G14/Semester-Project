@@ -51,19 +51,4 @@ public interface CommunicationChannel {
    */
   void close();
 
-  /**
-   * Called when the reading of an actuator has changed.
-   * @param nodeId The ID of the node to which the actuator is attached
-   * @param actuatorId The ID of the actuator
-   * @param on True if the actuator is on, false otherwise
-   * @param strength The strength of the actuator
-   */
-  void onActuatorReadingChanged(int nodeId, int actuatorId, boolean on, int strength);
-
-  /**
-   * Called when an actuator has been removed from the node.
-   * @param nodeId The ID of the node to which the actuator was attached
-   * @param actuatorId The ID of the actuator
-   */
-  void onActuatorRemoved(int nodeId, int actuatorId);
 }

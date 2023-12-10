@@ -1,6 +1,6 @@
 package no.ntnu.message;
 
-public record ActuatorStateMessage(int nodeId, int actuatorId, boolean on, int strength, int minStrength, int maxStrength, String unit) implements Message {
+public record ActuatorStateMessage(int nodeId, int actuatorId, boolean on, int strength, int minStrength, int maxStrength, String unit, String type) implements Message {
     public static final String PREFIX = "aS";
 
     @Override
@@ -18,6 +18,7 @@ public record ActuatorStateMessage(int nodeId, int actuatorId, boolean on, int s
                 .setMax(String.valueOf(maxStrength()))
                 .setMin(String.valueOf(minStrength()))
                 .setUnit(unit())
+                .setType(type())
                 .parameterize();
     }
 
@@ -35,7 +36,8 @@ public record ActuatorStateMessage(int nodeId, int actuatorId, boolean on, int s
                 Integer.parseInt(parameterizer.getSecondaryValue()),
                 Integer.parseInt(parameterizer.getMin()),
                 Integer.parseInt(parameterizer.getMax()),
-                parameterizer.getUnit()
+                parameterizer.getUnit(),
+                parameterizer.getType()
         );
     }
 }

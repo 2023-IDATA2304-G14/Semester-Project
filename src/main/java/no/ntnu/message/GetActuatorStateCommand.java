@@ -15,7 +15,7 @@ public record GetActuatorStateCommand(int nodeId, int actuatorId) implements Com
   @Override
   public Message execute(GreenhouseSimulator logic) {
     Actuator actuator = logic.getNode(nodeId).getActuator(actuatorId);
-    return new ActuatorStateMessage(nodeId, actuatorId, actuator.isOn(), actuator.getStrength(), actuator.getMinStrength(), actuator.getMaxStrength(), actuator.getUnit());
+    return new ActuatorStateMessage(nodeId, actuatorId, actuator.isOn(), actuator.getStrength(), actuator.getMinStrength(), actuator.getMaxStrength(), actuator.getUnit(), actuator.getType());
   }
 
   @Override

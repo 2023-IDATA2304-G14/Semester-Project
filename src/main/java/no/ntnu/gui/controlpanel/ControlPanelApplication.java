@@ -269,6 +269,81 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     }
   }
 
+  /**
+   * This event is fired when a node is changed or added to the greenhouse.
+   *
+   * @param nodeId ID of the node
+   * @param name   Name of the node
+   */
+  @Override
+  public void onNodeStateChanged(int nodeId, String name) {
+    Logger.info("Node " + nodeId + " is " + name);
+    VBox nodeBox = nodeBoxes.get(nodeId);
+    if (nodeBox != null) {
+      Label nodeLabel = (Label) nodeBox.getChildren().get(0);
+      nodeLabel.setText("Node " + nodeId + " - " + name);
+    } else {
+      Logger.error("No node section for node " + nodeId);
+    }
+  }
+
+  /**
+   * This event is fired when a node is removed from the greenhouse.
+   *
+   * @param nodeId   ID of the node
+   * @param sensorId ID of the sensor
+   */
+  @Override
+  public void onSensorRemoved(int nodeId, int sensorId) {
+    Logger.info("sensor[" + sensorId + "] on node " + nodeId + " is removed");
+    SensorPane sensorPane = sensorPanes.get(nodeId);
+    if (sensorPane != null) {
+      sensorPane.remove(sensorId);
+    } else {
+      Logger.error("No sensor section for node " + nodeId);
+    }
+  }
+
+  /**
+   * This event is fired when the client has successfully subscribed to a node.
+   *
+   * @param nodeId ID of the node to which the client has subscribed
+   */
+  @Override
+  public void onSubscribeNode(int nodeId) {
+
+  }
+
+  /**
+   * This event is fired when the client has successfully unsubscribed from a node.
+   *
+   * @param nodeId ID of the node from which the client has unsubscribed
+   */
+  @Override
+  public void onUnsubscribeNode(int nodeId) {
+
+  }
+
+  /**
+   * This event is fired when an error message is received from the server.
+   *
+   * @param message The error message
+   */
+  @Override
+  public void onErrorReceived(String message) {
+
+  }
+
+  /**
+   * This event is fired when an error message for an unknown message is received from the server.
+   *
+   * @param message The unknown message
+   */
+  @Override
+  public void onUnknownMessageReceived(String message) {
+
+  }
+
   private Actuator getStoredActuator(int nodeId, int actuatorId) {
     Actuator actuator = null;
     GreenhouseNodeInfo nodeInfo = nodeInfos.get(nodeId);

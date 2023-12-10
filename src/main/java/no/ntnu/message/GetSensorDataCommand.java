@@ -12,7 +12,7 @@ public record GetSensorDataCommand(int nodeId, int sensorId) implements GetComma
         try {
             GreenhouseNode node = logic.getNode(nodeId);
             SensorReading reading = node.getSensor(sensorId).getReading();
-            response = new SensorDataMessage(nodeId, sensorId, reading);
+            response = new SensorDataMessage(nodeId, sensorId, reading.getValue(), reading.getUnit(), reading.getType());
         } catch (IllegalStateException e) {
             response = new ErrorMessage(e.getMessage());
         }
