@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClientHandler extends Thread implements ActuatorListener, SensorListener, NodeListener, NodeStateListener, StateListener {
   private final Socket clientSocket;
@@ -39,31 +41,36 @@ public class ClientHandler extends Thread implements ActuatorListener, SensorLis
   @Override
   public void run() {
 //    TODO: Improve the code quality of this method.
-    Message response;
+    List<Message> responses = null;
     do {
       Message clientCommand = readClientRequest();
       if (clientCommand != null) {
+        responses = new ArrayList<>();
         Logger.info("Received from client: " + clientCommand);
         if (clientCommand instanceof NodeSubscriptionCommand nodeSubscriptionCommand) {
-          response = nodeSubscriptionCommand.execute(greenhouseServer.getGreenhouseSimulator(), this);
+          responses.add(nodeSubscriptionCommand.execute(greenhouseServer.getGreenhouseSimulator(), this));
         } else if (clientCommand instanceof Command command) {
-          response = command.execute(greenhouseServer.getGreenhouseSimulator());
+          responses.add(command.execute(greenhouseServer.getGreenhouseSimulator()));
+        } else if (clientCommand instanceof ListCommand listCommand) {
+          responses.addAll(listCommand.execute(greenhouseServer.getGreenhouseSimulator()));
         } else {
           Logger.error("Received invalid request from client: " + clientCommand);
-          response = null;
+          responses = null;
         }
-        if (response != null) {
-          if (!(clientCommand instanceof GetCommand) && response instanceof BroadcastMessage) {
-            greenhouseServer.broadcastMessage(response);
-          } else {
-            sendMessageToClient(response);
+        if (responses != null && !responses.isEmpty()) {
+          for (Message response : responses) {
+            if ((!(clientCommand instanceof GetCommand) || !(clientCommand instanceof ListCommand)) && response instanceof BroadcastMessage) {
+              greenhouseServer.broadcastMessage(response);
+            } else {
+              sendMessageToClient(response);
+            }
+            Logger.info("Sent to client: " + response);
           }
-          Logger.info("Sent to client: " + response);
         }
       } else {
-        response = null;
+        responses = null;
       }
-    } while (response != null);
+    } while (responses != null && !responses.isEmpty());
     Logger.info("Client disconnected: " + clientSocket.getRemoteSocketAddress());
     greenhouseServer.removeClient(this);
   }
