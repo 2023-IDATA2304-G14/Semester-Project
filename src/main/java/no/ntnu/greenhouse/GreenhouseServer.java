@@ -70,6 +70,7 @@ public class GreenhouseServer {
     while (isServerRunning) {
       ClientHandler clientHandler = acceptNextClientConnection(serverSocket);
       if (clientHandler != null) {
+
         greenhouseSimulator.subscribeToLifecycleUpdates(clientHandler);
         connectedClients.add(clientHandler);
         clientHandler.start();

@@ -83,7 +83,7 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
    */
   @Override
   public void onSensorStateChanged(int nodeId, int sensorId, String type, double value, double min, double max, String unit) {
-
+    listeners.forEach(listener -> listener.onSensorStateChanged(nodeId, sensorId, type, value, min, max, unit));
   }
 
   @Override

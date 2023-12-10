@@ -74,13 +74,6 @@ public interface CommunicationChannel {
   void unsubscribeToNode(int nodeId);
 
   /**
-   * Open the communication channel.
-   *
-   * @return True when the communication channel is successfully opened, false on error
-   */
-  boolean open();
-
-  /**
    * Close the communication channel.
    */
   void close();
