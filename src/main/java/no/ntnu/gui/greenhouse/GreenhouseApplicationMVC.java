@@ -1,41 +1,31 @@
 package no.ntnu.gui.greenhouse;
 
-// Import statements
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import no.ntnu.greenhouse.GreenhouseNode;
 import no.ntnu.greenhouse.GreenhouseSimulator;
+import no.ntnu.listeners.common.NodeListener;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.tools.Logger;
 
-// Main application class for the greenhouse simulator, using MVC architecture
-public class GreenhouseApplicationMVC extends Application implements NodeStateListener {
+public class GreenhouseApplicationMVC extends Application implements NodeStateListener, NodeListener {
 
-  // Static simulator instance
   private static GreenhouseSimulator simulator;
-  // Main GUI window for the application
-  private MainGreenhouseGuiWindow mainWindow = new MainGreenhouseGuiWindow();
-  // View component in MVC
+
   GreenHouseView greenHouseView;
-  // Model component in MVC
   private GreenHouseModel model;
 
-  // Start method overridden from Application, sets up the primary stage
   @Override
   public void start(Stage primaryStage) throws Exception {
-    // Initialize the view and model
     greenHouseView = new GreenHouseView(primaryStage);
     model = greenHouseView.getModel();
-    // Initialize and start the simulator
     simulator.initialize();
-    simulator.subscribeToLifecycleUpdates(this);
-    // Handle application close request
+//    simulator.subscribeToLifecycleUpdates(this);
     primaryStage.setOnCloseRequest(event -> closeApplication());
     simulator.start();
   }
 
-  // Method to handle application closure
   private void closeApplication() {
     Logger.info("Closing Greenhouse application...");
     simulator.stop();
@@ -46,41 +36,70 @@ public class GreenhouseApplicationMVC extends Application implements NodeStateLi
     }
   }
 
-  // Static method to start the application with an option for a fake simulator
   public static void startApp(boolean fake) {
     Logger.info("Running greenhouse simulator with JavaFX GUI...");
     simulator = new GreenhouseSimulator(fake);
     launch();
   }
 
-  // Overridden method from NodeStateListener, called when a node is ready
   @Override
   public void onNodeReady(GreenhouseNode node) {
     Logger.info("Node " + node.getId() + " is ready");
-    // Update the UI in the JavaFX Application thread
     Platform.runLater(() -> {
+
       greenHouseView.setSimulator(node);
-      // mainWindow.addNode(node.getId(), nodeGui); // Add the node GUI to the main window
+
+     // mainWindow.addNode(node.getId(), nodeGui); // Add the node GUI to the main window
     });
   }
 
-  // Method called when a node has stopped
   public void onNodeStopped(GreenhouseNode node) {
     Logger.info("Node " + node.getId() + " has stopped");
-    // Update the UI in the JavaFX Application thread
     Platform.runLater(() -> {
-      mainWindow.removeNode(node.getId()); // Remove the node GUI from the main window
+      //mainWindow.removeNode(node.getId()); // Remove the node GUI from the main window
     });
   }
 
-  // Overridden stop method to handle application shutdown
+
+
+  /**
+   * This method is called when the application is stopped.
+   *
+   * @throws Exception If there is an issue during application shutdown.
+   */
   @Override
   public void stop() throws Exception {
     System.exit(0);
   }
 
-  // Main method to launch the application
+  /**
+   * The main method for launching the SmartTvApp application.
+   *
+   * @param args The command-lines arguments
+   */
   public static void main(String[] args) {
     launch(args);
+  }
+
+  /**
+   * An event that is fired every time an actuator is removed from a node.
+   *
+   * @param nodeId     ID of the node on which this actuator is placed
+   * @param actuatorId ID of the actuator that has been removed
+   */
+  @Override
+  public void actuatorRemoved(int nodeId, int actuatorId) {
+    simulator.getNode(nodeId).removeActuator(actuatorId);
+  }
+
+  /**
+   * An event that is fired every time a sensor is removed from a node.
+   *
+   * @param nodeId   ID of the node on which this sensor is placed
+   * @param sensorId ID of the sensor that has been removed
+   */
+  @Override
+  public void sensorRemoved(int nodeId, int sensorId) {
+    simulator.getNode(nodeId).removeSensor(sensorId);
   }
 }

@@ -3,6 +3,8 @@ package no.ntnu.greenhouse;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.stream.Stream;
+
 import no.ntnu.tools.Logger;
 
 /**
@@ -61,5 +63,14 @@ public class ActuatorCollection implements Iterable<Actuator> {
    */
   public void remove(int actuatorId) {
     actuators.remove(actuatorId);
+  }
+
+  /**
+   * Get a stream of the actuators in this collection.
+   *
+   * @return A stream of the actuators
+   */
+  public Stream<Actuator> stream() {
+    return actuators.values().stream();
   }
 }

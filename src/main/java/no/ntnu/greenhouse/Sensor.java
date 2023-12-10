@@ -1,5 +1,11 @@
 package no.ntnu.greenhouse;
 
+import no.ntnu.listeners.common.NodeListener;
+import no.ntnu.listeners.common.SensorListener;
+import no.ntnu.listeners.common.StateListener;
+
+import java.util.List;
+
 /**
  * A sensor which can sense the environment in a specific way.
  */
@@ -10,6 +16,8 @@ public class Sensor {
   private final int nodeId;
   private double min;
   private double max;
+  private List<SensorListener> listeners;
+  private List<StateListener> stateListeners;
 
   /**
    * Create a sensor.
@@ -26,7 +34,7 @@ public class Sensor {
     this.min = min;
     this.max = max;
     this.id = generateUniqueId();
-    ensureValueBoundsAndPrecision(current);
+    ensureValueBoundsAndPrecision(current, false);
   }
 
   /**
@@ -45,7 +53,8 @@ public class Sensor {
     this.min = min;
     this.max = max;
     this.id = id;
-    ensureValueBoundsAndPrecision(current);
+    ensureValueBoundsAndPrecision(current, false);
+    notifyStateChanges();
   }
 
   private static int generateUniqueId() {
@@ -80,8 +89,11 @@ public class Sensor {
    * @return A clone of this sensor, where all the fields are the same
    */
   public Sensor createClone() {
-    return new Sensor(this.id, this.reading.getType(), this.min, this.max,
+    Sensor newSensor = new Sensor(this.id, this.reading.getType(), this.min, this.max,
         this.reading.getValue(), this.reading.getUnit());
+    newSensor.listeners = this.listeners;
+    newSensor.stateListeners = this.stateListeners;
+    return newSensor;
   }
 
   /**
@@ -89,10 +101,10 @@ public class Sensor {
    */
   public void addRandomNoise() {
     double newValue = this.reading.getValue() + generateRealisticNoise();
-    ensureValueBoundsAndPrecision(newValue);
+    ensureValueBoundsAndPrecision(newValue, true);
   }
 
-  private void ensureValueBoundsAndPrecision(double newValue) {
+  private void ensureValueBoundsAndPrecision(double newValue, boolean notify) {
     newValue = roundToTwoDecimals(newValue);
     if (newValue < min) {
       newValue = min;
@@ -100,6 +112,9 @@ public class Sensor {
       newValue = max;
     }
     reading.setValue(newValue);
+    if (notify) {
+      notifyDataChanges();
+    }
   }
 
   private double roundToTwoDecimals(double value) {
@@ -120,7 +135,19 @@ public class Sensor {
    */
   public void applyImpact(double impact) {
     double newValue = this.reading.getValue() + impact;
-    ensureValueBoundsAndPrecision(newValue);
+    ensureValueBoundsAndPrecision(newValue, true);
+  }
+
+  private void notifyDataChanges() {
+    for (SensorListener listener : listeners) {
+      listener.sensorDataUpdated(this);
+    }
+  }
+
+  private void notifyStateChanges() {
+    for (StateListener listener : stateListeners) {
+      listener.sensorStateUpdated(this);
+    }
   }
 
   @Override
@@ -142,7 +169,8 @@ public class Sensor {
       min = max - 1;
     }
     this.min = min;
-    ensureValueBoundsAndPrecision(reading.getValue());
+    ensureValueBoundsAndPrecision(reading.getValue(), false);
+    notifyStateChanges();
   }
 
   public double getMin() {
@@ -154,7 +182,8 @@ public class Sensor {
       max = min + 1;
     }
     this.max = max;
-    ensureValueBoundsAndPrecision(reading.getValue());
+    ensureValueBoundsAndPrecision(reading.getValue(), false);
+    notifyStateChanges();
   }
 
   public double getMax() {
@@ -163,5 +192,21 @@ public class Sensor {
 
   public String getUnit() {
     return reading.getUnit();
+  }
+
+  /**
+   * Sets the sensor listeners.
+   * @param listeners The listeners to set
+   */
+  public void setListeners(List<SensorListener> listeners) {
+    this.listeners = listeners;
+  }
+
+  /**
+   * Sets the sensor state listeners.
+   * @param listeners The listeners to set
+   */
+  public void setStateListeners(List<StateListener> listeners) {
+    this.stateListeners = listeners;
   }
 }

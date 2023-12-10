@@ -15,4 +15,8 @@ public class GreenHouseModel {
 
   }
 
+  public void setPort(String portNumber){
+    System.out.println("Port number: " + portNumber);
+  }
+
 }

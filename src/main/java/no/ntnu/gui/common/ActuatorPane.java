@@ -50,6 +50,9 @@ public class ActuatorPane extends TitledPane {
     SimpleBooleanProperty isSelected = new SimpleBooleanProperty(actuator.isOn());
     actuatorActive.put(actuator, isSelected);
     checkbox.selectedProperty().bindBidirectional(isSelected);
+
+    checkbox.setId("checkBoxActuator");
+
     checkbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
       if (newValue != null) {
         sendActuatorCommand(actuator, newValue);

@@ -1,15 +1,16 @@
 package no.ntnu.message;
 
+import no.ntnu.greenhouse.ClientHandler;
 import no.ntnu.greenhouse.GreenhouseSimulator;
-import no.ntnu.subcribers.NodeSubscriber;
 
 public record UnsubscribeNodeCommand(int nodeId) implements NodeSubscriptionCommand {
     public static final String PREFIX = "unsub";
     @Override
-    public Message execute(GreenhouseSimulator logic, NodeSubscriber subscriber) {
+    public Message execute(GreenhouseSimulator logic, ClientHandler subscriber) {
         Message response;
         try {
-            subscriber.removeNodeFromSubscribers(logic.getNode(nodeId));
+            logic.getNode(nodeId).removeActuatorListener(subscriber);
+            logic.getNode(nodeId).removeSensorListener(subscriber);
             response = new UnsubscribeNodeMessage(nodeId);
         } catch (IllegalStateException e) {
             response = new ErrorMessage(e.getMessage());

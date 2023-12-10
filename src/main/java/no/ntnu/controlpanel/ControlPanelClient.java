@@ -103,8 +103,8 @@ public class ControlPanelClient {
   private void handleMessage(Message message) {
         if (message instanceof ActuatorDataMessage actuatorDataMessage) {
           logic.onActuatorDataChanged(actuatorDataMessage.nodeId(), actuatorDataMessage.actuatorId(), actuatorDataMessage.isOn(), actuatorDataMessage.strength());
-        } else if (message instanceof ActuatorRemoveMessage actuatorRemoveMessage) {
-          logic.onActuatorRemoved(actuatorRemoveMessage.nodeId(), actuatorRemoveMessage.actuatorId());
+        } else if (message instanceof ActuatorRemovedMessage actuatorRemovedMessage) {
+          logic.onActuatorRemoved(actuatorRemovedMessage.nodeId(), actuatorRemovedMessage.actuatorId());
         } else if (message instanceof ActuatorStateMessage actuatorStateMessage) {
           logic.onActuatorStateChanged(actuatorStateMessage.nodeId(), actuatorStateMessage.actuatorId(), actuatorStateMessage.type(), actuatorStateMessage.on(), actuatorStateMessage.strength(), actuatorStateMessage.minStrength(), actuatorStateMessage.maxStrength(), actuatorStateMessage.unit());
         } else if (message instanceof NodeRemovedMessage nodeRemovedMessage) {
@@ -113,7 +113,7 @@ public class ControlPanelClient {
           logic.onNodeStateChanged(nodeStateMessage.nodeId(), nodeStateMessage.name());
         } else if (message instanceof SensorDataMessage sensorDataMessage) {
           logic.onSensorDataChanged(sensorDataMessage.nodeId(), sensorDataMessage.sensorId(), sensorDataMessage.value());
-        } else if (message instanceof SensorRemoveMessage sensorStateMessage) {
+        } else if (message instanceof SensorRemovedMessage sensorStateMessage) {
           logic.onSensorRemoved(sensorStateMessage.nodeId(), sensorStateMessage.sensorId());
         } else if (message instanceof SensorStateMessage sensorStateMessage) {
           logic.onSensorStateChanged(sensorStateMessage.nodeId(), sensorStateMessage.sensorId(), sensorStateMessage.type(), sensorStateMessage.value(), sensorStateMessage.min(), sensorStateMessage.max(), sensorStateMessage.unit());

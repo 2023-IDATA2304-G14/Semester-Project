@@ -2,18 +2,15 @@ package no.ntnu.gui.greenhouse.helper;
 
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import no.ntnu.greenhouse.*;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
-import no.ntnu.gui.greenhouse.GreenHouseView;
-import no.ntnu.gui.greenhouse.GreenhouseApplication;
-import no.ntnu.gui.greenhouse.MainGreenhouseGuiWindow;
 import no.ntnu.listeners.common.ActuatorListener;
-import no.ntnu.listeners.greenhouse.SensorListener;
+import no.ntnu.listeners.common.SensorListener;
 
 /**
  * Window with GUI for overview and control of one specific sensor/actuator node.
@@ -23,9 +20,6 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
   private ActuatorPane actuatorPane;
   private SensorPane sensorPane;
   private Label nodeIdLabel;
-  private MainGreenhouseGuiWindow mainGuiWindow;
-  private GreenhouseApplication greenhouseApplication;
-  private GreenHouseView greenhouseView;
 
   private Button removeNode = new Button("Remove Node");
   private Button addSensor = new Button("Add Sensor");
@@ -33,8 +27,7 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
 
   private TitledPane titledPane;
 
-  public NodeView(GreenhouseNode node, GreenHouseView greenHouseView) {
-    this.greenhouseView = greenhouseView;
+  public NodeView(GreenhouseNode node) {
     this.node = node;
     this.nodeIdLabel = new Label("Node ID: " + node.getId());
 
@@ -69,12 +62,6 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
     actuatorScrollPane.setFitToWidth(true);
     actuatorScrollPane.setMaxHeight(300); // Set a max height
 
-    removeNode.setOnAction(e -> {
-      shutDownNode();
-      //this.greenhouseView.removeNodeView(this);
-      System.out.println("Remove node: " + node.getId());
-    });
-
     HBox hBox = new HBox(removeNode, addSensor, addActuator);
 
 
@@ -88,8 +75,15 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
     });
     addActuator.setOnAction(e -> {
       ShowActuatorDialog();
+
+      //CheckBox checkBox = (CheckBox) content.lookup("#checkBoxActuator");
+      //if (checkBox != null) {
+      //  System.out.println("Found check");
+      //  checkBox.setDisable(true);
+      //}
     });
   }
+
   public TitledPane getTitledPane() {
     return titledPane;
   }
@@ -99,16 +93,9 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
   }
 
   @Override
-  public void sensorsUpdated(SensorCollection sensors) {
+  public void sensorDataUpdated(Sensor sensor) {
     if (sensorPane != null) {
-      sensorPane.update(sensors);
-    }
-  }
-
-  @Override
-  public void actuatorUpdated(int nodeId, Actuator actuator) {
-    if (actuatorPane != null) {
-      actuatorPane.update(actuator);
+      sensorPane.update(sensor);
     }
   }
 
@@ -131,11 +118,13 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
          if(isPositiveNumber(textField.getText())) {
           Sensor sensor;
           if (comboBox.getValue() == "Temperature") {
+
             sensor = DeviceFactory.createTemperatureSensor(node.getId());
           } else {
             sensor = DeviceFactory.createHumiditySensor(node.getId());
           }
           node.addSensors(sensor, Integer.parseInt(textField.getText()));
+          node.start();
            dialog.setResult("");
            dialog.close();
          }
@@ -173,6 +162,7 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
         actuator = DeviceFactory.createFan(node.getId());
       }
       node.addActuator(actuator);
+      node.start();
       dialog.setResult("");
       dialog.close();
     });
@@ -194,6 +184,18 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
       return number >= 1;
     } catch (NumberFormatException e) {
       return false; // The string does not represent a valid integer
+    }
+  }
+
+  /**
+   * An event that is fired every time an actuator changes data.
+   *
+   * @param actuator The actuator that has changed its state
+   */
+  @Override
+  public void actuatorDataUpdated(Actuator actuator) {
+    if (actuatorPane != null) {
+      actuatorPane.update(actuator);
     }
   }
 }

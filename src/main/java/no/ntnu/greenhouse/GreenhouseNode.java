@@ -5,16 +5,15 @@ import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import no.ntnu.listeners.common.ActuatorListener;
-import no.ntnu.listeners.common.CommunicationChannelListener;
+
+import no.ntnu.listeners.common.*;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
-import no.ntnu.listeners.greenhouse.SensorListener;
 import no.ntnu.tools.Logger;
 
 /**
  * Represents one greenhouse node with sensors and actuators.
  */
-public class GreenhouseNode implements ActuatorListener, CommunicationChannelListener {
+public class GreenhouseNode implements CommunicationChannelListener {
   // How often to generate new sensor values, in seconds.
   private static final long SENSING_DELAY = 5000;
   private final int id;
@@ -25,7 +24,8 @@ public class GreenhouseNode implements ActuatorListener, CommunicationChannelLis
 
   private final List<SensorListener> sensorListeners = new LinkedList<>();
   private final List<ActuatorListener> actuatorListeners = new LinkedList<>();
-  private final List<NodeStateListener> stateListeners = new LinkedList<>();
+  private final List<StateListener> stateListeners = new LinkedList<>();
+  private final List<NodeStateListener> nodeStateListeners = new LinkedList<>();
 
   Timer sensorReadingTimer;
 
@@ -92,7 +92,10 @@ public class GreenhouseNode implements ActuatorListener, CommunicationChannelLis
     }
 
     for (int i = 0; i < n; ++i) {
-      sensors.add(template.createClone());
+      Sensor newSensor = template.createClone();
+      newSensor.setListeners(sensorListeners);
+      newSensor.setStateListeners(stateListeners);
+      sensors.add(newSensor);
       Logger.info("Created " + template.getType() + "[" + template.getId() + "] on node " + id);
     }
   }
@@ -103,7 +106,8 @@ public class GreenhouseNode implements ActuatorListener, CommunicationChannelLis
    * @param actuator The actuator to add
    */
   public void addActuator(Actuator actuator) {
-    actuator.setListener(this);
+    actuator.setListeners(actuatorListeners);
+    actuator.setStateListeners(stateListeners);
     actuators.add(actuator);
     Logger.info("Created " + actuator.getType() + "[" + actuator.getId() + "] on node " + id);
   }
@@ -135,7 +139,7 @@ public class GreenhouseNode implements ActuatorListener, CommunicationChannelLis
    *
    * @param listener The listener which will get notified when the state of this node changes
    */
-  public void addStateListener(NodeStateListener listener) {
+  public void addStateListener(StateListener listener) {
     if (!stateListeners.contains(listener)) {
       stateListeners.add(listener);
     }
@@ -241,21 +245,17 @@ public class GreenhouseNode implements ActuatorListener, CommunicationChannelLis
 
   private void notifySensorChanges() {
     for (SensorListener listener : sensorListeners) {
-      listener.sensorsUpdated(sensors);
+      for (Sensor sensor : sensors) {
+        listener.sensorDataUpdated(sensor);
+      }
     }
-  }
-
-  @Override
-  public void actuatorUpdated(int nodeId, Actuator actuator) {
-    actuator.applyImpact(this);
-    notifyActuatorChange(actuator);
   }
 
   private void notifyActuatorChange(Actuator actuator) {
     String onOff = actuator.isOn() ? "ON" : "off";
     Logger.info(" => " + actuator.getType() + " on node " + id + " " + onOff);
     for (ActuatorListener listener : actuatorListeners) {
-      listener.actuatorUpdated(id, actuator);
+      listener.actuatorDataUpdated(actuator);
     }
   }
 
@@ -268,7 +268,7 @@ public class GreenhouseNode implements ActuatorListener, CommunicationChannelLis
    */
   private void notifyStateChanges(boolean isReady) {
     Logger.info("Notify state changes for node " + id);
-    for (NodeStateListener listener : stateListeners) {
+    for (NodeStateListener listener : nodeStateListeners) {
       if (isReady) {
         listener.onNodeReady(this);
       } else {
@@ -337,5 +337,21 @@ public class GreenhouseNode implements ActuatorListener, CommunicationChannelLis
     for (Actuator actuator : actuators) {
       actuator.setOn(on);
     }
+  }
+
+  public void removeActuatorListener(ActuatorListener listener) {
+    actuatorListeners.remove(listener);
+  }
+
+  public void removeSensorListener(ClientHandler subscriber) {
+    sensorListeners.remove(subscriber);
+  }
+
+  public void removeActuator(int actuatorId) {
+    actuators.remove(actuatorId);
+  }
+
+  public void removeSensor(int sensorId) {
+    sensors.remove(sensorId);
   }
 }

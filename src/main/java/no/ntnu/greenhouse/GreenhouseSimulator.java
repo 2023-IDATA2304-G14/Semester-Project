@@ -8,13 +8,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javafx.application.Platform;
-import no.ntnu.gui.greenhouse.MainGreenhouseGuiWindow;
-import no.ntnu.gui.greenhouse.NodeGuiWindow;
-import no.ntnu.listeners.greenhouse.NodeStateListener;
+import no.ntnu.listeners.common.NodeListener;
+import no.ntnu.listeners.common.StateListener;
 import no.ntnu.tools.Logger;
-
-import static javafx.application.Platform.runLater;
 
 /**
  * Application entrypoint - a simulator for a greenhouse.
@@ -25,8 +21,6 @@ public class GreenhouseSimulator {
   private final boolean fake;
   private GreenhouseServer greenhouseServer;
   private ExecutorService serverExecutor;
-
-  private MainGreenhouseGuiWindow guiWindow;
 
 
   /**
@@ -40,9 +34,6 @@ public class GreenhouseSimulator {
     if (!fake) {
       greenhouseServer = new GreenhouseServer(this);
     }
-  }
-  public void setGuiWindow(MainGreenhouseGuiWindow guiWindow) {
-    this.guiWindow = guiWindow;
   }
 
   /**
@@ -69,13 +60,6 @@ public class GreenhouseSimulator {
     GreenhouseNode node = DeviceFactory.createNode(
             temperature, humidity, windows, fans, heaters, name);
     nodes.put(node.getId(), node);
-
-    if (guiWindow != null) {
-      Platform.runLater(() -> {
-        NodeGuiWindow nodeGui = new NodeGuiWindow(node);
-        guiWindow.addNode(node.getId(), nodeGui); // Add the node GUI to the main window
-      });
-    }
   }
   /**
    * Start a simulation of a greenhouse - all the sensor and actuator nodes inside it.
@@ -171,7 +155,7 @@ public class GreenhouseSimulator {
    *
    * @param listener The listener which will receive notifications
    */
-  public void subscribeToLifecycleUpdates(NodeStateListener listener) {
+  public void subscribeToLifecycleUpdates(StateListener listener) {
     for (GreenhouseNode node : nodes.values()) {
       node.addStateListener(listener);
     }

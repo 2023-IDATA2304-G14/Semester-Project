@@ -1,13 +1,13 @@
 package no.ntnu.message;
 
+import no.ntnu.greenhouse.ClientHandler;
 import no.ntnu.greenhouse.GreenhouseSimulator;
-import no.ntnu.subcribers.NodeSubscriber;
 
 public interface NodeSubscriptionCommand extends Message {
     /**
      * Execute the command.
      * GreenhouseSimulator logic to be affected by this command
-     * NodeSubscriber subscriber to be affected by this command
+     * ClientHandler subscriber that sent the command
      */
-    public abstract Message execute(GreenhouseSimulator logic, NodeSubscriber subscriber);
+    public abstract Message execute(GreenhouseSimulator logic, ClientHandler subscriber);
 }
