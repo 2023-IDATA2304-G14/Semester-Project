@@ -1,6 +1,8 @@
 package no.ntnu.run;
 
 import no.ntnu.controlpanel.CommunicationChannel;
+import no.ntnu.controlpanel.ControlPanelChannel;
+import no.ntnu.controlpanel.ControlPanelClient;
 import no.ntnu.controlpanel.ControlPanelLogic;
 import no.ntnu.gui.controlpanel.ControlPanelApplication;
 import no.ntnu.tools.Logger;
@@ -11,6 +13,7 @@ import no.ntnu.tools.Logger;
  * debugger (JavaFX modules not found)
  */
 public class ControlPanelStarter {
+  private CommunicationChannel channel;
 
   /**
    * Entrypoint for the application.
@@ -26,7 +29,7 @@ public class ControlPanelStarter {
 
   private void start() {
     ControlPanelLogic logic = new ControlPanelLogic();
-    CommunicationChannel channel = initiateSocketCommunication(logic);
+    initiateSocketCommunication(logic);
     ControlPanelApplication.startApp(logic, channel);
     // This code is reached only after the GUI-window is closed
     Logger.info("Exiting the control panel application");
@@ -34,14 +37,12 @@ public class ControlPanelStarter {
   }
 
 
-  private CommunicationChannel initiateSocketCommunication(ControlPanelLogic logic) {
-    // TODO - here you initiate TCP/UDP socket communication
-    // You communication class(es) may want to get reference to the logic and call necessary
-    // logic methods when events happen (for example, when sensor data is received)
-    return null;
+  private void initiateSocketCommunication(ControlPanelLogic logic) {
+    channel = new ControlPanelChannel(logic);
+    logic.setCommunicationChannel(channel);
   }
 
   private void stopCommunication() {
-    // TODO - here you stop the TCP/UDP socket communication
+
   }
 }

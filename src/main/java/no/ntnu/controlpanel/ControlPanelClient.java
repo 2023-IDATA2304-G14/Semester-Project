@@ -2,9 +2,7 @@ package no.ntnu.controlpanel;
 
 import no.ntnu.greenhouse.GreenhouseServer;
 import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
-import no.ntnu.message.Command;
-import no.ntnu.message.Message;
-import no.ntnu.message.MessageSerializer;
+import no.ntnu.message.*;
 import no.ntnu.tools.Logger;
 
 import java.io.BufferedReader;
@@ -25,17 +23,16 @@ public class ControlPanelClient {
   private PrintWriter socketWriter;
   private final String host;
   private final int port;
-  //  TODO: Add the correct listener type
-  private final GreenhouseEventListener listener;
+  private final CommunicationChannel channel;
 
   /**
    * Construct a ControlPanel client with default hostname and port.
    *
-   * @param listener The listener of the ControlPanel client
+   * @param channel The channel of the ControlPanel client
    */
 //  TODO: Add the correct listener type
-  public ControlPanelClient(GreenhouseEventListener listener) {
-    this(GreenhouseServer.DEFAULT_HOSTNAME, GreenhouseServer.DEFAULT_PORT, listener);
+  public ControlPanelClient(CommunicationChannel channel) {
+    this(GreenhouseServer.DEFAULT_HOSTNAME, GreenhouseServer.DEFAULT_PORT, channel);
   }
 
   /**
@@ -43,13 +40,13 @@ public class ControlPanelClient {
    *
    * @param host The IP tp the host.
    * @param port The port tp the host.
-   * @param listener The listener of the ControlPanel client.
+   * @param channel The channel of the ControlPanel client.
    * @throws RuntimeException Throws a RuntimeException if there is an error.
    */
-  public ControlPanelClient(String host, int port, GreenhouseEventListener listener) throws RuntimeException {
+  public ControlPanelClient(String host, int port, CommunicationChannel channel) throws RuntimeException {
     this.host = host;
     this.port = port;
-    this.listener = listener;
+    this.channel = channel;
     if (!startClient(host, port)) {
       throw new RuntimeException("Could not connect to server");
     }
@@ -86,7 +83,7 @@ public class ControlPanelClient {
           if (socketReader != null) {
             String serializedMessage = socketReader.readLine();
             message = MessageSerializer.deserialize(serializedMessage);
-            handleMessage(message, listener);
+            handleMessage(message, channel);
           } else {
             message = null;
           }
@@ -104,18 +101,14 @@ public class ControlPanelClient {
    * @param listener the listener that will be notified when a response is received.
    */
 //  TODO: Add handling of the different message types
-  private void handleMessage(Message message, GreenhouseEventListener listener) {
-//        if (message instanceof ChannelCountMessage channelCountMessage) {
-//          listener.handleChannelCount(channelCountMessage.getChannelCount());
-//        } else if (message instanceof TvStateMessage tvStateMessage) {
-//          listener.handleTvState(tvStateMessage.isOn());
-//        } else if (message instanceof CurrentChannelMessage currentChannelMessage) {
-//          listener.handleCurrentChannel(currentChannelMessage.getChannel());
-//        } else if (message instanceof ErrorMessage errorMessage) {
-//          listener.handleErrorMessage(errorMessage.getMessage());
-//        } else {
-    Logger.error("Unhandled message received from server: " + message.getClass().getSimpleName());
-//        }
+  private void handleMessage(Message message, CommunicationChannel listener) {
+        if (message instanceof ActuatorReadingMessage actuatorReadingMessage) {
+          listener.onActuatorReadingChanged(actuatorReadingMessage.nodeId(), actuatorReadingMessage.actuatorId(), actuatorReadingMessage.isOn(), actuatorReadingMessage.strength());
+        } else if (message instanceof ActuatorRemoveMessage actuatorRemoveMessage) {
+          listener.onActuatorRemoved(actuatorRemoveMessage.nodeId(), actuatorRemoveMessage.actuatorId());
+        } else {
+          Logger.error("Unhandled message received from server: " + message.getClass().getSimpleName());
+        }
   }
 
   /**

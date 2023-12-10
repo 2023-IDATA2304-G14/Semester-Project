@@ -62,7 +62,7 @@ public class ControlPanelModel implements GreenhouseEventListener {
      * @param isOn       When true, actuator is on; off when false.
      */
     @Override
-    public void onActuatorReadingChanged(int nodeId, int actuatorId, boolean isOn, int strength) {
+    public void onActuatorDataChanged(int nodeId, int actuatorId, boolean isOn, int strength) {
         // TODO: Implement
     }
 
@@ -79,6 +79,17 @@ public class ControlPanelModel implements GreenhouseEventListener {
      */
     @Override
     public void onActuatorStateChanged(int nodeId, int actuatorId, String type, boolean isOn, int strength, int minStrength, int maxStrength, String unit) {
+//        TODO: Implement
+    }
+
+    /**
+     * This event is fired when an actuator is removed from the greenhouse.
+     *
+     * @param nodeId     ID of the node to which the actuator is attached
+     * @param actuatorId ID of the actuator
+     */
+    @Override
+    public void onActuatorRemoved(int nodeId, int actuatorId) {
 //        TODO: Implement
     }
 }

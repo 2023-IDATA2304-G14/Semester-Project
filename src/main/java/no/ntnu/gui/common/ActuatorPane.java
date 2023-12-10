@@ -100,4 +100,18 @@ public class ActuatorPane extends TitledPane {
     }
   }
 
+  /**
+   * Remove an actuator from the GUI.
+   * @param actuatorId ID of the actuator to remove
+   */
+  public void remove(int actuatorId) {
+    actuatorValue.keySet().stream()
+            .filter(actuator -> actuator.getId() == actuatorId)
+            .findFirst()
+            .ifPresent(actuator -> {
+              actuatorValue.remove(actuator);
+              actuatorActive.remove(actuator);
+            });
+//    TODO: Implement a way of removing the existing labels
+  }
 }

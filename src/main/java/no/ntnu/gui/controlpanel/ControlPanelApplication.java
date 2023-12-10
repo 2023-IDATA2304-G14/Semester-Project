@@ -191,7 +191,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   }
 
   @Override
-  public void onActuatorReadingChanged(int nodeId, int actuatorId, boolean isOn, int strength) {
+  public void onActuatorDataChanged(int nodeId, int actuatorId, boolean isOn, int strength) {
     String state = isOn ? "ON" : "off";
     Logger.info("actuator[" + actuatorId + "] on node " + nodeId + " is " + state);
     ActuatorPane actuatorPane = actuatorPanes.get(nodeId);
@@ -249,6 +249,23 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     actuatorPane.update(actuator);
     } else {
         Logger.error("No actuator section for node " + nodeId);
+    }
+  }
+
+  /**
+   * This event is fired when an actuator is removed from the greenhouse.
+   *
+   * @param nodeId     ID of the node to which the actuator is attached
+   * @param actuatorId ID of the actuator
+   */
+  @Override
+  public void onActuatorRemoved(int nodeId, int actuatorId) {
+    Logger.info("actuator[" + actuatorId + "] on node " + nodeId + " is removed");
+    ActuatorPane actuatorPane = actuatorPanes.get(nodeId);
+    if (actuatorPane != null) {
+      actuatorPane.remove(actuatorId);
+    } else {
+      Logger.error("No actuator section for node " + nodeId);
     }
   }
 

@@ -52,8 +52,9 @@ public interface GreenhouseEventListener {
    * @param nodeId ID of the node to which the actuator is attached
    * @param actuatorId ID of the actuator
    * @param isOn  When true, actuator is on; off when false.
+   * @param strength  Strength of the actuator
    */
-  void onActuatorReadingChanged(int nodeId, int actuatorId, boolean isOn, int strength);
+  void onActuatorDataChanged(int nodeId, int actuatorId, boolean isOn, int strength);
 
   /**
    * This event is fired when an actuator changes state or is added to the greenhouse.
@@ -67,4 +68,11 @@ public interface GreenhouseEventListener {
    * @param unit  Unit of the actuator
    */
     void onActuatorStateChanged(int nodeId, int actuatorId, String type, boolean isOn, int strength, int minStrength, int maxStrength, String unit);
+
+  /**
+   * This event is fired when an actuator is removed from the greenhouse.
+   * @param nodeId ID of the node to which the actuator is attached
+   * @param actuatorId ID of the actuator
+   */
+  void onActuatorRemoved(int nodeId, int actuatorId);
 }

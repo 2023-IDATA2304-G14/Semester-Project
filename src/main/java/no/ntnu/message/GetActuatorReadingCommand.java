@@ -1,18 +1,22 @@
 package no.ntnu.message;
 
-/**
- * Message that is sent when an actuator is updated or added.
- * @param nodeId ID of the node on which the actuator is placed
- * @param actuatorId ID of the actuator that has been updated
- */
-public record ActuatorUpdatedMessage(int nodeId, int actuatorId) implements Message {
-    private static final String PREFIX = "aU";
+import no.ntnu.greenhouse.Actuator;
+import no.ntnu.greenhouse.GreenhouseSimulator;
 
-    public ActuatorUpdatedMessage {
-        if (nodeId < 0 || actuatorId < 0) {
-            throw new IllegalArgumentException("Node ID and Actuator ID must be non-negative.");
-        }
-    }
+public record GetActuatorReadingCommand(int nodeId, int actuatorId) implements Command {
+    public static final String PREFIX = "aG";
+
+  /**
+   * Execute the command.
+   *
+   * @param logic The GreenhouseSimulator logic to be affected by this command
+   * @return The message which contains the output of the command
+   */
+  @Override
+  public Message execute(GreenhouseSimulator logic) {
+    Actuator actuator = logic.getNode(nodeId).getActuator(actuatorId);
+    return new ActuatorReadingMessage(nodeId, actuatorId, actuator.isOn(), actuator.getStrength());
+  }
 
     @Override
     public String getPrefix() {
@@ -34,7 +38,7 @@ public record ActuatorUpdatedMessage(int nodeId, int actuatorId) implements Mess
         }
         MessageParameterizer parameterizer = new MessageParameterizer(PREFIX).deparameterize(message);
 
-        return new ActuatorUpdatedMessage(
+        return new GetActuatorReadingCommand(
                 Integer.parseInt(parameterizer.getNodeId()),
                 Integer.parseInt(parameterizer.getItemId())
         );
