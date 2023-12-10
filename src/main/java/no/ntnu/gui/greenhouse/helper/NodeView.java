@@ -2,6 +2,8 @@ package no.ntnu.gui.greenhouse.helper;
 
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -74,6 +76,12 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
     });
     addActuator.setOnAction(e -> {
       ShowActuatorDialog();
+
+      //CheckBox checkBox = (CheckBox) content.lookup("#checkBoxActuator");
+      //if (checkBox != null) {
+      //  System.out.println("Found check");
+      //  checkBox.setDisable(true);
+      //}
     });
   }
 
@@ -118,11 +126,13 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
          if(isPositiveNumber(textField.getText())) {
           Sensor sensor;
           if (comboBox.getValue() == "Temperature") {
+
             sensor = DeviceFactory.createTemperatureSensor(node.getId());
           } else {
             sensor = DeviceFactory.createHumiditySensor(node.getId());
           }
           node.addSensors(sensor, Integer.parseInt(textField.getText()));
+          node.start();
            dialog.setResult("");
            dialog.close();
          }
@@ -160,6 +170,7 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
         actuator = DeviceFactory.createFan(node.getId());
       }
       node.addActuator(actuator);
+      node.start();
       dialog.setResult("");
       dialog.close();
     });

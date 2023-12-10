@@ -4,9 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
@@ -44,6 +42,7 @@ public class GreenHouseView {
 
     Button newPsk = new Button("Generate New PSK Key");
     Label label = new Label("PSK key");
+    Button setPort = new Button("Set Port Number");
 
     hBox.setStyle("-fx-border-color: black; -fx-border-width: 0 0 1 0;");
 
@@ -51,13 +50,17 @@ public class GreenHouseView {
     left.setSpacing(10);
     left.setPadding(new Insets(10,10,10,10));
 
-    HBox right = new HBox(newPsk, label);
+    HBox right = new HBox(newPsk, label, setPort);
     right.setSpacing(10);
     right.setPadding(new Insets(10,10,10,10));
     right.setAlignment(Pos.CENTER_RIGHT);
     hBox.getChildren().addAll(left, right);
 
     newPsk.setOnAction(e -> label.setText(controller.generatePSKKey()));
+
+    setPort.setOnAction(e -> {
+      showCustomDialog();
+    });
 
     button.setOnAction(e -> {
       System.out.println("Add Node");
@@ -118,6 +121,39 @@ public class GreenHouseView {
 
   public GreenHouseModel getModel(){
     return model;
+  }
+
+  private void showCustomDialog() {
+    Dialog<String> dialog = new Dialog<>();
+    dialog.setTitle("SEt Port Number");
+
+    VBox dialogLayout = new VBox(10);
+
+    Label label = new Label("Enter Port Number:");
+    TextField textField = new TextField();
+    Button saveButton = new Button("Update");
+
+    saveButton.setOnAction(e -> {
+      if(isValidPort(textField.getText())){
+        String enteredText = textField.getText();
+        model.setPort(textField.getText());
+        dialog.setResult("");
+        dialog.close();
+      }
+    });
+
+    dialogLayout.getChildren().addAll(label, textField, saveButton);
+    dialog.getDialogPane().setContent(dialogLayout);
+    dialog.showAndWait();
+  }
+
+  private boolean isValidPort(String portText) {
+    try {
+      int port = Integer.parseInt(portText);
+      return port > 0 && port <= 65535;
+    } catch (NumberFormatException e) {
+      return false;
+    }
   }
 
 }

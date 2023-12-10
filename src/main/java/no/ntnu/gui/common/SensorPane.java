@@ -7,8 +7,10 @@ import java.util.Map;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import no.ntnu.greenhouse.Sensor;
 import no.ntnu.greenhouse.SensorCollection;
@@ -25,7 +27,9 @@ public class SensorPane extends TitledPane {
   private void initialize(SensorCollection sensors) {
     setText("Sensors");
     sensors.forEach(sensor ->{
-        contentBox.getChildren().add(createAndRememberSensorLabel(sensor));
+      HBox hBox = new HBox();
+      hBox.getChildren().addAll(new CheckBox(), createAndRememberSensorLabel(sensor));
+        contentBox.getChildren().add(hBox);
     });
     setContent(contentBox);
   }
@@ -105,7 +109,12 @@ public class SensorPane extends TitledPane {
       Platform.runLater(() -> sensorValues.get(sensor).set(generateSensorText(sensor.getReading())));
     } else {
       Logger.info("Adding sensor[" + sensor.getId() + "]");
-      Platform.runLater(() -> contentBox.getChildren().add(createAndRememberSensorLabel(sensor)));
+      Platform.runLater(() -> {
+        HBox hBox = new HBox();
+        hBox.getChildren().addAll(new CheckBox(), createAndRememberSensorLabel(sensor));
+        contentBox.getChildren().add(hBox);
+        //contentBox.getChildren().add(createAndRememberSensorLabel(sensor));
+      });
     }
   }
 
