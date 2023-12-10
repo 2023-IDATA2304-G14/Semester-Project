@@ -7,6 +7,14 @@ import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
 public class ControlPanelModel implements GreenhouseEventListener {
 
     /**
+     * Test class to
+     */
+    public void configure(){
+
+    }
+
+
+    /**
      * This event is fired when a new node is added to the greenhouse.
      *
      * @param nodeInfo Information about the added node

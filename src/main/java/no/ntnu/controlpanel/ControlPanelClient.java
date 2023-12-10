@@ -24,6 +24,7 @@ public class ControlPanelClient {
   private final String host;
   private final int port;
   private final GreenhouseEventListener logic;
+  private String decryptionKey;
 
   /**
    * Construct a ControlPanel client with default hostname and port.
@@ -33,6 +34,11 @@ public class ControlPanelClient {
 //  TODO: Add the correct listener type
   public ControlPanelClient(GreenhouseEventListener logic) {
     this(GreenhouseServer.DEFAULT_HOSTNAME, GreenhouseServer.DEFAULT_PORT, logic);
+  }
+
+  public void setDecryptionKey(String decryptionKey) {
+    this.decryptionKey = decryptionKey;
+    System.out.println(decryptionKey);
   }
 
   /**

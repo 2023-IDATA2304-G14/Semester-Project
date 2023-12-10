@@ -19,6 +19,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import no.ntnu.controlpanel.CommunicationChannel;
+import no.ntnu.controlpanel.ControlPanelChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
 import no.ntnu.controlpanel.GreenhouseNodeInfo;
 import no.ntnu.greenhouse.Actuator;
@@ -45,6 +46,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   private final Map<Integer, SensorPane> sensorPanes = new HashMap<>();
   private final Map<Integer, ActuatorPane> actuatorPanes = new HashMap<>();
   private final Map<Integer, GreenhouseNodeInfo> nodeInfos = new HashMap<>();
+  private static ControlPanelModel controlPanelModel;
 
   //Daniel Shenanigans
   private String passPhrase;
@@ -62,18 +64,39 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     if (logic == null) {
       throw new IllegalArgumentException("Control panel logic can't be null");
     }
+    controlPanelModel = new ControlPanelModel();
     ControlPanelApplication.logic = logic;
     ControlPanelApplication.channel = channel;
+    Logger.info("Running control panel GUI...");
+  }
+
+
+  public static void newStart(){
     Logger.info("Running control panel GUI...");
     launch();
   }
 
+  private void setup(String ip, int port){
+    System.out.println("Ready");
+    ControlPanelLogic logic = new ControlPanelLogic();
+    initiateSocketCommunication(logic, ip, port);
+    ControlPanelApplication.startApp(logic, channel);
+  }
+
+
+  private void initiateSocketCommunication(ControlPanelLogic logic, String host, int port) {
+    channel = new ControlPanelChannel(logic, host, port);
+    logic.setCommunicationChannel(channel);
+  }
+
+
+
   @Override
   public void start(Stage stage) {
-    if (channel == null) {
-      throw new IllegalStateException(
-          "No communication channel. See the README on how to use fake event spawner!");
-    }
+    //if (channel == null) {
+    //  throw new IllegalStateException(
+    //      "No communication channel. See the README on how to use fake event spawner!");
+   // }
 
     stage.setTitle("Control Panel");
 
@@ -85,19 +108,25 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     mainLayout.setCenter(center());
     mainLayout.setRight(controlArea);
 
+    setPort();
+
     mainScene = new Scene(mainLayout, WIDTH, HEIGHT);
     stage.setScene(mainScene);
 
 
     stage.show();
 
+
+
     logic.addListener(this);
     logic.setCommunicationChannelListener(this);
+/**
+
+    System.out.println("Test");
     if (!channel.open()) {
       logic.onCommunicationChannelClosed();
     }
-
-
+*/
   }
 
   private Node top(){
@@ -381,27 +410,43 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     dialog.getDialogPane().setContent(dialogLayout);
 
     dialog.showAndWait().ifPresent(result -> {
+
       System.out.println("Entered Text: " + result);
     });
   }
 
-  private void testData(){
-    GreenhouseNodeInfo greenhouseNodeInfo1 = new GreenhouseNodeInfo(1);
-    GreenhouseNodeInfo greenhouseNodeInfo2 = new GreenhouseNodeInfo(2);
-    GreenhouseNodeInfo greenhouseNodeInfo3 = new GreenhouseNodeInfo(3);
-    GreenhouseNodeInfo greenhouseNodeInfo4 = new GreenhouseNodeInfo(4);
-    GreenhouseNodeInfo greenhouseNodeInfo5 = new GreenhouseNodeInfo(5);
-    GreenhouseNodeInfo greenhouseNodeInfo6 = new GreenhouseNodeInfo(6);
+  private void setPort() {
+    Dialog<String> dialog = new Dialog<>();
+    dialog.setTitle("SEt Port Number");
 
-    greenhouseNodeInfo1.addActuator(new Actuator(1, 1, "door", 1, 1, 0, ""));
-    greenhouseNodeInfo1.addActuator(new Actuator(1, 2, "door", 1, 1, 0, ""));
+    VBox dialogLayout = new VBox(10);
 
-    addNodeDisplay(greenhouseNodeInfo1);
-    addNodeDisplay(greenhouseNodeInfo2);
-    addNodeDisplay(greenhouseNodeInfo3);
-    addNodeDisplay(greenhouseNodeInfo4);
-    addNodeDisplay(greenhouseNodeInfo5);
-    addNodeDisplay(greenhouseNodeInfo6);
+    Label label = new Label("Enter Port Number:");
+    TextField textField = new TextField();
+    Button saveButton = new Button("Update");
+
+    saveButton.setOnAction(e -> {
+      if(isValidPort(textField.getText())){
+
+        System.out.println("New Port: " + textField.getText());
+        setup("localhost", Integer.parseInt(textField.getText()));
+        dialog.setResult("");
+        dialog.close();
+      }
+    });
+
+    dialogLayout.getChildren().addAll(label, textField, saveButton);
+    dialog.getDialogPane().setContent(dialogLayout);
+    dialog.showAndWait();
+  }
+
+  private boolean isValidPort(String portText) {
+    try {
+      int port = Integer.parseInt(portText);
+      return port > 0 && port <= 65535;
+    } catch (NumberFormatException e) {
+      return false;
+    }
   }
 
 }
