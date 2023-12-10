@@ -1,15 +1,25 @@
 package no.ntnu.controlpanel;
 
+import no.ntnu.encryption.ChangeKey;
+import no.ntnu.encryption.SymmetricEncryption;
 import no.ntnu.greenhouse.GreenhouseServer;
 import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
 import no.ntnu.message.*;
 import no.ntnu.tools.Logger;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.InvalidParameterSpecException;
 
 /**
  * Handling connection to the server.
@@ -88,16 +98,34 @@ public class ControlPanelClient {
       do {
         try {
           if (socketReader != null) {
-            String serializedMessage = socketReader.readLine();
+            byte[] serializedMessage = socketReader.readLine().getBytes();
+
 //            TODO: implement decryption
-//            String decryptedMessage = SymmetricEncryption.decryptMessage(serializedMessage, );
-            message = MessageSerializer.deserialize(serializedMessage);
+            String encryptionKey = ChangeKey.getInstance().getKey();
+            String decryptedMessage = SymmetricEncryption.decryptMessage(serializedMessage, encryptionKey);
+            message = MessageSerializer.deserialize(decryptedMessage);
             handleMessage(message);
           } else {
             message = null;
           }
         } catch (IOException e) {
           Logger.error("Error reading from server: " + e.getMessage());
+        } catch (InvalidAlgorithmParameterException e) {
+          throw new RuntimeException(e);
+        } catch (IllegalBlockSizeException e) {
+          throw new RuntimeException(e);
+        } catch (NoSuchPaddingException e) {
+          throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
+          throw new RuntimeException(e);
+        } catch (InvalidKeySpecException e) {
+          throw new RuntimeException(e);
+        } catch (BadPaddingException e) {
+          throw new RuntimeException(e);
+        } catch (InvalidParameterSpecException e) {
+          throw new RuntimeException(e);
+        } catch (InvalidKeyException e) {
+          throw new RuntimeException(e);
         }
       } while (message != null);
     }).start();
@@ -152,10 +180,9 @@ public class ControlPanelClient {
       try {
         String serializedCommand = MessageSerializer.serialize(command);
 //        TODO: implement encryption
-//        EncryptionData.getInstance().setEncryptionKey("tefoipjoa");
-//        String encryptionKey = EncryptionData.getInstance().getEncryptionKey();
-//        Byte[] encryptedMessage = SymmetricEncryption.encryptMessage(serializedCommand, );
-        socketWriter.println(serializedCommand);
+        String encryptionKey = ChangeKey.getInstance().getKey();
+        byte[] encryptedMessage = SymmetricEncryption.encryptMessage(serializedCommand, encryptionKey);
+        socketWriter.println(encryptedMessage);
         return true;
       } catch (Exception e) {
         Logger.error("Error sending command to server: " + e.getMessage());

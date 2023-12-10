@@ -110,12 +110,14 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
     setPort();
 
+
+
     mainScene = new Scene(mainLayout, WIDTH, HEIGHT);
     stage.setScene(mainScene);
 
 
     stage.show();
-
+    channel.getNodes();
     logic.addListener(this);
     logic.setCommunicationChannelListener(this);
   }
@@ -408,25 +410,27 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
   private void setPort() {
     Dialog<String> dialog = new Dialog<>();
-    dialog.setTitle("SEt Port Number");
+    dialog.setTitle("Connect to Greenhouse Server");
 
     VBox dialogLayout = new VBox(10);
 
-    Label label = new Label("Enter Port Number:");
-    TextField textField = new TextField();
+    Label enterIp = new Label("Enter Server IP Number:");
+    TextField enterIpField = new TextField("localhost");
+    Label enterPort = new Label("Enter Server Port Number:");
+    TextField enterPortField = new TextField("1238");
+
     Button saveButton = new Button("Update");
 
     saveButton.setOnAction(e -> {
-      if(isValidPort(textField.getText())){
+      if(isValidPort(enterPortField.getText())){
 
-        System.out.println("New Port: " + textField.getText());
-        setup("localhost", Integer.parseInt(textField.getText()));
+        setup(enterIpField.getText(), Integer.parseInt(enterPortField.getText()));
         dialog.setResult("");
         dialog.close();
       }
     });
 
-    dialogLayout.getChildren().addAll(label, textField, saveButton);
+    dialogLayout.getChildren().addAll(enterIp, enterIpField, enterPort, enterPortField, saveButton);
     dialog.getDialogPane().setContent(dialogLayout);
     dialog.showAndWait();
   }
