@@ -59,6 +59,14 @@ public class GreenHouseView {
 
     newPsk.setOnAction(e -> label.setText(controller.generatePSKKey()));
 
+    button.setOnAction(e -> {
+      System.out.println("Add Node");
+      GreenhouseNode node = DeviceFactory.createNode(
+              0,0,0,0,0,  "TestNode");
+      addNode(node);
+
+    });
+
     label.setOnMouseClicked(event -> {
       if (event.getButton() == MouseButton.SECONDARY) {
         Clipboard clipboard = Clipboard.getSystemClipboard();

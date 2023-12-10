@@ -1,11 +1,9 @@
 package no.ntnu.gui.greenhouse.helper;
 
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TitledPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import no.ntnu.greenhouse.*;
 import no.ntnu.gui.common.ActuatorPane;
@@ -70,7 +68,15 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
 
     titledPane = new TitledPane("Node ID: " + node.getId(), content);
     titledPane.setMaxHeight(200); // Limit the height of the TitledPane
+
+    addSensor.setOnAction(e -> {
+      showSensorDialog();
+    });
+    addActuator.setOnAction(e -> {
+      ShowActuatorDialog();
+    });
   }
+
   public TitledPane getTitledPane() {
     return titledPane;
   }
@@ -93,4 +99,88 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
     }
   }
 
+  private void showSensorDialog() {
+
+    Dialog<String> dialog = new Dialog<>();
+    dialog.setTitle("Add sensor");
+    ComboBox<String> comboBox = new ComboBox<>();
+    HBox dialogLayout = new HBox(10);
+
+    comboBox.getItems().addAll("Temperature", "Humidity");
+    comboBox.setValue("Temperature");
+
+    Label label = new Label("Amount:");
+    TextField textField = new TextField();
+    Button saveButton = new Button("Add Sensor");
+    Button close = new Button("Exit");
+
+    saveButton.setOnAction(e -> {
+         if(isPositiveNumber(textField.getText())) {
+          Sensor sensor;
+          if (comboBox.getValue() == "Temperature") {
+            sensor = DeviceFactory.createTemperatureSensor(node.getId());
+          } else {
+            sensor = DeviceFactory.createHumiditySensor(node.getId());
+          }
+          node.addSensors(sensor, Integer.parseInt(textField.getText()));
+           dialog.setResult("");
+           dialog.close();
+         }
+    });
+
+    close.setOnAction(e -> {
+      dialog.setResult("");
+      dialog.close();
+    });
+
+    dialogLayout.getChildren().addAll(comboBox, label, textField, saveButton, close);
+    dialog.getDialogPane().setContent(dialogLayout);
+    dialog.showAndWait();
+  }
+
+  private void ShowActuatorDialog(){
+    Dialog<String> dialog = new Dialog<>();
+    HBox dialogLayout = new HBox(10);
+    dialog.setTitle("Add Actuator");
+    ComboBox<String> comboBox = new ComboBox<>();
+
+    comboBox.getItems().addAll("Window", "Fan", "Heater");
+    comboBox.setValue("Window");
+
+    Button saveButton = new Button("Add");
+    Button close = new Button("Exit");
+
+    saveButton.setOnAction(e -> {
+      Actuator actuator;
+      if (comboBox.getValue() == "Window") {
+        actuator = DeviceFactory.createWindow(node.getId());
+      } else if (comboBox.getValue() == "Heater") {
+        actuator = DeviceFactory.createHeater(node.getId());
+      } else {
+        actuator = DeviceFactory.createFan(node.getId());
+      }
+      node.addActuator(actuator);
+      dialog.setResult("");
+      dialog.close();
+    });
+
+    close.setOnAction(e -> {
+      dialog.setResult("");
+      dialog.close();
+    });
+
+    dialogLayout.getChildren().addAll(comboBox, saveButton, close);
+    dialog.getDialogPane().setContent(dialogLayout);
+    dialog.showAndWait();
+  }
+
+
+  public static boolean isPositiveNumber(String str) {
+    try {
+      int number = Integer.parseInt(str);
+      return number >= 1;
+    } catch (NumberFormatException e) {
+      return false; // The string does not represent a valid integer
+    }
+  }
 }
