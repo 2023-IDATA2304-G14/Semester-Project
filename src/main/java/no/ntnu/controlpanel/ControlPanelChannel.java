@@ -32,7 +32,7 @@ public class ControlPanelChannel implements CommunicationChannel {
   /**
    * Request a list of all actuators on a node.
    *
-   * @param nodeId
+   * @param nodeId The ID of the node to which the actuator is attached
    */
   @Override
   public void getActuators(int nodeId) {
@@ -42,7 +42,7 @@ public class ControlPanelChannel implements CommunicationChannel {
   /**
    * Request a list of all sensors on a node.
    *
-   * @param nodeId
+   * @param nodeId The ID of the node to which the sensor is attached
    */
   @Override
   public void getSensors(int nodeId) {

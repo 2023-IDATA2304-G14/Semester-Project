@@ -194,7 +194,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
    *
    * @param nodeId   ID of the node to which the sensor is attached
    * @param sensorId ID of the sensor
-   * @param type
+   * @param type     The type of the sensor
    * @param value    The new value of the sensor
    * @param min      The minimum value of the sensor
    * @param max      The maximum value of the sensor
