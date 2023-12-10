@@ -146,6 +146,8 @@ public class ControlPanelClient {
       try {
         String serializedCommand = MessageSerializer.serialize(command);
 //        TODO: implement encryption
+//        EncryptionData.getInstance().setEncryptionKey("tefoipjoa");
+//        String encryptionKey = EncryptionData.getInstance().getEncryptionKey();
 //        Byte[] encryptedMessage = SymmetricEncryption.encryptMessage(serializedCommand, );
         socketWriter.println(serializedCommand);
         return true;
