@@ -83,6 +83,8 @@ public class ControlPanelClient {
         try {
           if (socketReader != null) {
             String serializedMessage = socketReader.readLine();
+//            TODO: implement decryption
+//            String decryptedMessage = SymmetricEncryption.decryptMessage(serializedMessage, );
             message = MessageSerializer.deserialize(serializedMessage);
             handleMessage(message);
           } else {
@@ -143,6 +145,8 @@ public class ControlPanelClient {
     if (socketWriter != null && socketReader != null) {
       try {
         String serializedCommand = MessageSerializer.serialize(command);
+//        TODO: implement encryption
+//        Byte[] encryptedMessage = SymmetricEncryption.encryptMessage(serializedCommand, );
         socketWriter.println(serializedCommand);
         return true;
       } catch (Exception e) {

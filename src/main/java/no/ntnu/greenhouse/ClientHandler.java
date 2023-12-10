@@ -1,5 +1,6 @@
 package no.ntnu.greenhouse;
 
+import no.ntnu.encryption.SymmetricEncryption;
 import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.common.NodeListener;
 import no.ntnu.listeners.common.SensorListener;
@@ -86,6 +87,8 @@ public class ClientHandler extends Thread implements ActuatorListener, SensorLis
       if (rawClientRequest == null) {
         return null;
       }
+//      TODO: implement decryption
+//      String decryptedMessage = SymmetricEncryption.decryptMessage(rawClientRequest, );
       clientCommand = MessageSerializer.deserialize(rawClientRequest);
       if (!(clientCommand instanceof Command) && !(clientCommand instanceof NodeSubscriptionCommand)) {
         Logger.error("Received invalid request from client: " + clientCommand);
@@ -103,6 +106,8 @@ public class ClientHandler extends Thread implements ActuatorListener, SensorLis
    */
   public void sendMessageToClient(Message message) {
     String serializedMessage = MessageSerializer.serialize(message);
+//    TODO: implement encryption
+//    Byte[] encryptedMessage = SymmetricEncryption.encryptMessage(serializedMessage, );
     socketWriter.println(serializedMessage);
   }
 

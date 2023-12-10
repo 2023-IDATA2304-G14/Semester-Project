@@ -27,7 +27,7 @@ import java.util.Arrays;
  * @author Daniel Neset
  * @version 08.12.2023
  */
-class SymmetricEncryption {
+public class SymmetricEncryption {
 
   /**
    * This class should not be instantiated.
