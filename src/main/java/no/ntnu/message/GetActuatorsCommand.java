@@ -38,9 +38,9 @@ public record GetActuatorsCommand(int nodeId) implements ListCommand {
    * @return The message which contains the output of the command
    */
   @Override
-  public List<SensorActuatorStateMessage> execute(GreenhouseSimulator logic) {
+  public List<StateMessage> execute(GreenhouseSimulator logic) {
     return logic.getNode(nodeId).getActuators().stream()
-        .map(actuator -> (SensorActuatorStateMessage) new ActuatorStateMessage(nodeId, actuator.getId(), actuator.isOn(), actuator.getStrength(), actuator.getMinStrength(), actuator.getMaxStrength(), actuator.getUnit(), actuator.getType()))
+        .map(actuator -> (StateMessage) new ActuatorStateMessage(nodeId, actuator.getId(), actuator.isOn(), actuator.getStrength(), actuator.getMinStrength(), actuator.getMaxStrength(), actuator.getUnit(), actuator.getType()))
         .toList();
 
   }

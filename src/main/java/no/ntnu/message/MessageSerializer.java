@@ -18,16 +18,24 @@ public class MessageSerializer {
       throw new IllegalArgumentException("Message cannot be null");
     }
     String prefix = MessageParameterizer.getPrefix(message);
-// TODO: Add all message classes here
     Set<Class<? extends Message>> messageClasses = Set.of(
         ActuatorDataMessage.class,
         ActuatorRemovedMessage.class,
+        ActuatorStateMessage.class,
         ErrorMessage.class,
+        GetActuatorDataCommand.class,
+        GetActuatorsCommand.class,
+        GetActuatorStateCommand.class,
+        GetNodesCommand.class,
         GetSensorDataCommand.class,
+        GetSensorsCommand.class,
+        GetSensorStateCommand.class,
         NodeRemovedMessage.class,
         NodeStateMessage.class,
         SensorDataMessage.class,
         SensorRemovedMessage.class,
+        SensorStateMessage.class,
+        SetActuatorCommand.class,
         SubscribeNodeCommand.class,
         SubscribeNodeMessage.class,
         UnknownMessage.class,

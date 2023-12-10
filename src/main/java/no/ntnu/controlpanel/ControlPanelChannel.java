@@ -50,6 +50,14 @@ public class ControlPanelChannel implements CommunicationChannel {
   }
 
   /**
+   * Request a list of all nodes.
+   */
+  @Override
+  public void getNodes() {
+    client.sendCommand(new GetNodesCommand());
+  }
+
+  /**
    * Get the actuator data for a given actuator.
    *
    * @param nodeId     The ID of the node to which the actuator is attached
@@ -112,7 +120,7 @@ public class ControlPanelChannel implements CommunicationChannel {
    */
   @Override
   public void unsubscribeToNode(int nodeId) {
-
+    client.sendCommand(new UnsubscribeNodeCommand(nodeId));
   }
 
   /**

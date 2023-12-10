@@ -27,6 +27,11 @@ public interface CommunicationChannel {
   void getSensors(int nodeId);
 
   /**
+   * Request a list of all nodes.
+   */
+  void getNodes();
+
+  /**
    * Get the actuator data for a given actuator.
    * @param nodeId The ID of the node to which the actuator is attached
    * @param actuatorId The ID of the actuator
