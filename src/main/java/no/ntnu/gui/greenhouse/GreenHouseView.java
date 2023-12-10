@@ -1,5 +1,6 @@
 package no.ntnu.gui.greenhouse;
 
+// Import statements
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -19,54 +20,52 @@ import no.ntnu.gui.common.SensorPane;
 import no.ntnu.gui.greenhouse.helper.NodeView;
 
 public class GreenHouseView {
+  // Model and Controller for MVC pattern
   private GreenHouseModel model;
   private GreenHouseController controller;
+  // Layout to arrange node views
   private FlowPane flowPane = new FlowPane();
 
-  private ActuatorPane actuatorPane;
-  private SensorPane sensorPane;
-  private GreenhouseNode node = null;
-
+  // Constructor initializing the model, controller, and GUI
   public GreenHouseView(Stage stage){
     model = new GreenHouseModel();
     controller = new GreenHouseController(model, this);
     initialize(stage);
   }
 
+  // Creates the top part of the GUI with buttons and labels
   private Node top(){
     HBox hBox = new HBox();
     Button button = new Button("Add New Node");
-
     Button newPsk = new Button("Generate New PSK Key");
     Label label = new Label("PSK key");
     Button setPort = new Button("Set Port Number");
 
+    // Styling for the top HBox
     hBox.setStyle("-fx-border-color: black; -fx-border-width: 0 0 1 0;");
 
+    // Left part of the top section
     HBox left = new HBox(button);
     left.setSpacing(10);
     left.setPadding(new Insets(10,10,10,10));
 
+    // Right part of the top section
     HBox right = new HBox(newPsk, label, setPort);
     right.setSpacing(10);
     right.setPadding(new Insets(10,10,10,10));
     right.setAlignment(Pos.CENTER_RIGHT);
     hBox.getChildren().addAll(left, right);
 
+    // Event handlers for buttons
     newPsk.setOnAction(e -> label.setText(controller.generatePSKKey()));
-
-    setPort.setOnAction(e -> {
-      showCustomDialog();
-    });
-
+    setPort.setOnAction(e -> showCustomDialog());
     button.setOnAction(e -> {
       System.out.println("Add Node");
-      GreenhouseNode node = DeviceFactory.createNode(
-              0,0,0,0,0,  "TestNode");
+      GreenhouseNode node = DeviceFactory.createNode(0,0,0,0,0, "TestNode");
       addNode(node);
-
     });
 
+    // Copy PSK key to clipboard on right-click
     label.setOnMouseClicked(event -> {
       if (event.getButton() == MouseButton.SECONDARY) {
         Clipboard clipboard = Clipboard.getSystemClipboard();
@@ -79,12 +78,13 @@ public class GreenHouseView {
     return hBox;
   }
 
+  // Creates the center part of the GUI with a scrollable pane
   private Node center(){
-
     ScrollPane scrollPane = new ScrollPane();
     scrollPane.setContent(flowPane);
     scrollPane.setFitToWidth(true);
 
+    // Styling for the flowPane
     flowPane.setHgap(10);
     flowPane.setVgap(10);
     flowPane.setPadding(new Insets(10, 10, 10, 10));
@@ -92,47 +92,47 @@ public class GreenHouseView {
     return scrollPane;
   }
 
+  // Initializes the stage and sets the scene
   private void initialize(Stage stage){
     stage.setTitle("GreenHouse");
     BorderPane root = new BorderPane();
-    Button button = new Button("Hei");
     root.setCenter(center());
     root.setTop(top());
     Scene scene = new Scene(root, 1200, 600);
     stage.setScene(scene);
     stage.show();
-
   }
 
-
+  // Adds a new node to the flowPane
   public void addNode(GreenhouseNode node){
     NodeView nodeView = new NodeView(node);
     flowPane.getChildren().add(nodeView.getPane());
   }
 
-
+  // Sets the simulator with a specific node
   public void setSimulator(GreenhouseNode node){
     System.out.println(node.getId());
     addNode(node);
   }
 
+  // Getter for the model
   public GreenHouseModel getModel(){
     return model;
   }
 
+  // Shows a custom dialog for setting the port number
   private void showCustomDialog() {
     Dialog<String> dialog = new Dialog<>();
-    dialog.setTitle("SEt Port Number");
+    dialog.setTitle("Set Port Number");
 
     VBox dialogLayout = new VBox(10);
-
     Label label = new Label("Enter Port Number:");
     TextField textField = new TextField();
     Button saveButton = new Button("Update");
 
+    // Event handler for the save button
     saveButton.setOnAction(e -> {
       if(isValidPort(textField.getText())){
-        String enteredText = textField.getText();
         model.setPort(textField.getText());
         dialog.setResult("");
         dialog.close();
@@ -144,6 +144,7 @@ public class GreenHouseView {
     dialog.showAndWait();
   }
 
+  // Validates the entered port number
   private boolean isValidPort(String portText) {
     try {
       int port = Integer.parseInt(portText);
@@ -152,5 +153,4 @@ public class GreenHouseView {
       return false;
     }
   }
-
 }
