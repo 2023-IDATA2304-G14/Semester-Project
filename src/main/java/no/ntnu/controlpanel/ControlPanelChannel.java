@@ -124,16 +124,6 @@ public class ControlPanelChannel implements CommunicationChannel {
   }
 
   /**
-   * Open the communication channel.
-   *
-   * @return True when the communication channel is successfully opened, false on error
-   */
-  @Override
-  public boolean open() {
-    return false;
-  }
-
-  /**
    * Close the communication channel.
    */
   @Override
