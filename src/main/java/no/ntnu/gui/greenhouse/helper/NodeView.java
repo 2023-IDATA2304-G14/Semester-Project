@@ -1,10 +1,12 @@
 package no.ntnu.gui.greenhouse.helper;
 
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import no.ntnu.greenhouse.*;
 import no.ntnu.gui.common.ActuatorPane;
@@ -70,6 +72,10 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
     titledPane = new TitledPane("Node ID: " + node.getId(), content);
     titledPane.setMaxHeight(200); // Limit the height of the TitledPane
 
+    removeNode.setOnAction(e -> {
+      showNodeDialog();
+    });
+
     addSensor.setOnAction(e -> {
       showSensorDialog();
     });
@@ -97,6 +103,28 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
     if (sensorPane != null) {
       sensorPane.update(sensor);
     }
+  }
+
+  private void showNodeDialog() {
+
+    Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+    confirmationAlert.setTitle("Confirm Node Removal");
+    confirmationAlert.setHeaderText("Remove Node");
+    confirmationAlert.setContentText("Are you sure you want to remove node " + node.getId() + "?");
+
+    confirmationAlert.showAndWait().ifPresent(response -> {
+      if (response == ButtonType.OK) {
+        Platform.runLater(() -> {
+          Node parent = titledPane.getParent();
+          if (parent instanceof Pane) {
+            ((Pane) parent).getChildren().remove(titledPane);
+            System.out.println("Node " + node.getId() + " is removed");
+          } else {
+            System.err.println("Parent is not a Pane. NodeView removal failed.");
+          }
+        });
+      }
+    });
   }
 
   private void showSensorDialog() {
