@@ -14,7 +14,6 @@ import no.ntnu.tools.Logger;
 public class GreenhouseApplicationMVC extends Application implements NodeStateListener, NodeListener {
 
   private static GreenhouseSimulator simulator;
-  private MainGreenhouseGuiWindow mainWindow = new MainGreenhouseGuiWindow();
 
   GreenHouseView greenHouseView;
   private GreenHouseModel model;
@@ -59,7 +58,7 @@ public class GreenhouseApplicationMVC extends Application implements NodeStateLi
   public void onNodeStopped(GreenhouseNode node) {
     Logger.info("Node " + node.getId() + " has stopped");
     Platform.runLater(() -> {
-      mainWindow.removeNode(node.getId()); // Remove the node GUI from the main window
+      //mainWindow.removeNode(node.getId()); // Remove the node GUI from the main window
     });
   }
 

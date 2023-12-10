@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -96,15 +97,15 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
       logic.onCommunicationChannelClosed();
     }
 
-    //testData();
 
   }
 
   private Node top(){
     Button openPopupButton = new Button("Set PSK key");
     openPopupButton.setOnAction(e -> showCustomDialog());
-    HBox hBox = new HBox();
-    hBox.getChildren().addAll(openPopupButton);
+    HBox hBox = new HBox(openPopupButton);
+    hBox.setPadding(new Insets(10,10,10,10));
+    hBox.setStyle("-fx-border-color: black; -fx-border-width: 0 0 1 0;");
     return hBox;
   }
 
