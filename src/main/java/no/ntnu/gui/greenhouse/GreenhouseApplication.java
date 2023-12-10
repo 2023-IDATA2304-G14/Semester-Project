@@ -16,8 +16,6 @@ import no.ntnu.tools.Logger;
 public class GreenhouseApplication extends Application implements NodeStateListener {
   private static GreenhouseSimulator simulator;
   private Stage mainStage;
-
-  //Test
   private MainGreenhouseGuiWindow mainWindow = new MainGreenhouseGuiWindow();
   @Override
   public void start(Stage mainStage) {

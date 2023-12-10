@@ -3,11 +3,15 @@ package no.ntnu.gui.greenhouse.helper;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import no.ntnu.greenhouse.*;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
+import no.ntnu.gui.greenhouse.GreenHouseView;
+import no.ntnu.gui.greenhouse.GreenhouseApplication;
+import no.ntnu.gui.greenhouse.MainGreenhouseGuiWindow;
 import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.greenhouse.SensorListener;
 
@@ -19,6 +23,9 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
   private ActuatorPane actuatorPane;
   private SensorPane sensorPane;
   private Label nodeIdLabel;
+  private MainGreenhouseGuiWindow mainGuiWindow;
+  private GreenhouseApplication greenhouseApplication;
+  private GreenHouseView greenhouseView;
 
   private Button removeNode = new Button("Remove Node");
   private Button addSensor = new Button("Add Sensor");
@@ -26,7 +33,8 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
 
   private TitledPane titledPane;
 
-  public NodeView(GreenhouseNode node) {
+  public NodeView(GreenhouseNode node, GreenHouseView greenHouseView) {
+    this.greenhouseView = greenhouseView;
     this.node = node;
     this.nodeIdLabel = new Label("Node ID: " + node.getId());
 
@@ -61,6 +69,12 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
     actuatorScrollPane.setFitToWidth(true);
     actuatorScrollPane.setMaxHeight(300); // Set a max height
 
+    removeNode.setOnAction(e -> {
+      shutDownNode();
+      //this.greenhouseView.removeNodeView(this);
+      System.out.println("Remove node: " + node.getId());
+    });
+
     HBox hBox = new HBox(removeNode, addSensor, addActuator);
 
 
@@ -76,7 +90,6 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
       ShowActuatorDialog();
     });
   }
-
   public TitledPane getTitledPane() {
     return titledPane;
   }

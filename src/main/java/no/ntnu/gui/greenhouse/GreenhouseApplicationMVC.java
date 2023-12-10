@@ -12,7 +12,6 @@ public class GreenhouseApplicationMVC extends Application implements NodeStateLi
 
   private static GreenhouseSimulator simulator;
   private MainGreenhouseGuiWindow mainWindow = new MainGreenhouseGuiWindow();
-
   GreenHouseView greenHouseView;
   private GreenHouseModel model;
 

@@ -9,10 +9,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import no.ntnu.greenhouse.Actuator;
-import no.ntnu.greenhouse.Sensor;
-import no.ntnu.greenhouse.GreenhouseNode;
-import no.ntnu.greenhouse.SensorCollection;
+import no.ntnu.greenhouse.*;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
 import no.ntnu.listeners.common.ActuatorListener;
@@ -25,23 +22,23 @@ import no.ntnu.listeners.greenhouse.SensorListener;
 public class NodeGuiWindow extends VBox implements SensorListener, ActuatorListener {
   private final GreenhouseNode node;
   private ActuatorPane actuatorPane;
+  private MainGreenhouseGuiWindow mainGuiWindow;
+  private GreenhouseApplication greenhouseApplication;
   private SensorPane sensorPane;
   private Label nodeIdLabel;
-
-  private Button button = new Button("Remove Node");
+  private Button removeButton = new Button("Remove Node");
   private Button addSensor = new Button("Add Sensor");
-  private Button addActuator = new Button("Remove Node");
-
+  private Button addActuator = new Button("Add Actuator");
   private TitledPane titledPane;
-
-
 
   public NodeGuiWindow(GreenhouseNode node) {
     this.node = node;
-    this.nodeIdLabel = new Label("Node ID: " + node.getId());
+    this.nodeIdLabel = new Label("Nodeee ID: " + node.getId());
 
     //Trying to remove node. Need to remove sensors and actuators first?
-    button.setOnAction(e -> {
+    removeButton.setOnAction(e -> {
+      mainGuiWindow.removeNode(node.getId());
+      greenhouseApplication.onNodeStopped(node);
       System.out.println("Remove node: " + node.getId());
     });
 
@@ -78,7 +75,7 @@ public class NodeGuiWindow extends VBox implements SensorListener, ActuatorListe
     actuatorScrollPane.setFitToWidth(true);
     actuatorScrollPane.setMaxHeight(200); // Set a max height
 
-    content.getChildren().addAll(button, addSensor, sensorScrollPane, actuatorScrollPane);
+    content.getChildren().addAll(removeButton, addSensor, sensorScrollPane, actuatorScrollPane);
 
     titledPane = new TitledPane("Node ID: " + node.getId(), content);
     titledPane.setMaxHeight(200); // Limit the height of the TitledPane
@@ -88,6 +85,7 @@ public class NodeGuiWindow extends VBox implements SensorListener, ActuatorListe
   }
 
   public void shutDownNode() {
+
     node.stop();
   }
 
