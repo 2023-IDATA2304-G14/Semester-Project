@@ -17,6 +17,16 @@ public interface CommunicationChannel {
   void sendActuatorChange(int nodeId, int actuatorId, boolean isOn, int strength);
 
   /**
+   * Request a list of all actuators on a node.
+   */
+  void getActuators(int nodeId);
+
+  /**
+   * Request a list of all sensors on a node.
+   */
+  void getSensors(int nodeId);
+
+  /**
    * Get the actuator data for a given actuator.
    * @param nodeId The ID of the node to which the actuator is attached
    * @param actuatorId The ID of the actuator

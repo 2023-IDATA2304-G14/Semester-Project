@@ -3,6 +3,8 @@ package no.ntnu.greenhouse;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.stream.Stream;
+
 import no.ntnu.tools.Logger;
 
 /**
@@ -60,5 +62,14 @@ public class SensorCollection implements Iterable<Sensor> {
      */
     public void remove(int sensorId) {
         sensors.remove(sensorId);
+    }
+
+    /**
+     * Get a stream of the sensors in this collection.
+     *
+     * @return A stream of the sensors
+     */
+    public Stream<Sensor> stream() {
+        return sensors.values().stream();
     }
 }

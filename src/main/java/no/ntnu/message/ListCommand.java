@@ -11,7 +11,7 @@ public interface ListCommand extends Message {
    * @param logic The GreenhouseSimulator logic to be affected by this command
    * @return The message which contains the output of the command
    */
-  List<ActuatorStateMessage> execute(GreenhouseSimulator logic);
+  List<SensorActuatorStateMessage> execute(GreenhouseSimulator logic);
 
   /**
    * Deserialize a message into a command.

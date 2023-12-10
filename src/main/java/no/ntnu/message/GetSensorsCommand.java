@@ -4,8 +4,8 @@ import no.ntnu.greenhouse.GreenhouseSimulator;
 
 import java.util.List;
 
-public record GetActuatorsCommand(int nodeId) implements ListCommand {
-    public static final String PREFIX = "gA";
+public record GetSensorsCommand(int nodeId) implements ListCommand {
+    public static final String PREFIX = "gS";
 
     @Override
     public String getPrefix() {
@@ -26,7 +26,7 @@ public record GetActuatorsCommand(int nodeId) implements ListCommand {
         }
         MessageParameterizer parameterizer = new MessageParameterizer(PREFIX).deparameterize(message);
 
-        return new GetActuatorsCommand(
+        return new GetSensorsCommand(
                 Integer.parseInt(parameterizer.getNodeId())
         );
     }
@@ -39,9 +39,8 @@ public record GetActuatorsCommand(int nodeId) implements ListCommand {
    */
   @Override
   public List<SensorActuatorStateMessage> execute(GreenhouseSimulator logic) {
-    return logic.getNode(nodeId).getActuators().stream()
-        .map(actuator -> (SensorActuatorStateMessage) new ActuatorStateMessage(nodeId, actuator.getId(), actuator.isOn(), actuator.getStrength(), actuator.getMinStrength(), actuator.getMaxStrength(), actuator.getUnit(), actuator.getType()))
+    return logic.getNode(nodeId).getSensors().stream()
+        .map(sensor -> (SensorActuatorStateMessage) new SensorStateMessage(nodeId, sensor.getId(), sensor.getType(), sensor.getMin(), sensor.getMax(), sensor.getValue(), sensor.getUnit()))
         .toList();
-
   }
 }

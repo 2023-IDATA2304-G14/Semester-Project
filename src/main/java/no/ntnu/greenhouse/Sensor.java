@@ -164,6 +164,10 @@ public class Sensor {
     return nodeId;
   }
 
+  /**
+   * Set the minimum allowed value for this sensor.
+   * @param min The minimum allowed value
+   */
   public void setMin(double min) {
     if (min > max) {
       min = max - 1;
@@ -173,10 +177,18 @@ public class Sensor {
     notifyStateChanges();
   }
 
+  /**
+   * Get the minimum allowed value for this sensor.
+   * @return The minimum allowed value
+   */
   public double getMin() {
     return min;
   }
 
+  /**
+   * Set the maximum allowed value for this sensor.
+   * @param max The maximum allowed value
+   */
   public void setMax(double max) {
     if (max < min) {
       max = min + 1;
@@ -186,10 +198,19 @@ public class Sensor {
     notifyStateChanges();
   }
 
+  /**
+   * Get the maximum allowed value for this sensor.
+   * @return The maximum allowed value
+   */
   public double getMax() {
     return max;
   }
 
+  /**
+   * Get the unit of the sensor.
+   *
+   * @return The unit
+   */
   public String getUnit() {
     return reading.getUnit();
   }
@@ -208,5 +229,13 @@ public class Sensor {
    */
   public void setStateListeners(List<StateListener> listeners) {
     this.stateListeners = listeners;
+  }
+
+  /**
+   * Get the current value of the sensor.
+   * @return The current value
+   */
+  public double getValue() {
+    return reading.getValue();
   }
 }
