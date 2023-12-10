@@ -19,7 +19,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
-import no.ntnu.controlpanel.SensorActuatorNodeInfo;
+import no.ntnu.controlpanel.GreenhouseNodeInfo;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
@@ -43,7 +43,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   private final Map<Integer, VBox> nodeBoxes = new HashMap<>();
   private final Map<Integer, SensorPane> sensorPanes = new HashMap<>();
   private final Map<Integer, ActuatorPane> actuatorPanes = new HashMap<>();
-  private final Map<Integer, SensorActuatorNodeInfo> nodeInfos = new HashMap<>();
+  private final Map<Integer, GreenhouseNodeInfo> nodeInfos = new HashMap<>();
 
   //Daniel Shenanigans
   private String passPhrase;
@@ -117,7 +117,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     return nodeDisplayArea;
   }
 
-  private void addNodeDisplay(SensorActuatorNodeInfo nodeInfo) {
+  private void addNodeDisplay(GreenhouseNodeInfo nodeInfo) {
 
     System.out.println(nodeInfo.getId());
     VBox nodeBox = new VBox(5);
@@ -148,7 +148,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   }
 
   @Override
-  public void onNodeUpdated(SensorActuatorNodeInfo nodeInfo) {
+  public void onNodeUpdated(GreenhouseNodeInfo nodeInfo) {
     Platform.runLater(() -> addNodeDisplay(nodeInfo));
   }
 
@@ -271,7 +271,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
   private Actuator getStoredActuator(int nodeId, int actuatorId) {
     Actuator actuator = null;
-    SensorActuatorNodeInfo nodeInfo = nodeInfos.get(nodeId);
+    GreenhouseNodeInfo nodeInfo = nodeInfos.get(nodeId);
     if (nodeInfo != null) {
       actuator = nodeInfo.getActuator(actuatorId);
     }
@@ -310,22 +310,22 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   }
 
   private void testData(){
-    SensorActuatorNodeInfo sensorActuatorNodeInfo1 = new SensorActuatorNodeInfo(1);
-    SensorActuatorNodeInfo sensorActuatorNodeInfo2 = new SensorActuatorNodeInfo(2);
-    SensorActuatorNodeInfo sensorActuatorNodeInfo3 = new SensorActuatorNodeInfo(3);
-    SensorActuatorNodeInfo sensorActuatorNodeInfo4 = new SensorActuatorNodeInfo(4);
-    SensorActuatorNodeInfo sensorActuatorNodeInfo5 = new SensorActuatorNodeInfo(5);
-    SensorActuatorNodeInfo sensorActuatorNodeInfo6 = new SensorActuatorNodeInfo(6);
+    GreenhouseNodeInfo greenhouseNodeInfo1 = new GreenhouseNodeInfo(1);
+    GreenhouseNodeInfo greenhouseNodeInfo2 = new GreenhouseNodeInfo(2);
+    GreenhouseNodeInfo greenhouseNodeInfo3 = new GreenhouseNodeInfo(3);
+    GreenhouseNodeInfo greenhouseNodeInfo4 = new GreenhouseNodeInfo(4);
+    GreenhouseNodeInfo greenhouseNodeInfo5 = new GreenhouseNodeInfo(5);
+    GreenhouseNodeInfo greenhouseNodeInfo6 = new GreenhouseNodeInfo(6);
 
-    sensorActuatorNodeInfo1.addActuator(new Actuator(1, 1, "door", 1, 1, 0, ""));
-    sensorActuatorNodeInfo1.addActuator(new Actuator(1, 2, "door", 1, 1, 0, ""));
+    greenhouseNodeInfo1.addActuator(new Actuator(1, 1, "door", 1, 1, 0, ""));
+    greenhouseNodeInfo1.addActuator(new Actuator(1, 2, "door", 1, 1, 0, ""));
 
-    addNodeDisplay(sensorActuatorNodeInfo1);
-    addNodeDisplay(sensorActuatorNodeInfo2);
-    addNodeDisplay(sensorActuatorNodeInfo3);
-    addNodeDisplay(sensorActuatorNodeInfo4);
-    addNodeDisplay(sensorActuatorNodeInfo5);
-    addNodeDisplay(sensorActuatorNodeInfo6);
+    addNodeDisplay(greenhouseNodeInfo1);
+    addNodeDisplay(greenhouseNodeInfo2);
+    addNodeDisplay(greenhouseNodeInfo3);
+    addNodeDisplay(greenhouseNodeInfo4);
+    addNodeDisplay(greenhouseNodeInfo5);
+    addNodeDisplay(greenhouseNodeInfo6);
   }
 
 }

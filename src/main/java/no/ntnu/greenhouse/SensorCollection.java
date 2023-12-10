@@ -53,4 +53,12 @@ public class SensorCollection implements Iterable<Sensor> {
     public int size() {
         return sensors.size();
     }
+
+    /**
+     * Remove a sensor from the collection.
+     * @param sensorId The ID of the sensor to remove
+     */
+    public void remove(int sensorId) {
+        sensors.remove(sensorId);
+    }
 }

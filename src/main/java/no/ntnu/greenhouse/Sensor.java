@@ -145,11 +145,23 @@ public class Sensor {
     ensureValueBoundsAndPrecision(reading.getValue());
   }
 
+  public double getMin() {
+    return min;
+  }
+
   public void setMax(double max) {
     if (max < min) {
       max = min + 1;
     }
     this.max = max;
     ensureValueBoundsAndPrecision(reading.getValue());
+  }
+
+  public double getMax() {
+    return max;
+  }
+
+  public String getUnit() {
+    return reading.getUnit();
   }
 }

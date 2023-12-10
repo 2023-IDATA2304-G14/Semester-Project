@@ -1,6 +1,6 @@
 package no.ntnu.gui.controlpanel;
 
-import no.ntnu.controlpanel.SensorActuatorNodeInfo;
+import no.ntnu.controlpanel.GreenhouseNodeInfo;
 import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
 
 // TODO: Check if this is the correct listener
@@ -12,7 +12,7 @@ public class ControlPanelModel implements GreenhouseEventListener {
      * @param nodeInfo Information about the added node
      */
     @Override
-    public void onNodeUpdated(SensorActuatorNodeInfo nodeInfo) {
+    public void onNodeUpdated(GreenhouseNodeInfo nodeInfo) {
         // TODO: Implement
     }
 

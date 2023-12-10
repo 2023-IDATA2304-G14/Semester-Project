@@ -1,7 +1,7 @@
 package no.ntnu.message;
 
-public record NodeUpdatedMessage(int nodeId, String name) implements BroadcastMessage {
-    public static final String PREFIX = "nU";
+public record NodeStateMessage(int nodeId, String name) implements BroadcastMessage {
+    public static final String PREFIX = "nS";
 
     @Override
     public String getPrefix() {
@@ -23,7 +23,7 @@ public record NodeUpdatedMessage(int nodeId, String name) implements BroadcastMe
         }
         MessageParameterizer parameterizer = new MessageParameterizer(PREFIX).deparameterize(message);
 
-        return new NodeUpdatedMessage(
+        return new NodeStateMessage(
                 Integer.parseInt(parameterizer.getNodeId()),
                 parameterizer.getValue()
         );

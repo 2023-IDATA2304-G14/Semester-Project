@@ -3,8 +3,8 @@ package no.ntnu.message;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.GreenhouseSimulator;
 
-public record GetActuatorReadingCommand(int nodeId, int actuatorId) implements Command {
-    public static final String PREFIX = "aG";
+public record GetActuatorDataCommand(int nodeId, int actuatorId) implements Command {
+    public static final String PREFIX = "gAd";
 
   /**
    * Execute the command.
@@ -15,7 +15,7 @@ public record GetActuatorReadingCommand(int nodeId, int actuatorId) implements C
   @Override
   public Message execute(GreenhouseSimulator logic) {
     Actuator actuator = logic.getNode(nodeId).getActuator(actuatorId);
-    return new ActuatorReadingMessage(nodeId, actuatorId, actuator.isOn(), actuator.getStrength());
+    return new ActuatorDataMessage(nodeId, actuatorId, actuator.isOn(), actuator.getStrength());
   }
 
     @Override
@@ -38,7 +38,7 @@ public record GetActuatorReadingCommand(int nodeId, int actuatorId) implements C
         }
         MessageParameterizer parameterizer = new MessageParameterizer(PREFIX).deparameterize(message);
 
-        return new GetActuatorReadingCommand(
+        return new GetActuatorDataCommand(
                 Integer.parseInt(parameterizer.getNodeId()),
                 Integer.parseInt(parameterizer.getItemId())
         );

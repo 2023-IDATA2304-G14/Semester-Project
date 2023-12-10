@@ -3,9 +3,9 @@ package no.ntnu.message;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.GreenhouseSimulator;
 
-public record SetActuatorCommand(int nodeId, int actuatorId, boolean isOn, int strength) implements Command {
-  public static final String PREFIX = "aS";
+public record GetActuatorStateCommand(int nodeId, int actuatorId) implements Command {
 
+  public static final String PREFIX = "gAs";
   /**
    * Execute the command.
    *
@@ -15,10 +15,7 @@ public record SetActuatorCommand(int nodeId, int actuatorId, boolean isOn, int s
   @Override
   public Message execute(GreenhouseSimulator logic) {
     Actuator actuator = logic.getNode(nodeId).getActuator(actuatorId);
-    actuator.setOn(isOn);
-    actuator.setStrength(strength);
-
-    return new ActuatorDataMessage(nodeId, actuatorId, actuator.isOn(), actuator.getStrength());
+    return new ActuatorStateMessage(nodeId, actuatorId, actuator.isOn(), actuator.getStrength(), actuator.getMinStrength(), actuator.getMaxStrength(), actuator.getUnit());
   }
 
   @Override
@@ -31,8 +28,6 @@ public record SetActuatorCommand(int nodeId, int actuatorId, boolean isOn, int s
     return new MessageParameterizer(PREFIX)
         .setNodeId(String.valueOf(nodeId()))
         .setItemId(String.valueOf(actuatorId()))
-        .setValue(String.valueOf(isOn()))
-        .setSecondaryValue(String.valueOf(strength()))
         .parameterize();
   }
 
@@ -43,11 +38,9 @@ public record SetActuatorCommand(int nodeId, int actuatorId, boolean isOn, int s
     }
     MessageParameterizer parameterizer = new MessageParameterizer(PREFIX).deparameterize(message);
 
-    return new SetActuatorCommand(
+    return new GetActuatorStateCommand(
         Integer.parseInt(parameterizer.getNodeId()),
-        Integer.parseInt(parameterizer.getItemId()),
-        Boolean.parseBoolean(parameterizer.getValue()),
-        Integer.parseInt(parameterizer.getSecondaryValue())
+        Integer.parseInt(parameterizer.getItemId())
     );
   }
 }

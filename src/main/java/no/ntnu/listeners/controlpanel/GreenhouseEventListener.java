@@ -1,6 +1,6 @@
 package no.ntnu.listeners.controlpanel;
 
-import no.ntnu.controlpanel.SensorActuatorNodeInfo;
+import no.ntnu.controlpanel.GreenhouseNodeInfo;
 
 /**
  * Listener of events happening "inside a greenhouse", such as a node appearing, disappearing,
@@ -16,7 +16,7 @@ public interface GreenhouseEventListener {
    *
    * @param nodeInfo Information about the added node
    */
-  void onNodeUpdated(SensorActuatorNodeInfo nodeInfo);
+  void onNodeUpdated(GreenhouseNodeInfo nodeInfo);
 
   /**
    * This event is fired when a node is removed from the greenhouse.

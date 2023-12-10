@@ -4,15 +4,15 @@ import no.ntnu.greenhouse.GreenhouseNode;
 import no.ntnu.greenhouse.GreenhouseSimulator;
 import no.ntnu.greenhouse.SensorReading;
 
-public record GetSensorReadingCommand(int nodeId, int sensorId) implements GetCommand {
-    public static final String PREFIX = "gS";
+public record GetSensorDataCommand(int nodeId, int sensorId) implements GetCommand {
+    public static final String PREFIX = "gSd";
     @Override
     public Message execute(GreenhouseSimulator logic) {
         Message response;
         try {
             GreenhouseNode node = logic.getNode(nodeId);
             SensorReading reading = node.getSensor(sensorId).getReading();
-            response = new SensorReadingMessage(nodeId, sensorId, reading);
+            response = new SensorDataMessage(nodeId, sensorId, reading);
         } catch (IllegalStateException e) {
             response = new ErrorMessage(e.getMessage());
         }
@@ -39,7 +39,7 @@ public record GetSensorReadingCommand(int nodeId, int sensorId) implements GetCo
         }
         MessageParameterizer parameterizer = new MessageParameterizer(PREFIX).deparameterize(message);
 
-        return new GetSensorReadingCommand(
+        return new GetSensorDataCommand(
                 Integer.parseInt(parameterizer.getNodeId()),
                 Integer.parseInt(parameterizer.getItemId())
         );

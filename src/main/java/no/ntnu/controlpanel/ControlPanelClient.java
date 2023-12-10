@@ -1,7 +1,6 @@
 package no.ntnu.controlpanel;
 
 import no.ntnu.greenhouse.GreenhouseServer;
-import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
 import no.ntnu.message.*;
 import no.ntnu.tools.Logger;
 
@@ -102,8 +101,8 @@ public class ControlPanelClient {
    */
 //  TODO: Add handling of the different message types
   private void handleMessage(Message message, CommunicationChannel listener) {
-        if (message instanceof ActuatorReadingMessage actuatorReadingMessage) {
-          listener.onActuatorReadingChanged(actuatorReadingMessage.nodeId(), actuatorReadingMessage.actuatorId(), actuatorReadingMessage.isOn(), actuatorReadingMessage.strength());
+        if (message instanceof ActuatorDataMessage actuatorDataMessage) {
+          listener.onActuatorReadingChanged(actuatorDataMessage.nodeId(), actuatorDataMessage.actuatorId(), actuatorDataMessage.isOn(), actuatorDataMessage.strength());
         } else if (message instanceof ActuatorRemoveMessage actuatorRemoveMessage) {
           listener.onActuatorRemoved(actuatorRemoveMessage.nodeId(), actuatorRemoveMessage.actuatorId());
         } else {

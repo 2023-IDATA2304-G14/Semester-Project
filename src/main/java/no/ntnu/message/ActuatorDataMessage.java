@@ -1,7 +1,7 @@
 package no.ntnu.message;
 
 
-public record ActuatorReadingMessage(int nodeId, int actuatorId, boolean isOn, int strength) implements Message {
+public record ActuatorDataMessage(int nodeId, int actuatorId, boolean isOn, int strength) implements Message {
     public static final String PREFIX = "aD";
 
     @Override
@@ -26,7 +26,7 @@ public record ActuatorReadingMessage(int nodeId, int actuatorId, boolean isOn, i
         }
         MessageParameterizer parameterizer = new MessageParameterizer(PREFIX).deparameterize(input);
 
-        return new ActuatorReadingMessage(
+        return new ActuatorDataMessage(
                 Integer.parseInt(parameterizer.getNodeId()),
                 Integer.parseInt(parameterizer.getItemId()),
                 Boolean.parseBoolean(parameterizer.getValue()),

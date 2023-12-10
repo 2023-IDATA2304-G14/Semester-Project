@@ -1,5 +1,7 @@
 package no.ntnu.controlpanel;
 
+import no.ntnu.message.GetActuatorStateCommand;
+import no.ntnu.message.GetSensorStateCommand;
 import no.ntnu.message.SetActuatorCommand;
 
 public class ControlPanelChannel implements CommunicationChannel {
@@ -39,7 +41,7 @@ public class ControlPanelChannel implements CommunicationChannel {
    */
   @Override
   public void getActuatorState(int nodeId, int actuatorId) {
-
+    client.sendCommand(new GetActuatorStateCommand(nodeId, actuatorId));
   }
 
   /**
@@ -50,7 +52,7 @@ public class ControlPanelChannel implements CommunicationChannel {
    */
   @Override
   public void getSensorState(int nodeId, int sensorId) {
-
+    client.sendCommand(new GetSensorStateCommand(nodeId, sensorId));
   }
 
   /**

@@ -122,7 +122,7 @@ public class MessageParameterizer {
    * Sets the min parameter. Either a sensorMin, actuatorMin or similar depending on the message.
    * @param min The min to set.
    */
-  private MessageParameterizer setMin(String min) {
+  public MessageParameterizer setMin(String min) {
     this.min = min;
     return this;
   }
@@ -139,7 +139,7 @@ public class MessageParameterizer {
    * Sets the max parameter. Either a sensorMax, actuatorMax or similar depending on the message.
    * @param max The max to set.
    */
-  private MessageParameterizer setMax(String max) {
+  public MessageParameterizer setMax(String max) {
     this.max = max;
     return this;
   }

@@ -2,7 +2,7 @@ package no.ntnu.message;
 
 import no.ntnu.greenhouse.SensorReading;
 
-public record SensorReadingMessage(int nodeId, int sensorId, SensorReading reading) implements Message {
+public record SensorDataMessage(int nodeId, int sensorId, SensorReading reading) implements Message {
   public static final String PREFIX = "sD";
 
   @Override
@@ -31,7 +31,7 @@ public record SensorReadingMessage(int nodeId, int sensorId, SensorReading readi
     }
     MessageParameterizer parameterizer = new MessageParameterizer(PREFIX).deparameterize(message);
 
-    return new SensorReadingMessage(
+    return new SensorDataMessage(
         Integer.parseInt(parameterizer.getNodeId()),
         Integer.parseInt(parameterizer.getItemId()),
         new SensorReading(

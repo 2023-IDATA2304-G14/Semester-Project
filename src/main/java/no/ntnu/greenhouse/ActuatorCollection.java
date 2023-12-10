@@ -53,4 +53,13 @@ public class ActuatorCollection implements Iterable<Actuator> {
   public int size() {
     return actuators.size();
   }
+
+
+  /**
+   * Remove an actuator from the collection.
+   * @param actuatorId The ID of the actuator to remove
+   */
+  public void remove(int actuatorId) {
+    actuators.remove(actuatorId);
+  }
 }
