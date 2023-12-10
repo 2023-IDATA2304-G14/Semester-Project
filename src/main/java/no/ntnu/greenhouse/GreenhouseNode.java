@@ -5,11 +5,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import no.ntnu.listeners.common.ActuatorListener;
-import no.ntnu.listeners.common.CommunicationChannelListener;
-import no.ntnu.listeners.common.NodeListener;
+
+import no.ntnu.listeners.common.*;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
-import no.ntnu.listeners.common.SensorListener;
 import no.ntnu.tools.Logger;
 
 /**
@@ -26,7 +24,7 @@ public class GreenhouseNode implements CommunicationChannelListener {
 
   private final List<SensorListener> sensorListeners = new LinkedList<>();
   private final List<ActuatorListener> actuatorListeners = new LinkedList<>();
-  private final List<NodeListener> stateListeners = new LinkedList<>();
+  private final List<StateListener> stateListeners = new LinkedList<>();
   private final List<NodeStateListener> nodeStateListeners = new LinkedList<>();
 
   Timer sensorReadingTimer;
@@ -141,7 +139,7 @@ public class GreenhouseNode implements CommunicationChannelListener {
    *
    * @param listener The listener which will get notified when the state of this node changes
    */
-  public void addStateListener(NodeListener listener) {
+  public void addStateListener(StateListener listener) {
     if (!stateListeners.contains(listener)) {
       stateListeners.add(listener);
     }
@@ -347,5 +345,13 @@ public class GreenhouseNode implements CommunicationChannelListener {
 
   public void removeSensorListener(ClientHandler subscriber) {
     sensorListeners.remove(subscriber);
+  }
+
+  public void removeActuator(int actuatorId) {
+    actuators.remove(actuatorId);
+  }
+
+  public void removeSensor(int sensorId) {
+    sensors.remove(sensorId);
   }
 }

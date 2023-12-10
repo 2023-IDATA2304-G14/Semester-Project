@@ -3,6 +3,7 @@ package no.ntnu.greenhouse;
 import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.common.NodeListener;
 import no.ntnu.listeners.common.SensorListener;
+import no.ntnu.listeners.common.StateListener;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.message.*;
 import no.ntnu.tools.Logger;
@@ -13,7 +14,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class ClientHandler extends Thread implements ActuatorListener, SensorListener, NodeListener, NodeStateListener {
+public class ClientHandler extends Thread implements ActuatorListener, SensorListener, NodeListener, NodeStateListener, StateListener {
   private final Socket clientSocket;
   private final GreenhouseServer greenhouseServer;
   private final BufferedReader socketReader;
@@ -37,6 +38,7 @@ public class ClientHandler extends Thread implements ActuatorListener, SensorLis
    */
   @Override
   public void run() {
+//    TODO: Improve the code quality of this method.
     Message response;
     do {
       Message clientCommand = readClientRequest();

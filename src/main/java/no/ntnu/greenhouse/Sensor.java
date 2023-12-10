@@ -2,6 +2,7 @@ package no.ntnu.greenhouse;
 
 import no.ntnu.listeners.common.NodeListener;
 import no.ntnu.listeners.common.SensorListener;
+import no.ntnu.listeners.common.StateListener;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class Sensor {
   private double min;
   private double max;
   private List<SensorListener> listeners;
-  private List<NodeListener> stateListeners;
+  private List<StateListener> stateListeners;
 
   /**
    * Create a sensor.
@@ -144,7 +145,7 @@ public class Sensor {
   }
 
   private void notifyStateChanges() {
-    for (NodeListener listener : stateListeners) {
+    for (StateListener listener : stateListeners) {
       listener.sensorStateUpdated(this);
     }
   }
@@ -205,7 +206,7 @@ public class Sensor {
    * Sets the sensor state listeners.
    * @param listeners The listeners to set
    */
-  public void setStateListeners(List<NodeListener> listeners) {
+  public void setStateListeners(List<StateListener> listeners) {
     this.stateListeners = listeners;
   }
 }

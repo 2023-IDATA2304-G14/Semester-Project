@@ -3,10 +3,8 @@ package no.ntnu.gui.greenhouse;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.GreenhouseNode;
 import no.ntnu.greenhouse.GreenhouseSimulator;
-import no.ntnu.greenhouse.Sensor;
 import no.ntnu.listeners.common.NodeListener;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.tools.Logger;
@@ -23,7 +21,7 @@ public class GreenhouseApplicationMVC extends Application implements NodeStateLi
     greenHouseView = new GreenHouseView(primaryStage);
     model = greenHouseView.getModel();
     simulator.initialize();
-    simulator.subscribeToLifecycleUpdates(this);
+//    simulator.subscribeToLifecycleUpdates(this);
     primaryStage.setOnCloseRequest(event -> closeApplication());
     simulator.start();
   }
@@ -91,7 +89,7 @@ public class GreenhouseApplicationMVC extends Application implements NodeStateLi
    */
   @Override
   public void actuatorRemoved(int nodeId, int actuatorId) {
-    mainWindow.getNode(nodeId).removeActuator(actuatorId);
+    simulator.getNode(nodeId).removeActuator(actuatorId);
   }
 
   /**
@@ -102,26 +100,6 @@ public class GreenhouseApplicationMVC extends Application implements NodeStateLi
    */
   @Override
   public void sensorRemoved(int nodeId, int sensorId) {
-    mainWindow.getNode(nodeId).removeSensor(sensorId);
-  }
-
-  /**
-   * An event that is fired every time an actuator changes state or is added.
-   *
-   * @param actuator The actuator that has changed its state
-   */
-  @Override
-  public void actuatorStateUpdated(Actuator actuator) {
-    mainWindow.getNode(actuator.getNodeId()).updateActuator(actuator);
-  }
-
-  /**
-   * An event that is fired every time a sensor changes state or is added.
-   *
-   * @param sensor The sensor that has changed its state
-   */
-  @Override
-  public void sensorStateUpdated(Sensor sensor) {
-    mainWindow.getNode(sensor.getNodeId()).updateSensor(sensor);
+    simulator.getNode(nodeId).removeSensor(sensorId);
   }
 }

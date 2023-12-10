@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.common.NodeListener;
+import no.ntnu.listeners.common.StateListener;
 
 /**
  * An actuator that can change the environment in a way. The actuator will make impact on the
@@ -18,7 +19,7 @@ public class Actuator {
   private Map<String, Double> impacts = new HashMap<>();
 
   private List<ActuatorListener> listeners;
-  private List<NodeListener> stateListeners;
+  private List<StateListener> stateListeners;
 
   private boolean on;
   private int strength;
@@ -92,7 +93,7 @@ public class Actuator {
    * Add the given NodeListener which will be notified when actuator state changes.
    * @param listener The listener of state change events
    */
-  public void addStateListener(NodeListener listener) {
+  public void addStateListener(StateListener listener) {
     if (!stateListeners.contains(listener)) {
       stateListeners.add(listener);
     }
@@ -152,7 +153,7 @@ public class Actuator {
 
   private void notifyStateChanges() {
     if (stateListeners != null) {
-      for (NodeListener listener : stateListeners) {
+      for (StateListener listener : stateListeners) {
         listener.actuatorStateUpdated(this);
       }
     }
@@ -359,7 +360,7 @@ public class Actuator {
     this.listeners = actuatorListeners;
   }
 
-  public void setStateListeners(List<NodeListener> stateListeners) {
+  public void setStateListeners(List<StateListener> stateListeners) {
     this.stateListeners = stateListeners;
   }
 }
