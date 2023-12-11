@@ -182,18 +182,34 @@ public class ClientHandler
    * @param message The message to send.
    */
   public void sendMessageToClient(Message message) {
-
+    try {
     String serializedMessage = MessageSerializer.serialize(message);
 //    TODO: implement encryption
-    //String key = ChangeKey.getInstance().getGreenhouseKeyKey();
+    String key = ChangeKey.getInstance().getGreenhouseKeyKey();
 
-      //byte[] encryptedMessage = SymmetricEncryption.encryptMessage(serializedMessage, key);
-      socketWriter.println(serializedMessage);
+      byte[] encryptedMessage = SymmetricEncryption.encryptMessage(serializedMessage, key);
+      String byteConversion = Base64.getEncoder().encodeToString(encryptedMessage);
 
-    //    TODO: implement encryption
-    //    Byte[] encryptedMessage = SymmetricEncryption
-    //      .encryptMessage(serializedMessage, );
-    socketWriter.println(serializedMessage);
+      socketWriter.println(byteConversion);
+    } catch (NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
+    } catch (InvalidKeySpecException e) {
+      throw new RuntimeException(e);
+    } catch (NoSuchPaddingException e) {
+      throw new RuntimeException(e);
+    } catch (InvalidKeyException e) {
+      throw new RuntimeException(e);
+    } catch (IllegalBlockSizeException e) {
+      throw new RuntimeException(e);
+    } catch (BadPaddingException e) {
+      throw new RuntimeException(e);
+    } catch (InvalidAlgorithmParameterException e) {
+      throw new RuntimeException(e);
+    } catch (ShortBufferException e) {
+      throw new RuntimeException(e);
+    }
+
+
   }
 
   /**
