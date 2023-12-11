@@ -159,7 +159,7 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener, 
       sensorPane.update(sensor);
     }
   }
-
+//Actuator pane
   private void ShowActuatorDialog(){
     Dialog<String> dialog = new Dialog<>();
     HBox dialogLayout = new HBox(10);

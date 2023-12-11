@@ -96,6 +96,8 @@ a robust and flexible communication framework within the greenhouse system.
 
 TODO - describe the possible error messages that nodes can send in your system.
 
+
+
 ## An example scenario
 
 TODO - describe a typical scenario. How would it look like from communication perspective? When 
