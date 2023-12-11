@@ -34,8 +34,8 @@ import static no.ntnu.tools.Error.showAlert;
 public class ControlPanelApplication extends Application implements GreenhouseEventListener,
     CommunicationChannelListener {
   private static ControlPanelLogic logic;
-  private static final int WIDTH = 500;
-  private static final int HEIGHT = 400;
+  private static final int WIDTH = 700;
+  private static final int HEIGHT = 500;
   private static ControlPanelChannel channel;
   private BorderPane mainLayout;
   private FlowPane nodeDisplayArea;
@@ -242,6 +242,8 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
         NodeViewControlPanel nodeView = new NodeViewControlPanel(node, channel);
         nodeViewPanes.put(nodeId, nodeView);
         nodeDisplayArea.getChildren().add(nodeView.getPane());
+        channel.getSensors(nodeId);
+        channel.getActuators(nodeId);
 //        TODO: Implement a way for the user to subscribe and unsubscribe to nodes in the GUI
         channel.subscribeToNode(nodeId);
       }

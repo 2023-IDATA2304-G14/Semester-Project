@@ -81,7 +81,7 @@ public class SensorPane extends TitledPane {
         Label sensorLabel = createAndRememberSensorLabel(sensor);
         hBox.getChildren().addAll(sensorLabel);
 
-        if (channel != null) {
+        if (channel == null) {
           Button removeButton = new Button("Remove");
 
           removeButton.setOnAction(e -> {
