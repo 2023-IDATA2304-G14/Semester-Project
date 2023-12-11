@@ -161,17 +161,6 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   }
 
   @Override
-  public void onNodeUpdated(GreenhouseNodeInfo nodeInfo) {
-    System.out.println("Somethign HappeN!!");
-    Platform.runLater(() -> addNodeDisplay(nodeInfo));
-  }
-
-  @Override
-  public void onNodeRemoved(int nodeId) {
-    Platform.runLater(() -> removeNodeDisplay(nodeId));
-  }
-
-  @Override
   public void onSensorDataChanged(int nodeId, int sensorId, double value) {
     Logger.info("Sensor data from node " + nodeId);
     SensorPane sensorPane = sensorPanes.get(nodeId);
@@ -361,7 +350,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
    */
   @Override
   public void onNodeRemoved(int nodeId) {
-
+    Platform.runLater(() -> removeNodeDisplay(nodeId));
   }
 
   private Actuator getActuator(int nodeId, int actuatorId) {
