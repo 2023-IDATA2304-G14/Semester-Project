@@ -59,7 +59,10 @@ or actuator changes state.
 
 ## Connection and state
 
-The communication protocol for this project is connection-oriented and stateful
+The communication protocol for this project is connection-oriented and stateful. This means that the nodes
+in the network need to establish a connection before they can communicate with each other. The connection is 
+persistent, meaning that the nodes can send multiple messages over the same connection. 
+
 
 ## Types, constants
 
@@ -91,17 +94,42 @@ The general format of messages in this protocol is designed to ensure a consiste
 communication system. All the messages are encapsulated as Java records or classes, implementing
 the "Message" interface which standardizes the behaviour across different message types. 
 
-Heres a detailed format for each message type:
-1. **Error Message:** Compromises of a single string field to hold the error message. Converts
-    the error message into a structured string format, embedding the prefix (e) for identification.
+All message types implement the "Message" interface, ensuring a uniform approach to
+serialization and deserialization. Each message type has a specific prefix that uniquely identifies it,
+aiding in message processing and handling.
+
 2. **Command interface:** Represents a set of actions or requests sent to the server. This implements an "execute"
     method that takes "GreenhouseSimulator" as a parameter. This method is responsible for executing the
     command and returning a "Message" object representing the commands outcome. While the interface itself doesnt 
     directly handle serialization, each implementation of "command" is expected to follow the protocols standard
     serialization/deserialization process. 
-3. **Other message types:** All message types implement the "Message" interface, ensuring a uniform approach to
-    serialization and deserialization. Each message type has a specific prefix that uniquely identifies it, 
-    aiding in message processing and handling. 
+
+Here is a detailed format for each message type:
+1. ActuatorDataMessage - The normally changing data of a Actuator (id, on/off, strength)
+2. ActuatorRemovedMessage - A message signaling that a Actuator has been removed from the system
+3. ActuatorStateMessage - A full state of a Actuator (id, on/off, strength, min, max, type, unit etc.) 
+   used to update or add a Actuator to the UI
+4. ErrorMessage - Compromises of a single string field to hold the error message. Converts
+   the error message into a structured string format, embedding the prefix (e) for identification.
+5. GetActuatorDataCommand - A command to get the data of an Actuator (nodeId, actuatorId)
+6. GetActuatorsCommand - A command to get all the Actuators for a given nodeId (nodeId)
+7. GetActuatorStateCommand - A command to get the state of an Actuator (nodeId, actuatorId)
+8. GetNodesCommand - A command to get all the nodes in the system
+9. GetSensorDataCommand - A command to get the data of a Sensor (nodeId, sensorId)
+10. GetSensorsCommand - A command to get all the Sensors for a given nodeId (nodeId)
+11. GetSensorStateCommand - A command to get the state of a Sensor (nodeId, sensorId)
+12. NodeRemovedMessage - A message signaling that a Node has been removed from the system
+13. NodeStateMessage - A full state of a Node (id, name) used to update or add a node to the UI
+14. SensorDataMessage - The normally changing data of a Sensor (id, value)
+15. SensorRemovedMessage - A message signaling that a Sensor has been removed from the system (nodeId, sensorId)
+16. SensorStateMessage - A full state of a Sensor (id, value, min, max, type, unit etc.) used to update 
+    or add a Sensor to the UI
+17. SetActuatorCommand - A command to set the state of an Actuator (nodeId, actuatorId, on/off, strength)
+18. SubscribeNodeCommand - A command to subscribe to a node (nodeId)
+19. SubscribeNodeMessage - A message signaling that a node has been subscribed to (nodeId)
+20. UnknownMessage - A message signaling that a message has been received that is not recognized by the system
+21. UnsubscribeNodeCommand - A command to unsubscribe from a node (nodeId)
+22. UnsubscribeNodeMessage - A message signaling that a node has been unsubscribed from (nodeId)
 
 Each message type in this protocol is distinctly formatted to cater to its specific purpose. This design ensures
 a robust and flexible communication framework within the greenhouse system.
