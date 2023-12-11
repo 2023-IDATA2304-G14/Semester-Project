@@ -1,15 +1,13 @@
 package no.ntnu.gui.common;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.scene.control.CheckBox;
+import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import no.ntnu.greenhouse.Sensor;
@@ -53,15 +51,39 @@ public class SensorPane extends TitledPane {
     initialize(sensors);
   }
 
-
   public void addSensor(Sensor sensor) {
     Platform.runLater(() -> {
       if (!sensorValues.containsKey(sensor)) {
-        HBox hBox = new HBox();
-        hBox.getChildren().addAll(createAndRememberSensorLabel(sensor));
+        HBox hBox = new HBox(5);
+
+        Button removeButton = new Button("Remove");
+
+        removeButton.setOnAction(e -> {
+          Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION,
+                  "Are you sure you want to remove this sensor?", ButtonType.YES, ButtonType.NO);
+          confirmationAlert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.YES) {
+              removeSensor(sensor);
+            }
+          });
+        });
+
+        Label sensorLabel = createAndRememberSensorLabel(sensor);
+        hBox.getChildren().addAll(sensorLabel, removeButton);
         contentBox.getChildren().add(hBox);
+        sensorValues.put(sensor, new SimpleStringProperty(sensor.toString()));
       }
     });
+  }
+
+  // TODO: add removeSensor
+  public void removeSensor (Sensor sensor) {
+
+  }
+
+  // TODO: add updateSensorList
+  public void updateSensorList() {
+
   }
 
 //  /**
