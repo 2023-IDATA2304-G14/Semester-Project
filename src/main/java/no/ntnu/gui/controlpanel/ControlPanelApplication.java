@@ -39,7 +39,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   private static ControlPanelLogic logic;
   private static final int WIDTH = 500;
   private static final int HEIGHT = 400;
-  private static CommunicationChannel channel;
+  private static ControlPanelChannel channel;
   private BorderPane mainLayout;
   private FlowPane nodeDisplayArea;
   private Scene mainScene;
@@ -62,7 +62,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
    * @param logic   The logic of the control panel node
    * @param channel Communication channel for sending control commands and receiving events
    */
-  public static void startApp(ControlPanelLogic logic, CommunicationChannel channel) {
+  public static void startApp(ControlPanelLogic logic, ControlPanelChannel channel) {
     if (logic == null) {
       throw new IllegalArgumentException("Control panel logic can't be null");
     }
@@ -372,6 +372,12 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   public void onCommunicationChannelClosed() {
     Logger.info("Communication closed, closing the GUI");
     Platform.runLater(Platform::exit);
+  }
+
+  @Override
+  public void stop() {
+    Logger.info("Closing the GUI");
+    channel.close();
   }
 
   private void showCustomDialog() {
