@@ -175,6 +175,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
   @Override
   public void onNodeUpdated(GreenhouseNodeInfo nodeInfo) {
+    System.out.println("Somethign HappeN!!");
     Platform.runLater(() -> addNodeDisplay(nodeInfo));
   }
 

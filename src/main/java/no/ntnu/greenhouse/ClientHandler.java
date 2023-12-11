@@ -25,6 +25,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.InvalidParameterSpecException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.common.NodeListener;
@@ -140,10 +141,12 @@ public class ClientHandler
 //      TODO: implement decryption  !!_!_!_!__!_!__!_!__!_!
       String key = ChangeKey.getInstance().getGreenhouseKeyKey();
       System.out.println("String: " + rawClientRequest);
+      System.out.println("Byte: " + Base64.getDecoder().decode(rawClientRequest));
 
-      //This need. toByte not getByte
-      System.out.println("Byte: " + rawClientRequest.getBytes());
-      String decryptedMessage = SymmetricEncryption.decryptMessage(rawClientRequest.getBytes(), key);
+
+      String decryptedMessage = SymmetricEncryption.decryptMessage(Base64.getDecoder().decode(rawClientRequest), key);
+
+
       System.out.println("Decrypt: " + decryptedMessage);
       Logger.info(decryptedMessage);
       clientCommand = MessageSerializer.deserialize(decryptedMessage);
