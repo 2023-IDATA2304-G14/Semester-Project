@@ -126,7 +126,7 @@ public class ActuatorPane extends TitledPane {
       if (actuator.getId() == actuatorId) {
         actuatorValue.remove(actuator);
         actuatorActive.remove(actuator);
-        contentBox.getChildren().removeIf(actuatorBox -> actuatorBox.getId().equals(actuatorId));
+        contentBox.getChildren().removeIf(actuatorBox -> actuatorBox.getId().equals(String.valueOf(actuatorId)));
         break;
       }
     }
