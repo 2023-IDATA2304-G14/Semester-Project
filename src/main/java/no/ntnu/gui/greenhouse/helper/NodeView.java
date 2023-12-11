@@ -208,7 +208,7 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener, 
    */
   @Override
   public void actuatorDataUpdated(Actuator actuator) {
-    actuatorPane.update(actuator);
+    Platform.runLater(() -> actuatorPane.update(actuator));
   }
 
   /**
@@ -218,7 +218,7 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener, 
    */
   @Override
   public void sensorDataUpdated(Sensor sensor) {
-    sensorPane.update(sensor);
+    Platform.runLater(() -> sensorPane.update(sensor));
   }
 
   /**
@@ -228,7 +228,7 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener, 
    */
   @Override
   public void actuatorRemoved(Actuator actuator) {
-    actuatorPane.removeFromView(actuator.getId());
+    Platform.runLater(() -> actuatorPane.remove(actuator.getId()));
   }
 
   /**
@@ -238,7 +238,7 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener, 
    */
   @Override
   public void sensorRemoved(Sensor sensor) {
-    sensorPane.remove(sensor.getId());
+    Platform.runLater(() -> sensorPane.remove(sensor.getId()));
   }
 
   /**
@@ -248,7 +248,7 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener, 
    */
   @Override
   public void actuatorStateUpdated(Actuator actuator) {
-    actuatorPane.update(actuator);
+    Platform.runLater(() -> actuatorPane.update(actuator));
   }
 
   /**
@@ -258,6 +258,6 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener, 
    */
   @Override
   public void sensorStateUpdated(Sensor sensor) {
-    sensorPane.update(sensor);
+    Platform.runLater(() -> sensorPane.update(sensor));
   }
 }
