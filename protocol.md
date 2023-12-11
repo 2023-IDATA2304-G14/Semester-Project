@@ -73,6 +73,25 @@ them here.
 TODO - describe the general format of all messages. Then describe specific format for each 
 message type in your protocol.
 
+The general format of messages in this protocol is designed to ensure a consistent and structured
+communication system. All the messages are encapsulated as Java records or classes, implementing
+the "Message" interface which standardizes the behaviour across different message types. 
+
+Heres a detailed format for each message type:
+1. **Error Message:** Compromises of a single string field to hold the error message. Converts
+    the error message into a structured string format, embedding the prefix (e) for identification.
+2. **Command interface:** Represents a set of actions or requests sent to the server. This implements an "execute"
+    method that takes "GreenhouseSimulator" as a parameter. This method is responsible for executing the
+    command and returning a "Message" object representing the commands outcome. While the interface itself doesnt 
+    directly handle serialization, each implementation of "command" is expected to follow the protocols standard
+    serialization/deserialization process. 
+3. **Other message types:** All message types implement the "Message" interface, ensuring a uniform approach to
+    serialization and deserialization. Each message type has a specific prefix that uniquely identifies it, 
+    aiding in message processing and handling. 
+
+Each message type in this protocol is distinctly formatted to cater to its specific purpose. This design ensures
+a robust and flexible communication framework within the greenhouse system.
+
 ### Error messages
 
 TODO - describe the possible error messages that nodes can send in your system.
