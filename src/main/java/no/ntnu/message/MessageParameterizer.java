@@ -273,6 +273,10 @@ public class MessageParameterizer {
   }
 
   public static String getPrefix(String message) throws IndexOutOfBoundsException {
-    return message.substring(0, message.indexOf("?"));
+    if (message.contains("?")) {
+      return message.substring(0, message.indexOf("?"));
+    } else {
+      return message;
+    }
   }
 }
