@@ -108,7 +108,7 @@ public class ActuatorPane extends TitledPane {
   }
 
   public void removeActuator(Actuator actuator) {
-    node.removeSensor(actuator.getId());
+    node.removeActuator(actuator.getId());
   }
 
   /**
