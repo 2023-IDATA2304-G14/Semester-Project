@@ -21,7 +21,6 @@ import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
 import no.ntnu.controlpanel.GreenhouseNodeInfo;
-import no.ntnu.encryption.ChangeKey;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.GreenhouseNode;
 import no.ntnu.greenhouse.Sensor;
@@ -91,15 +90,8 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     logic.setCommunicationChannel(channel);
   }
 
-
-
   @Override
   public void start(Stage stage) {
-    //if (channel == null) {
-    //  throw new IllegalStateException(
-    //      "No communication channel. See the README on how to use fake event spawner!");
-   // }
-
     stage.setTitle("Control Panel");
 
     mainLayout = new BorderPane();
@@ -116,10 +108,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     stage.setScene(mainScene);
 
     stage.show();
-
-    System.out.println("Get Nodes");
     channel.getNodes();
-
     logic.addListener(this);
     logic.setCommunicationChannelListener(this);
   }
@@ -142,24 +131,23 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     return nodeDisplayArea;
   }
 
-  private void addNodeDisplay(GreenhouseNodeInfo nodeInfo) {
+  private void addNodeDisplay(GreenhouseNode node) {
 
-    System.out.println(nodeInfo.getId());
+    System.out.println(node.getId());
     VBox nodeBox = new VBox(5);
-    Label nodeLabel = new Label("Node " + nodeInfo.getId());
+    Label nodeLabel = new Label("Node " + node.getId());
     nodeBox.getChildren().add(nodeLabel);
 
-    SensorPane sensorPane = new SensorPane();
-    sensorPanes.put(nodeInfo.getId(), sensorPane);
+    SensorPane sensorPane = new SensorPane(node);
+    sensorPanes.put(node.getId(), sensorPane);
     nodeBox.getChildren().add(sensorPane);
 
-    ActuatorPane actuatorPane = new ActuatorPane(nodeInfo.getActuators());
-    actuatorPanes.put(nodeInfo.getId(), actuatorPane);
+    ActuatorPane actuatorPane = new ActuatorPane(node.getActuators());
+    actuatorPanes.put(node.getId(), actuatorPane);
     nodeBox.getChildren().add(actuatorPane);
 
-    nodeBoxes.put(nodeInfo.getId(), nodeBox);
+    nodeBoxes.put(node.getId(), nodeBox);
     nodeDisplayArea.getChildren().add(nodeBox);
-
   }
 
   private void removeNodeDisplay(int nodeId) {
@@ -362,7 +350,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
    */
   @Override
   public void onNodeRemoved(int nodeId) {
-
+    Platform.runLater(() -> removeNodeDisplay(nodeId));
   }
 
   private Actuator getActuator(int nodeId, int actuatorId) {
@@ -410,7 +398,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     dialog.getDialogPane().setContent(dialogLayout);
 
     dialog.showAndWait().ifPresent(result -> {
-      ChangeKey.getInstance().setKey(result);
+
       System.out.println("Entered Text: " + result);
     });
   }
@@ -425,21 +413,19 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     TextField enterIpField = new TextField("localhost");
     Label enterPort = new Label("Enter Server Port Number:");
     TextField enterPortField = new TextField("1238");
-    Label enterKey = new Label("Enter Server PSK password:");
-    TextField enterKeyField = new TextField("1238");
 
     Button saveButton = new Button("Update");
 
     saveButton.setOnAction(e -> {
       if(isValidPort(enterPortField.getText())){
-        ChangeKey.getInstance().setKey(enterKeyField.getText());
+
         setup(enterIpField.getText(), Integer.parseInt(enterPortField.getText()));
         dialog.setResult("");
         dialog.close();
       }
     });
 
-    dialogLayout.getChildren().addAll(enterIp, enterIpField, enterPort, enterPortField, enterKey, enterKeyField, saveButton);
+    dialogLayout.getChildren().addAll(enterIp, enterIpField, enterPort, enterPortField, saveButton);
     dialog.getDialogPane().setContent(dialogLayout);
     dialog.showAndWait();
   }

@@ -32,14 +32,6 @@ public class GreenHouseModel {
     this.portNumber = portNumber;
   }
 
-  public void addNode(GreenhouseNode node){
-    simulator.addNode(node);
-  }
-
-  public void removeNode(GreenhouseNode node){
-    simulator.removeNode(node);
-  }
-
   public GreenhouseSimulator getSimulator() {
     return simulator;
   }

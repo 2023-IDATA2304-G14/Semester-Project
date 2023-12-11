@@ -35,7 +35,7 @@ public class GreenHouseController implements PropertyChangeListener {
   }
 
   public void removeNode(GreenhouseNode node){
-    model.removeNode(node);
+    model.getSimulator().removeNode(node);
   }
 
   public void addSensor(Sensor sensor) {
