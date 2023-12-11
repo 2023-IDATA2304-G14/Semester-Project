@@ -24,7 +24,7 @@ public class ActuatorPane extends TitledPane {
   private final Map<Actuator, SimpleBooleanProperty> actuatorActive = new HashMap<>();
   private final VBox contentBox = new VBox();
   private final GreenhouseNode node;
-  private ControlPanelChannel channel = null;
+  private ControlPanelChannel channel = null; // If this is null, the actuator pane is used in the greenhouse simulator
 
   /**
    * Create a new actuator pane.
@@ -136,6 +136,7 @@ public class ActuatorPane extends TitledPane {
     Platform.runLater(() -> {
       if (!actuatorValue.containsKey(actuator)) {
         HBox hBox = new HBox(5);
+        hBox.setId(String.valueOf(actuator.getId()));
 
         Label actuatorLabel = new Label("Actuator: " + actuator.getType() + " - " + (actuator.isOn() ? "ON" : "OFF"));
 
