@@ -58,7 +58,6 @@ public class ControlPanelClient {
    *
    * @param logic The logic of the ControlPanel client
    */
-  //  TODO: Add the correct listener type
   public ControlPanelClient(ControlPanelLogic logic) {
     this(GreenhouseServer.DEFAULT_HOSTNAME, GreenhouseServer.DEFAULT_PORT, logic);
   }

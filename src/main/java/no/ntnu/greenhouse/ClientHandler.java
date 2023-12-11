@@ -80,6 +80,7 @@ public class ClientHandler
     this.socketReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
     this.socketWriter = new PrintWriter(clientSocket.getOutputStream(), true);
     greenhouseServer.getGreenhouseSimulator().addNodeStateListener(this);
+    greenhouseServer.getGreenhouseSimulator().addNodeListener(this);
   }
 
   /**
@@ -127,6 +128,7 @@ public class ClientHandler
     Logger.info("Client disconnected: " + clientSocket.getRemoteSocketAddress());
     greenhouseServer.removeClient(this);
     greenhouseServer.getGreenhouseSimulator().removeNodeStateListener(this);
+    greenhouseServer.getGreenhouseSimulator().removeNodeListener(this);
   }
 
   /**
