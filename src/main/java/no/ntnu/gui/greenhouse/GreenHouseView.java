@@ -1,11 +1,14 @@
 package no.ntnu.gui.greenhouse;
 
-// Import statements
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
@@ -14,9 +17,8 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import no.ntnu.greenhouse.*;
-import no.ntnu.gui.common.ActuatorPane;
-import no.ntnu.gui.common.SensorPane;
+import no.ntnu.greenhouse.DeviceFactory;
+import no.ntnu.greenhouse.GreenhouseNode;
 import no.ntnu.gui.greenhouse.helper.NodeView;
 
 public class GreenHouseView {

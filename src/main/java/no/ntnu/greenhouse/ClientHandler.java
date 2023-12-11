@@ -1,14 +1,5 @@
 package no.ntnu.greenhouse;
 
-import no.ntnu.encryption.SymmetricEncryption;
-import no.ntnu.listeners.common.ActuatorListener;
-import no.ntnu.listeners.common.NodeListener;
-import no.ntnu.listeners.common.SensorListener;
-import no.ntnu.listeners.common.StateListener;
-import no.ntnu.listeners.greenhouse.NodeStateListener;
-import no.ntnu.message.*;
-import no.ntnu.tools.Logger;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,8 +7,41 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import no.ntnu.listeners.common.ActuatorListener;
+import no.ntnu.listeners.common.NodeListener;
+import no.ntnu.listeners.common.SensorListener;
+import no.ntnu.listeners.common.StateListener;
+import no.ntnu.listeners.greenhouse.NodeStateListener;
+import no.ntnu.message.ActuatorDataMessage;
+import no.ntnu.message.ActuatorRemovedMessage;
+import no.ntnu.message.ActuatorStateMessage;
+import no.ntnu.message.BroadcastMessage;
+import no.ntnu.message.Command;
+import no.ntnu.message.GetCommand;
+import no.ntnu.message.ListCommand;
+import no.ntnu.message.Message;
+import no.ntnu.message.MessageSerializer;
+import no.ntnu.message.NodeRemovedMessage;
+import no.ntnu.message.NodeStateMessage;
+import no.ntnu.message.NodeSubscriptionCommand;
+import no.ntnu.message.SensorDataMessage;
+import no.ntnu.message.SensorRemovedMessage;
+import no.ntnu.message.SensorStateMessage;
+import no.ntnu.tools.Logger;
 
-public class ClientHandler extends Thread implements ActuatorListener, SensorListener, NodeListener, NodeStateListener, StateListener {
+/**
+ * A client handler handles communication with a client.
+ * It is responsible for reading commands from the client,
+ *  executing them, and sending the response back to the client.
+ */
+public class ClientHandler
+    extends Thread
+    implements
+    ActuatorListener,
+    SensorListener,
+    NodeListener,
+    NodeStateListener,
+    StateListener {
   private final Socket clientSocket;
   private final GreenhouseServer greenhouseServer;
   private final BufferedReader socketReader;
@@ -25,6 +49,7 @@ public class ClientHandler extends Thread implements ActuatorListener, SensorLis
 
   /**
    * Create a client handler.
+
    * @param clientSocket The socket to communicate with the client.
    * @param greenhouseServer The greenhouse server that created this client handler.
    * @throws IOException If the socket could not be opened.
@@ -41,7 +66,7 @@ public class ClientHandler extends Thread implements ActuatorListener, SensorLis
    */
   @Override
   public void run() {
-//    TODO: Improve the code quality of this method.
+    //    TODO: Improve the code quality of this method.
     List<Message> responses = null;
     do {
       Message clientCommand = readClientRequest();
@@ -49,7 +74,10 @@ public class ClientHandler extends Thread implements ActuatorListener, SensorLis
         responses = new ArrayList<>();
         Logger.info("Received from client: " + clientCommand);
         if (clientCommand instanceof NodeSubscriptionCommand nodeSubscriptionCommand) {
-          responses.add(nodeSubscriptionCommand.execute(greenhouseServer.getGreenhouseSimulator(), this));
+          responses.add(nodeSubscriptionCommand.execute(
+              greenhouseServer.getGreenhouseSimulator(),
+              this
+          ));
         } else if (clientCommand instanceof Command command) {
           responses.add(command.execute(greenhouseServer.getGreenhouseSimulator()));
         } else if (clientCommand instanceof ListCommand listCommand) {
@@ -60,7 +88,9 @@ public class ClientHandler extends Thread implements ActuatorListener, SensorLis
         }
         if (responses != null && !responses.isEmpty()) {
           for (Message response : responses) {
-            if ((!(clientCommand instanceof GetCommand) || !(clientCommand instanceof ListCommand)) && response instanceof BroadcastMessage) {
+            if ((!(clientCommand instanceof GetCommand)
+                || !(clientCommand instanceof ListCommand))
+                && response instanceof BroadcastMessage) {
               greenhouseServer.broadcastMessage(response);
             } else {
               sendMessageToClient(response);
@@ -78,6 +108,7 @@ public class ClientHandler extends Thread implements ActuatorListener, SensorLis
 
   /**
    * Read a command from the client.
+
    * @return The command read from the client, or null if the client disconnected.
    */
   private Message readClientRequest() {
@@ -87,10 +118,14 @@ public class ClientHandler extends Thread implements ActuatorListener, SensorLis
       if (rawClientRequest == null) {
         return null;
       }
-//      TODO: implement decryption
-//      String decryptedMessage = SymmetricEncryption.decryptMessage(rawClientRequest, );
+      //      TODO: implement decryption
+      //      String decryptedMessage = SymmetricEncryption
+      //        .decryptMessage(rawClientRequest, );
       clientCommand = MessageSerializer.deserialize(rawClientRequest);
-      if (!(clientCommand instanceof Command) && !(clientCommand instanceof NodeSubscriptionCommand)) {
+      if (
+          !(clientCommand instanceof Command)
+          && !(clientCommand instanceof NodeSubscriptionCommand)
+      ) {
         Logger.error("Received invalid request from client: " + clientCommand);
         clientCommand = null;
       }
@@ -102,12 +137,14 @@ public class ClientHandler extends Thread implements ActuatorListener, SensorLis
 
   /**
    * Send a message to the client.
+
    * @param message The message to send.
    */
   public void sendMessageToClient(Message message) {
     String serializedMessage = MessageSerializer.serialize(message);
-//    TODO: implement encryption
-//    Byte[] encryptedMessage = SymmetricEncryption.encryptMessage(serializedMessage, );
+    //    TODO: implement encryption
+    //    Byte[] encryptedMessage = SymmetricEncryption
+    //      .encryptMessage(serializedMessage, );
     socketWriter.println(serializedMessage);
   }
 
@@ -133,7 +170,14 @@ public class ClientHandler extends Thread implements ActuatorListener, SensorLis
    */
   @Override
   public void actuatorDataUpdated(Actuator actuator) {
-    sendMessageToClient(new ActuatorDataMessage(actuator.getNodeId(), actuator.getId(), actuator.isOn(), actuator.getStrength()));
+    sendMessageToClient(
+        new ActuatorDataMessage(
+            actuator.getNodeId(),
+            actuator.getId(),
+            actuator.isOn(),
+            actuator.getStrength()
+        )
+    );
   }
 
   /**
@@ -144,7 +188,15 @@ public class ClientHandler extends Thread implements ActuatorListener, SensorLis
   @Override
   public void sensorDataUpdated(Sensor sensor) {
     SensorReading reading = sensor.getReading();
-    sendMessageToClient(new SensorDataMessage(sensor.getNodeId(), sensor.getId(), reading.getValue(), reading.getUnit(), reading.getType()));
+    sendMessageToClient(
+        new SensorDataMessage(
+            sensor.getNodeId(),
+            sensor.getId(),
+            reading.getValue(),
+            reading.getUnit(),
+            reading.getType()
+        )
+    );
   }
 
 
@@ -177,7 +229,18 @@ public class ClientHandler extends Thread implements ActuatorListener, SensorLis
    */
   @Override
   public void actuatorStateUpdated(Actuator actuator) {
-    sendMessageToClient(new ActuatorStateMessage(actuator.getNodeId(), actuator.getId(), actuator.isOn(), actuator.getStrength(), actuator.getMinStrength(), actuator.getMaxStrength(), actuator.getUnit(), actuator.getType()));
+    sendMessageToClient(
+        new ActuatorStateMessage(
+            actuator.getNodeId(),
+            actuator.getId(),
+            actuator.isOn(),
+            actuator.getStrength(),
+            actuator.getMinStrength(),
+            actuator.getMaxStrength(),
+            actuator.getUnit(),
+            actuator.getType()
+        )
+    );
   }
 
   /**
@@ -188,7 +251,17 @@ public class ClientHandler extends Thread implements ActuatorListener, SensorLis
   @Override
   public void sensorStateUpdated(Sensor sensor) {
     SensorReading reading = sensor.getReading();
-    sendMessageToClient(new SensorStateMessage(sensor.getNodeId(), sensor.getId(), reading.getType(), sensor.getMin(), sensor.getMax(), reading.getValue(), reading.getUnit()));
+    sendMessageToClient(
+        new SensorStateMessage(
+            sensor.getNodeId(),
+            sensor.getId(),
+            reading.getType(),
+            sensor.getMin(),
+            sensor.getMax(),
+            reading.getValue(),
+            reading.getUnit()
+        )
+    );
   }
 
   /**

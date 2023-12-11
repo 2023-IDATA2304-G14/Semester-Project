@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.Stream;
-
 import no.ntnu.tools.Logger;
 
 /**
@@ -59,6 +58,7 @@ public class ActuatorCollection implements Iterable<Actuator> {
 
   /**
    * Remove an actuator from the collection.
+
    * @param actuatorId The ID of the actuator to remove
    */
   public void remove(int actuatorId) {
@@ -67,7 +67,7 @@ public class ActuatorCollection implements Iterable<Actuator> {
 
   /**
    * Get a stream of the actuators in this collection.
-   *
+
    * @return A stream of the actuators
    */
   public Stream<Actuator> stream() {

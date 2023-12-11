@@ -1,6 +1,6 @@
 package no.ntnu.message;
 
-public record SensorStateMessage(int nodeId, int sensorId, String type, double min, double max, double value, String unit) implements SensorActuatorStateMessage {
+public record SensorStateMessage(int nodeId, int sensorId, String type, double min, double max, double value, String unit) implements StateMessage {
 
   public static final String PREFIX = "sS";
 

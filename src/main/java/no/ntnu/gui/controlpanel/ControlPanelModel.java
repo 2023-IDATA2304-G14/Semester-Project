@@ -4,7 +4,20 @@ import no.ntnu.controlpanel.GreenhouseNodeInfo;
 import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
 
 // TODO: Check if this is the correct listener
+
+/**
+ * The model of the control panel. It is responsible for handling events from the server and
+ * notifying the view (GUI) about changes.
+ */
 public class ControlPanelModel implements GreenhouseEventListener {
+
+    /**
+     * Test class to
+     */
+    public void configure(){
+
+    }
+
 
     /**
      * This event is fired when a new node is added to the greenhouse.
@@ -43,7 +56,7 @@ public class ControlPanelModel implements GreenhouseEventListener {
      *
      * @param nodeId   ID of the node to which the sensor is attached
      * @param sensorId ID of the sensor
-     * @param type
+     * @param type     The type of the sensor
      * @param value    The new value of the sensor
      * @param min      The minimum value of the sensor
      * @param max      The maximum value of the sensor

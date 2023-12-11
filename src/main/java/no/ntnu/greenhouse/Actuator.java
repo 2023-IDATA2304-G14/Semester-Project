@@ -33,7 +33,14 @@ public class Actuator {
    * @param nodeId ID of the node to which this actuator is connected.
    * @param type   The type of the actuator.
    */
-  public Actuator(int nodeId, String type, int strength, int maxStrength, int minStrength, String unit) {
+  public Actuator(
+      int nodeId,
+      String type,
+      int strength,
+      int maxStrength,
+      int minStrength,
+      String unit
+  ) {
     this.type = type;
     this.nodeId = nodeId;
     this.on = false;
@@ -55,7 +62,15 @@ public class Actuator {
    * @param minStrength The minimum strength of the actuator.
    * @param unit The unit of the actuator.
    */
-  public Actuator(int nodeId, int id, String type, int strength, int maxStrength, int minStrength, String unit) {
+  public Actuator(
+      int nodeId,
+      int id,
+      String type,
+      int strength,
+      int maxStrength,
+      int minStrength,
+      String unit
+  ) {
     this.type = type;
     this.nodeId = nodeId;
     this.on = false;
@@ -83,6 +98,7 @@ public class Actuator {
 
   /**
    * Remove the given ActuatorListener.
+   *
    * @param listener The listener to remove
    */
   public void removeActuatorListener(ActuatorListener listener) {
@@ -91,6 +107,7 @@ public class Actuator {
 
   /**
    * Add the given NodeListener which will be notified when actuator state changes.
+   *
    * @param listener The listener of state change events
    */
   public void addStateListener(StateListener listener) {
@@ -101,6 +118,7 @@ public class Actuator {
 
   /**
    * Remove the given NodeListener.
+   *
    * @param listener The listener to remove
    */
   public void removeStateListener(NodeListener listener) {
@@ -180,8 +198,10 @@ public class Actuator {
       if (!on) {
         impact = -impact;
       } else {
-//        double normalizedStrength = (double) (strength - minStrength) / (maxStrength - minStrength); // 0.0 - 1.0
-        double normalizedStrength = (double) 2*(strength - minStrength) / (maxStrength - minStrength) - 1; // -1.0 - 1.0
+        //        double normalizedStrength = (double) (strength - minStrength)
+        //        / (maxStrength - minStrength); // 0.0 - 1.0
+        double normalizedStrength = (double) 2 * (strength - minStrength)
+            / (maxStrength - minStrength) - 1; // -1.0 - 1.0
         impact *= normalizedStrength;
       }
       node.applyActuatorImpact(sensorType, impact);
@@ -254,6 +274,7 @@ public class Actuator {
 
   /**
    * Get the strength of the actuator.
+
    * @return The strength of the actuator.
    */
   public int getStrength() {
@@ -261,7 +282,9 @@ public class Actuator {
   }
 
   /**
-   * Set the strength of the actuator. The strength will be clamped to the range [minStrength, maxStrength].
+   * Set the strength of the actuator.
+   * The strength will be clamped to the range [minStrength, maxStrength].
+
    * @param strength The strength to set.
    */
   public void setStrength(int strength) {
@@ -276,6 +299,7 @@ public class Actuator {
 
   /**
    * Get the unit of the actuator.
+
    * @return The unit of the actuator.
    */
   public String getUnit() {
@@ -284,6 +308,7 @@ public class Actuator {
 
   /**
    * Set the unit of the actuator.
+
    * @param unit The unit to set.
    */
   public void setUnit(String unit) {
@@ -293,6 +318,7 @@ public class Actuator {
 
   /**
    * Get the maximum strength of the actuator.
+
    * @return The maximum strength of the actuator.
    */
   public int getMaxStrength() {
@@ -300,8 +326,12 @@ public class Actuator {
   }
 
   /**
-   * Set the maximum strength of the actuator. The maximum strength will automatically clamp the strength to the new range [minStrength, maxStrength].
-   * The maximum strength will automatically be set to minStrength + 1 if the new maximum strength is less than or equal to minStrength.
+   * Set the maximum strength of the actuator.
+   * The maximum strength will automatically clamp the strength
+   *  to the new range [minStrength, maxStrength].
+   * The maximum strength will automatically be set to minStrength + 1
+   *  if the new maximum strength is less than or equal to minStrength.
+
    * @param maxStrength The maximum strength to set.
    */
   public void setMaxStrength(int maxStrength) {
@@ -317,6 +347,7 @@ public class Actuator {
 
   /**
    * Get the minimum strength of the actuator.
+
    * @return The minimum strength of the actuator.
    */
   public int getMinStrength() {
@@ -324,8 +355,12 @@ public class Actuator {
   }
 
   /**
-   * Set the minimum strength of the actuator. The minimum strength will automatically clamp the strength to the new range [minStrength, maxStrength].
-   * The minimum strength will automatically be set to maxStrength - 1 if the new minimum strength is greater than or equal to maxStrength.
+   * Set the minimum strength of the actuator.
+   * The minimum strength will automatically clamp the strength
+   *  to the new range [minStrength, maxStrength].
+   * The minimum strength will automatically be set to maxStrength - 1
+   *  if the new minimum strength is greater than or equal to maxStrength.
+
    * @param minStrength The minimum strength to set.
    */
   public void setMinStrength(int minStrength) {
@@ -341,25 +376,37 @@ public class Actuator {
 
   /**
    * Get the type of the actuator.
+
    * @return The type of the actuator.
    */
-    public String getType() {
-      return this.type;
-    }
+  public String getType() {
+    return this.type;
+  }
 
-    /**
-     * Set the type of the actuator.
-     * @param type The type to set.
-     */
-    public void setType(String type) {
-      this.type = type;
-      notifyStateChanges();
-    }
+  /**
+   * Set the type of the actuator.
 
+   * @param type The type to set.
+   */
+  public void setType(String type) {
+    this.type = type;
+    notifyStateChanges();
+  }
+
+  /**
+   * Set the listeners for this actuator.
+
+   * @param actuatorListeners The listeners to set.
+   */
   public void setListeners(List<ActuatorListener> actuatorListeners) {
     this.listeners = actuatorListeners;
   }
 
+  /**
+   * Set the state listeners for this actuator.
+
+   * @param stateListeners The state listeners to set.
+   */
   public void setStateListeners(List<StateListener> stateListeners) {
     this.stateListeners = stateListeners;
   }

@@ -2,10 +2,11 @@ package no.ntnu.run;
 
 import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelChannel;
-import no.ntnu.controlpanel.ControlPanelClient;
 import no.ntnu.controlpanel.ControlPanelLogic;
 import no.ntnu.gui.controlpanel.ControlPanelApplication;
 import no.ntnu.tools.Logger;
+
+import java.util.concurrent.ExecutionException;
 
 /**
  * Starter class for the control panel.
@@ -27,22 +28,24 @@ public class ControlPanelStarter {
     starter.start();
   }
 
+  /**
+   * You cannot have more than once instance of launch in javaFX. That makes it really difficult
+   * to let the user change the ip and port. This is because the port and ip is set before
+   * the GUi launches.
+   */
   private void start() {
-    ControlPanelLogic logic = new ControlPanelLogic();
-    initiateSocketCommunication(logic);
-    ControlPanelApplication.startApp(logic, channel);
+
+   // ControlPanelLogic logic = new ControlPanelLogic();
+   // initiateSocketCommunication(logic);
+   // ControlPanelApplication.startApp(logic, channel);
+    ControlPanelApplication.newStart();
     // This code is reached only after the GUI-window is closed
     Logger.info("Exiting the control panel application");
     stopCommunication();
   }
 
 
-  private void initiateSocketCommunication(ControlPanelLogic logic/*, String host, int port*/) {
-//    TODO: Add a way for the user to input the host and port
-//    channel = new ControlPanelChannel(logic, host, port);
-    channel = new ControlPanelChannel(logic);
-    logic.setCommunicationChannel(channel);
-  }
+
 
   private void stopCommunication() {
 

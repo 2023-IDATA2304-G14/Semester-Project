@@ -1,7 +1,19 @@
 package no.ntnu.controlpanel;
 
-import no.ntnu.message.*;
+import no.ntnu.message.GetActuatorDataCommand;
+import no.ntnu.message.GetActuatorStateCommand;
+import no.ntnu.message.GetActuatorsCommand;
+import no.ntnu.message.GetNodesCommand;
+import no.ntnu.message.GetSensorDataCommand;
+import no.ntnu.message.GetSensorStateCommand;
+import no.ntnu.message.GetSensorsCommand;
+import no.ntnu.message.SetActuatorCommand;
+import no.ntnu.message.SubscribeNodeCommand;
+import no.ntnu.message.UnsubscribeNodeCommand;
 
+/**
+ * The ControlPanelChannel class is responsible for sending commands to the server.
+ */
 public class ControlPanelChannel implements CommunicationChannel {
 
   private final ControlPanelLogic logic;
@@ -16,13 +28,15 @@ public class ControlPanelChannel implements CommunicationChannel {
     this.logic = logic;
     this.client = new ControlPanelClient(host, port, logic);
   }
+
   /**
    * Request that state of an actuator is changed.
    *
    * @param nodeId     ID of the node to which the actuator is attached
    * @param actuatorId Node-wide unique ID of the actuator
    * @param isOn       When true, actuator must be turned on; off when false.
-   * @param strength   Strength of the actuator. Different actuators may have different strength levels.
+   * @param strength   Strength of the actuator.
+   *                   Different actuators may have different strength levels.
    */
   @Override
   public void sendActuatorChange(int nodeId, int actuatorId, boolean isOn, int strength) {
@@ -32,7 +46,7 @@ public class ControlPanelChannel implements CommunicationChannel {
   /**
    * Request a list of all actuators on a node.
    *
-   * @param nodeId
+   * @param nodeId The ID of the node to which the actuator is attached
    */
   @Override
   public void getActuators(int nodeId) {
@@ -42,11 +56,19 @@ public class ControlPanelChannel implements CommunicationChannel {
   /**
    * Request a list of all sensors on a node.
    *
-   * @param nodeId
+   * @param nodeId The ID of the node to which the sensor is attached
    */
   @Override
   public void getSensors(int nodeId) {
     client.sendCommand(new GetSensorsCommand(nodeId));
+  }
+
+  /**
+   * Request a list of all nodes.
+   */
+  @Override
+  public void getNodes() {
+    client.sendCommand(new GetNodesCommand());
   }
 
   /**
@@ -112,17 +134,7 @@ public class ControlPanelChannel implements CommunicationChannel {
    */
   @Override
   public void unsubscribeToNode(int nodeId) {
-
-  }
-
-  /**
-   * Open the communication channel.
-   *
-   * @return True when the communication channel is successfully opened, false on error
-   */
-  @Override
-  public boolean open() {
-    return false;
+    client.sendCommand(new UnsubscribeNodeCommand(nodeId));
   }
 
   /**

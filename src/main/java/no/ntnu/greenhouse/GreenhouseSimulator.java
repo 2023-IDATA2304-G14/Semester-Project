@@ -1,9 +1,6 @@
 package no.ntnu.greenhouse;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -165,5 +162,9 @@ public class GreenhouseSimulator {
    */
   public GreenhouseNode getNode(int nodeId) {
     return nodes.get(nodeId);
+  }
+
+  public List<GreenhouseNode> getNodes() {
+    return new ArrayList<>(nodes.values());
   }
 }
