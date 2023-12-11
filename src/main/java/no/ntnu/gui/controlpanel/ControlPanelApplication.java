@@ -42,7 +42,6 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   private Scene mainScene;
   private VBox controlArea;
   private final Map<Integer, NodeViewControlPanel> nodeViewPanes = new HashMap<>();
-  private static ControlPanelModel controlPanelModel;
 
   //Daniel Shenanigans
   private String passPhrase;
@@ -60,7 +59,6 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     if (logic == null) {
       throw new IllegalArgumentException("Control panel logic can't be null");
     }
-    controlPanelModel = new ControlPanelModel();
     ControlPanelApplication.logic = logic;
     ControlPanelApplication.channel = channel;
     Logger.info("Running control panel GUI...");
