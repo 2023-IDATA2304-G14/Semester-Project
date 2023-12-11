@@ -10,18 +10,13 @@ import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.tools.Logger;
 
 public class GreenhouseApplicationMVC extends Application implements NodeStateListener, NodeListener {
-
   private static GreenhouseSimulator simulator;
-
   GreenHouseView greenHouseView;
   private GreenHouseModel model;
-
   @Override
   public void start(Stage primaryStage) throws Exception {
     greenHouseView = new GreenHouseView(primaryStage);
     model = greenHouseView.getModel();
-    simulator.initialize();
-//    simulator.subscribeToLifecycleUpdates(this);
     primaryStage.setOnCloseRequest(event -> closeApplication());
     simulator.start();
   }
