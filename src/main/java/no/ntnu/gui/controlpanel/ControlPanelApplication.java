@@ -267,13 +267,16 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   @Override
   public void onNodeStateChanged(int nodeId, String name) {
     Logger.info("Node " + nodeId + " is " + name);
-//    VBox nodeBox = nodeBoxes.get(nodeId);
-//    if (nodeBox != null) {
-//      Label nodeLabel = (Label) nodeBox.getChildren().get(0);
-//      nodeLabel.setText("Node " + nodeId + " - " + name);
-//    } else {
-//
-//    }
+    Platform.runLater(() -> {
+      if (nodeViewPanes.containsKey(nodeId)) {
+        nodeViewPanes.get(nodeId).setText(name);
+      } else {
+        GreenhouseNode node = new GreenhouseNode(nodeId, name);
+        NodeViewControlPanel nodeView = new NodeViewControlPanel(node, channel);
+        nodeViewPanes.put(nodeId, nodeView.getPane());
+        nodeDisplayArea.getChildren().add(nodeView.getPane());
+      }
+    });
   }
 
   /**
