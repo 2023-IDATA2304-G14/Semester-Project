@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import no.ntnu.controlpanel.ControlPanelChannel;
 import no.ntnu.greenhouse.GreenhouseNode;
 import no.ntnu.greenhouse.Sensor;
 import no.ntnu.greenhouse.SensorCollection;
@@ -23,6 +24,8 @@ public class SensorPane extends TitledPane {
   private final VBox contentBox = new VBox();
   private final Map<Sensor, SimpleStringProperty> sensorValues = new HashMap<>();
   private final GreenhouseNode node;
+  private ControlPanelChannel channel = null;
+
 
   private void initialize(SensorCollection sensors) {
     setText("Sensors");
@@ -43,6 +46,13 @@ public class SensorPane extends TitledPane {
     initialize(new SensorCollection());
   }
 
+  public SensorPane(GreenhouseNode node, ControlPanelChannel channel) {
+    super();
+    this.node = node;
+    this.channel = channel;
+    initialize(new SensorCollection());
+  }
+
   /**
    * Create a sensor pane.
    * Wrapper for the other constructor with SensorReading-iterable parameter
@@ -52,6 +62,13 @@ public class SensorPane extends TitledPane {
   public SensorPane(SensorCollection sensors, GreenhouseNode node) {
     super();
     this.node = node;
+    initialize(sensors);
+  }
+
+  public SensorPane(SensorCollection sensors, GreenhouseNode node, ControlPanelChannel channel) {
+    super();
+    this.node = node;
+    this.channel = channel;
     initialize(sensors);
   }
 

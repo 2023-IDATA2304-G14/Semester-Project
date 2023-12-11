@@ -150,6 +150,7 @@ public class ControlPanelClient {
           throw new RuntimeException(e);
         }
       } while (message != null);
+      logic.onCommunicationChannelClosed();
     }).start();
   }
 
