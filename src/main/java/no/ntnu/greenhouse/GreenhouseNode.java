@@ -96,7 +96,7 @@ public class GreenhouseNode implements CommunicationChannelListener {
       newSensor.setListeners(sensorListeners);
       newSensor.setStateListeners(stateListeners);
       sensors.add(newSensor);
-      Logger.info("Created " + template.getType() + "[" + template.getId() + "] on node " + id);
+      Logger.info("Created " + newSensor.getType() + "[" + newSensor.getId() + "] on node " + id);
     }
   }
 
