@@ -3,8 +3,6 @@ package no.ntnu.gui.greenhouse.helper;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -13,7 +11,6 @@ import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
 import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.common.SensorListener;
-
 /**
  * Window with GUI for overview and control of one specific sensor/actuator node.
  */
@@ -22,13 +19,10 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
   private ActuatorPane actuatorPane;
   private SensorPane sensorPane;
   private Label nodeIdLabel;
-
   private Button removeNode = new Button("Remove Node");
   private Button addSensor = new Button("Add Sensor");
   private Button addActuator = new Button("Add Actuator");
-
   private TitledPane titledPane;
-
   public NodeView(GreenhouseNode node) {
     this.node = node;
     this.nodeIdLabel = new Label("Node ID: " + node.getId());
@@ -37,7 +31,6 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
     initializeListeners(node);
     initializeGui();
   }
-
   public Node getPane(){
     return titledPane;
   }
@@ -82,11 +75,6 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
     addActuator.setOnAction(e -> {
       ShowActuatorDialog();
 
-      //CheckBox checkBox = (CheckBox) content.lookup("#checkBoxActuator");
-      //if (checkBox != null) {
-      //  System.out.println("Found check");
-      //  checkBox.setDisable(true);
-      //}
     });
   }
 
@@ -152,6 +140,7 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
             sensor = DeviceFactory.createHumiditySensor(node.getId());
           }
           node.addSensors(sensor, Integer.parseInt(textField.getText()));
+          sensorPane.addSensor(sensor);
           node.start();
            dialog.setResult("");
            dialog.close();
@@ -166,6 +155,12 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
     dialogLayout.getChildren().addAll(comboBox, label, textField, saveButton, close);
     dialog.getDialogPane().setContent(dialogLayout);
     dialog.showAndWait();
+  }
+
+  public void updateSensorPane() {
+    for (Sensor sensor : node.getSensors()) {
+      sensorPane.update(sensor);
+    }
   }
 
   private void ShowActuatorDialog(){
