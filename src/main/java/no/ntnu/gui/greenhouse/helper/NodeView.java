@@ -1,10 +1,8 @@
 package no.ntnu.gui.greenhouse.helper;
 
 import javafx.application.Platform;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import no.ntnu.greenhouse.*;
 import no.ntnu.gui.common.ActuatorPane;
@@ -13,9 +11,6 @@ import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.common.NodeListener;
 import no.ntnu.listeners.common.SensorListener;
 import no.ntnu.listeners.common.StateListener;
-import no.ntnu.listeners.greenhouse.NodeStateListener;
-
-import java.util.List;
 
 /**
  * Window with GUI for overview and control of one specific sensor/actuator node.
@@ -233,7 +228,7 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener, 
    */
   @Override
   public void actuatorRemoved(Actuator actuator) {
-    actuatorPane.remove(actuator.getId());
+    actuatorPane.removeFromView(actuator.getId());
   }
 
   /**
