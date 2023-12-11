@@ -48,15 +48,12 @@ public class GreenhouseApplicationMVC extends Application implements NodeStateLi
     Platform.runLater(() -> {
 
       greenHouseView.setSimulator(node);
-
-     // mainWindow.addNode(node.getId(), nodeGui); // Add the node GUI to the main window
     });
   }
 
   public void onNodeStopped(GreenhouseNode node) {
     Logger.info("Node " + node.getId() + " has stopped");
     Platform.runLater(() -> {
-      //mainWindow.removeNode(node.getId()); // Remove the node GUI from the main window
     });
   }
 
@@ -73,7 +70,7 @@ public class GreenhouseApplicationMVC extends Application implements NodeStateLi
   }
 
   /**
-   * The main method for launching the SmartTvApp application.
+   * The main method for launching the GreenhouseApplication application.
    *
    * @param args The command-lines arguments
    */
