@@ -1,11 +1,8 @@
 package no.ntnu.gui.greenhouse;
 
-// Import statements
 import no.ntnu.encryption.ChangeKey;
 import no.ntnu.encryption.PSKGenerator;
-import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.GreenhouseNode;
-import no.ntnu.greenhouse.GreenhouseSimulator;
 import no.ntnu.greenhouse.Sensor;
 
 import java.beans.PropertyChangeEvent;
