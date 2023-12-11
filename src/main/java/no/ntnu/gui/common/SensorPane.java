@@ -84,18 +84,6 @@ public class SensorPane extends TitledPane {
     node.removeSensor(sensor.getId());
   }
 
-//  /**
-//   * Update the GUI according to the changes in sensor data.
-//   *
-//   * @param sensorReadings The sensor data that has been updated
-//   */
-//  public void update(List<SensorReading> sensorReadings) {
-//    int index = 0;
-//    for (SensorReading sensorReading : sensorReadings) {
-//      updateSensorLabel(sensorReading, index++);
-//    }
-//  }
-
   /**
    * Update the GUI according to the changes in sensor data.
    *

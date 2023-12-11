@@ -407,5 +407,6 @@ public class Actuator {
    */
   public void setStateListeners(List<StateListener> stateListeners) {
     this.stateListeners = stateListeners;
+    notifyStateChanges();
   }
 }

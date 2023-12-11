@@ -370,7 +370,9 @@ public class GreenhouseNode implements CommunicationChannelListener {
   }
 
   public void removeActuator(int actuatorId) {
+    Actuator actuator = actuators.get(actuatorId);
     actuators.remove(actuatorId);
+    nodeListeners.forEach(listener -> listener.actuatorRemoved(actuator));
   }
 
   public void removeSensor(int sensorId) {

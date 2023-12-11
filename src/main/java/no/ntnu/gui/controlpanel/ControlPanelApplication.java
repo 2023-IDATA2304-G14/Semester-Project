@@ -231,11 +231,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     if (actuatorPane != null) {
       actuator = getActuator(nodeId, actuatorId);
       if (actuator != null) {
-        if (isOn) {
-          actuator.turnOn();
-        } else {
-          actuator.turnOff();
-        }
+        actuator.setOn(isOn);
         actuator.setStrength(strength);
         actuator.setMinStrength(minStrength);
         actuator.setMaxStrength(maxStrength);

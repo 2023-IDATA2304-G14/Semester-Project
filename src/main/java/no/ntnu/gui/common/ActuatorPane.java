@@ -61,9 +61,7 @@ public class ActuatorPane extends TitledPane {
     checkbox.setId("checkBoxActuator");
 
     checkbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-      if (newValue != null) {
-        sendActuatorCommand(actuator, newValue);
-      }
+//      TODO: should the checkbox do anything????
     });
     return checkbox;
   }
@@ -78,7 +76,7 @@ public class ActuatorPane extends TitledPane {
 
   private String generateActuatorText(Actuator actuator) {
     String onOff = actuator.isOn() ? "ON" : "off";
-    return actuator.getType() + ": " + onOff;
+    return actuator.getType() + ": " + onOff + " (" + actuator.getStrength() + actuator.getUnit() + ")";
   }
 
   /**
@@ -87,31 +85,11 @@ public class ActuatorPane extends TitledPane {
    * @param actuator The actuator to update
    */
   public void update(Actuator actuator) {
-    SimpleStringProperty actuatorText = actuatorValue.get(actuator);
-    SimpleBooleanProperty actuatorSelected = actuatorActive.get(actuator);
-    if (actuatorText == null || actuatorSelected == null) {
-      throw new IllegalStateException("Can't update GUI for an unknown actuator: " + actuator);
-    }
-
-    Platform.runLater(() -> {
-      actuatorText.set(generateActuatorText(actuator));
-      actuatorSelected.set(actuator.isOn());
-    });
-  }
-
-  private void sendActuatorCommand(Actuator actuator, boolean isOn) {
-    String serverAddress = "your_server_address"; // Replace with  server address
-    int serverPort = 1234; // Replace with  server port
-
-    try (Socket socket = new Socket(serverAddress, serverPort);
-         PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
-
-      String command = actuator.getId() + ":" + (isOn ? "ON" : "OFF");
-      out.println(command);
-
-    } catch (IOException e) {
-      Logger.error("Error sending command to actuator: " + e.getMessage());
-      // Handle the error
+    if (actuatorValue.containsKey(actuator)) {
+      actuatorValue.get(actuator).setValue(generateActuatorText(actuator));
+    } else {
+      Logger.info("Adding new actuator to GUI: " + actuator);
+      addActuator(actuator);
     }
   }
 
@@ -121,21 +99,22 @@ public class ActuatorPane extends TitledPane {
    * @param actuatorId ID of the actuator to remove
    */
   public void remove(int actuatorId) {
-    actuatorValue.keySet().stream()
-            .filter(actuator -> actuator.getId() == actuatorId)
-            .findFirst()
-            .ifPresent(actuator -> {
-              actuatorValue.remove(actuator);
-              actuatorActive.remove(actuator);
-            });
-    //    TODO: Implement a way of removing the existing labels
+    for (Actuator actuator : actuatorValue.keySet()) {
+      if (actuator.getId() == actuatorId) {
+        actuatorValue.remove(actuator);
+        actuatorActive.remove(actuator);
+        contentBox.getChildren().removeIf(actuatorBox -> actuatorBox.getId().equals(actuatorId));
+        break;
+      }
+    }
   }
 
-  public void addActuator(Actuator actuator) {
+  private void addActuator(Actuator actuator) {
     Platform.runLater(() -> {
       if (!actuatorValue.containsKey(actuator)) {
         // Create new GUI components for the actuator
         HBox hBox = new HBox(createActuatorLabel(actuator), createActuatorCheckbox(actuator));
+        hBox.setId(String.valueOf(actuator.getId()));
         hBox.setSpacing(5);
 
         // Add the new HBox to the contentBox, which already contains other actuators

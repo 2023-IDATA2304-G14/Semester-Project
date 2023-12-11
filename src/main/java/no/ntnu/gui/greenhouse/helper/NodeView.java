@@ -37,6 +37,7 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener, 
 
     this.nodeIdLabel.setStyle("-fx-font-weight: bold;");
     initializeListeners(node);
+    node.start();
     initializeGui();
   }
   public TitledPane getPane(){
@@ -138,7 +139,6 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener, 
           sensor = DeviceFactory.createHumiditySensor(node.getId());
         }
         node.addSensors(sensor, Integer.parseInt(textField.getText()));
-        node.start();
         dialog.setResult("");
         dialog.close();
       }
