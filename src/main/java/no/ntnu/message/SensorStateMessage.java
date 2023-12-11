@@ -4,8 +4,7 @@ public record SensorStateMessage(int nodeId, int sensorId, String type, double m
 
   public static final String PREFIX = "sS";
 
-  @Override
-  public String getPrefix() {
+  public static String getPrefix() {
     return PREFIX;
   }
 
@@ -22,8 +21,7 @@ public record SensorStateMessage(int nodeId, int sensorId, String type, double m
         .parameterize();
   }
 
-  @Override
-  public Message deserialize(String message) {
+  public static Message deserialize(String message) {
     if (message == null) {
       throw new IllegalArgumentException("Message cannot be null");
     }

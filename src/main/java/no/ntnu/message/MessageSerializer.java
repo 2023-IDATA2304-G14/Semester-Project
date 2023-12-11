@@ -1,5 +1,8 @@
 package no.ntnu.message;
 
+import no.ntnu.tools.Logger;
+
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Set;
 
@@ -48,11 +51,16 @@ public class MessageSerializer {
         continue;
       }
       try {
-        Message instance = messageClass.getDeclaredConstructor().newInstance();
-        if (instance.getPrefix().equals(prefix)) {
-          return instance.deserialize(message);
+        Method getPrefixMethod = messageClass.getMethod("getPrefix");
+        String newPrefix = (String) getPrefixMethod.invoke(null);
+
+//        Logger.info("Checking if " + newPrefix + " equals " + prefix);
+        if (newPrefix.equals(prefix)) {
+          return (Message) messageClass.getMethod("deserialize", String.class).invoke(null, message);
         }
       } catch (Exception e) {
+        e.printStackTrace();
+        Logger.error("Could not deserialize message. Error: " + e);
         return new UnknownMessage(message);
       }
     }

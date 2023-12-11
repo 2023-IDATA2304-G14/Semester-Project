@@ -4,9 +4,12 @@ package no.ntnu.message;
  * An abstract message sent or received by the server.
  */
 public interface Message {
-    String getPrefix();
-
+    static String getPrefix() {
+        throw new UnsupportedOperationException("Not implemented");
+    }
     String serialize();
 
-    Message deserialize(String message);
+    static Message deserialize(String message) {
+        throw new UnsupportedOperationException("Not implemented");
+    }
 }

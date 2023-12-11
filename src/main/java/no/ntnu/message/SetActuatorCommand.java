@@ -21,8 +21,7 @@ public record SetActuatorCommand(int nodeId, int actuatorId, boolean isOn, int s
     return new ActuatorDataMessage(nodeId, actuatorId, actuator.isOn(), actuator.getStrength());
   }
 
-  @Override
-  public String getPrefix() {
+  public static String getPrefix() {
     return PREFIX;
   }
 
@@ -36,8 +35,7 @@ public record SetActuatorCommand(int nodeId, int actuatorId, boolean isOn, int s
         .parameterize();
   }
 
-  @Override
-  public Message deserialize(String message) {
+  public static Message deserialize(String message) {
     if (message == null) {
       throw new IllegalArgumentException("Message cannot be null");
     }

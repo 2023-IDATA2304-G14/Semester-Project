@@ -19,27 +19,25 @@ public record SubscribeNodeCommand(int nodeId) implements NodeSubscriptionComman
         return response;
     }
 
-  @Override
-  public String getPrefix() {
+  public static String getPrefix() {
     return PREFIX;
   }
 
   @Override
-    public String serialize() {
-        return new MessageParameterizer(PREFIX)
-                .setNodeId(String.valueOf(nodeId()))
-                .parameterize();
-    }
+  public String serialize() {
+      return new MessageParameterizer(PREFIX)
+              .setNodeId(String.valueOf(nodeId()))
+              .parameterize();
+  }
 
-    @Override
-    public Message deserialize(String message) {
-if (message == null) {
-            throw new IllegalArgumentException("Message cannot be null");
-        }
-        MessageParameterizer parameterizer = new MessageParameterizer(PREFIX).deparameterize(message);
+  public static Message deserialize(String message) {
+    if (message == null) {
+          throw new IllegalArgumentException("Message cannot be null");
+      }
+      MessageParameterizer parameterizer = new MessageParameterizer(PREFIX).deparameterize(message);
 
-        return new SubscribeNodeCommand(
-                Integer.parseInt(parameterizer.getNodeId())
-        );
-    }
+      return new SubscribeNodeCommand(
+              Integer.parseInt(parameterizer.getNodeId())
+      );
+  }
 }

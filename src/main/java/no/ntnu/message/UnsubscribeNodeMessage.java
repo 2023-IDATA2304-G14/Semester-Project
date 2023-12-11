@@ -2,8 +2,8 @@ package no.ntnu.message;
 
 public record UnsubscribeNodeMessage(int nodeId) implements Message {
   public static final String PREFIX = "unsubbed";
-  @Override
-  public String getPrefix() {
+
+  public static String getPrefix() {
     return PREFIX;
   }
 
@@ -14,8 +14,7 @@ public record UnsubscribeNodeMessage(int nodeId) implements Message {
         .parameterize();
   }
 
-  @Override
-  public Message deserialize(String message) {
+  public static Message deserialize(String message) {
     if (message == null) {
       throw new IllegalArgumentException("Message cannot be null");
     }

@@ -11,8 +11,7 @@ public record ActuatorDataMessage(
 ) implements Message {
   public static final String PREFIX = "aD";
 
-  @Override
-  public String getPrefix() {
+  public static String getPrefix() {
     return PREFIX;
   }
 
@@ -26,8 +25,7 @@ public record ActuatorDataMessage(
         .parameterize();
   }
 
-  @Override
-  public Message deserialize(String input) throws IllegalArgumentException {
+  public static Message deserialize(String input) throws IllegalArgumentException {
     if (input == null) {
       throw new IllegalArgumentException("Message cannot be null");
     }

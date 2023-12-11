@@ -15,8 +15,7 @@ public record ActuatorStateMessage(
 ) implements StateMessage {
   public static final String PREFIX = "aS";
 
-  @Override
-  public String getPrefix() {
+  public static String getPrefix() {
     return PREFIX;
   }
 
@@ -34,8 +33,7 @@ public record ActuatorStateMessage(
         .parameterize();
   }
 
-  @Override
-  public Message deserialize(String message) {
+  public static Message deserialize(String message) {
     if (message == null) {
       throw new IllegalArgumentException("Message cannot be null");
     }

@@ -21,8 +21,7 @@ public record ActuatorRemovedMessage(int nodeId, int actuatorId) implements Mess
     }
   }
 
-  @Override
-  public String getPrefix() {
+  public static String getPrefix() {
     return PREFIX;
   }
 
@@ -34,8 +33,7 @@ public record ActuatorRemovedMessage(int nodeId, int actuatorId) implements Mess
         .parameterize();
   }
 
-  @Override
-  public Message deserialize(String message) {
+  public static Message deserialize(String message) {
     if (message == null) {
       throw new IllegalArgumentException("Message cannot be null");
     }

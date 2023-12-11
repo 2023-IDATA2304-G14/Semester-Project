@@ -6,8 +6,7 @@ import no.ntnu.greenhouse.Sensor;
 public record GetSensorStateCommand(int nodeId, int sensorId) implements Command {
   public static final String PREFIX = "gSs";
 
-  @Override
-  public String getPrefix() {
+  public static String getPrefix() {
     return PREFIX;
   }
 
@@ -19,8 +18,7 @@ public record GetSensorStateCommand(int nodeId, int sensorId) implements Command
         .parameterize();
   }
 
-  @Override
-  public Message deserialize(String message) {
+  public static Message deserialize(String message) {
     if (message == null) {
       throw new IllegalArgumentException("Message cannot be null");
     }

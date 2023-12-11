@@ -50,6 +50,7 @@ if they have a use for multiple greenhouses.
 
 ## The flow of information and events
 
+[//]: # (TODO: remove the following text)
 TODO - describe what each network node does and when. Some periodic events? Some reaction on 
 incoming packets? Perhaps split into several subsections, where each subsection describes one 
 node type (For example: one subsection for sensor/actuator nodes, one for control panel nodes).

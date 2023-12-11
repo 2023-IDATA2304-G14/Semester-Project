@@ -18,8 +18,7 @@ public record GetActuatorStateCommand(int nodeId, int actuatorId) implements Com
     return new ActuatorStateMessage(nodeId, actuatorId, actuator.isOn(), actuator.getStrength(), actuator.getMinStrength(), actuator.getMaxStrength(), actuator.getUnit(), actuator.getType());
   }
 
-  @Override
-  public String getPrefix() {
+  public static String getPrefix() {
     return PREFIX;
   }
 
@@ -31,8 +30,7 @@ public record GetActuatorStateCommand(int nodeId, int actuatorId) implements Com
         .parameterize();
   }
 
-  @Override
-  public Message deserialize(String message) {
+  public static Message deserialize(String message) {
     if (message == null) {
       throw new IllegalArgumentException("Message cannot be null");
     }
