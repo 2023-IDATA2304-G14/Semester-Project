@@ -107,14 +107,19 @@ public class ActuatorPane extends TitledPane {
     }
   }
 
+  /**
+   * Remove an actuator from the GUI.
+   *
+   * @param actuator
+   */
   public void removeActuator(Actuator actuator) {
-    node.removeSensor(actuator.getId());
+    node.removeActuator(actuator.getId());
   }
 
   /**
-   * Remove an actuator from the GUI.
-
-   * @param actuatorId ID of the actuator to remove
+   *
+   *
+   * @param actuatorId
    */
   public void removeFromView(int actuatorId) {
     for (Actuator actuator : actuatorValue.keySet()) {
