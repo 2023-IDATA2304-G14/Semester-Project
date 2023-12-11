@@ -13,6 +13,7 @@ import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.common.NodeListener;
 import no.ntnu.listeners.common.SensorListener;
 import no.ntnu.listeners.common.StateListener;
+import no.ntnu.listeners.greenhouse.NodeStateListener;
 
 import java.util.List;
 
@@ -46,6 +47,7 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener, 
     node.addSensorListener(this);
     node.addActuatorListener(this);
     node.addStateListener(this);
+    node.addNodeListener(this);
   }
 
   private void initializeGui() {
@@ -54,7 +56,7 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener, 
     content.setMinHeight(300);
     actuatorPane = new ActuatorPane(node.getActuators());
 
-    sensorPane = new SensorPane(node.getSensors());
+    sensorPane = new SensorPane(node.getSensors(), node);
 
     // Optionally wrap in ScrollPanes
     ScrollPane sensorScrollPane = new ScrollPane(sensorPane);
@@ -98,13 +100,6 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener, 
     return node;
   }
 
-  @Override
-  public void sensorDataUpdated(Sensor sensor) {
-    if (sensorPane != null) {
-      sensorPane.update(sensor);
-    }
-  }
-
   private void showNodeDialog() {
 
     Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -135,19 +130,18 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener, 
     Button close = new Button("Exit");
 
     saveButton.setOnAction(e -> {
-         if(isPositiveNumber(textField.getText())) {
-          Sensor sensor;
-          if (comboBox.getValue() == "Temperature") {
-
-            sensor = DeviceFactory.createTemperatureSensor(node.getId());
-          } else {
-            sensor = DeviceFactory.createHumiditySensor(node.getId());
-          }
-//          List<Sensor> newSensors = node.addSensors(sensor, Integer.parseInt(textField.getText()));
-          node.start();
-           dialog.setResult("");
-           dialog.close();
-         }
+      if(isPositiveNumber(textField.getText())) {
+        Sensor sensor;
+        if (comboBox.getValue() == "Temperature") {
+          sensor = DeviceFactory.createTemperatureSensor(node.getId());
+        } else {
+          sensor = DeviceFactory.createHumiditySensor(node.getId());
+        }
+        node.addSensors(sensor, Integer.parseInt(textField.getText()));
+        node.start();
+        dialog.setResult("");
+        dialog.close();
+      }
     });
 
     close.setOnAction(e -> {
@@ -187,7 +181,6 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener, 
       } else {
         actuator = DeviceFactory.createFan(node.getId());
       }
-      actuatorPane.addActuator(actuator);
       node.addActuator(actuator);
       node.start();
       dialog.setResult("");
@@ -221,7 +214,17 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener, 
    */
   @Override
   public void actuatorDataUpdated(Actuator actuator) {
-      actuatorPane.update(actuator);
+    actuatorPane.update(actuator);
+  }
+
+  /**
+   * An event that is fired every time the sensor data is updated.
+   *
+   * @param sensor The sensor that has new data
+   */
+  @Override
+  public void sensorDataUpdated(Sensor sensor) {
+    sensorPane.update(sensor);
   }
 
   /**

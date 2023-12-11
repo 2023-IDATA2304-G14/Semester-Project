@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import no.ntnu.greenhouse.GreenhouseNode;
 import no.ntnu.greenhouse.Sensor;
 import no.ntnu.greenhouse.SensorCollection;
 import no.ntnu.greenhouse.SensorReading;
@@ -21,6 +22,7 @@ import no.ntnu.tools.Logger;
 public class SensorPane extends TitledPane {
   private final VBox contentBox = new VBox();
   private final Map<Sensor, SimpleStringProperty> sensorValues = new HashMap<>();
+  private final GreenhouseNode node;
 
   private void initialize(SensorCollection sensors) {
     setText("Sensors");
@@ -35,8 +37,9 @@ public class SensorPane extends TitledPane {
   /**
    * Create an empty sensor pane, without any data.
    */
-  public SensorPane() {
+  public SensorPane(GreenhouseNode node) {
     super();
+    this.node = node;
     initialize(new SensorCollection());
   }
 
@@ -46,15 +49,17 @@ public class SensorPane extends TitledPane {
    *
    * @param sensors The sensor data to be displayed on the pane.
    */
-  public SensorPane(SensorCollection sensors) {
+  public SensorPane(SensorCollection sensors, GreenhouseNode node) {
     super();
+    this.node = node;
     initialize(sensors);
   }
 
-  public void addSensor(Sensor sensor) {
+  private void addSensor(Sensor sensor) {
     Platform.runLater(() -> {
       if (!sensorValues.containsKey(sensor)) {
         HBox hBox = new HBox(5);
+        hBox.setId(String.valueOf(sensor.getId()));
 
         Button removeButton = new Button("Remove");
 
@@ -71,19 +76,12 @@ public class SensorPane extends TitledPane {
         Label sensorLabel = createAndRememberSensorLabel(sensor);
         hBox.getChildren().addAll(sensorLabel, removeButton);
         contentBox.getChildren().add(hBox);
-        sensorValues.put(sensor, new SimpleStringProperty(sensor.toString()));
       }
     });
   }
 
-  // TODO: add removeSensor
   public void removeSensor (Sensor sensor) {
-
-  }
-
-  // TODO: add updateSensorList
-  public void updateSensorList() {
-
+    node.removeSensor(sensor.getId());
   }
 
 //  /**
@@ -104,13 +102,13 @@ public class SensorPane extends TitledPane {
    * @param sensor The sensor that has been updated
    */
   public void update(Sensor sensor) {
-    update(sensor.getId(), sensor.getReading().getValue());
+    updateSensorLabel(sensor);
   }
 
   /**
    * Update the GUI according to the changes in sensor data.
-   *
    * @param sensorId The id of the sensor that has been updated
+   * @param value    The new value of the sensor
    */
   public void update(int sensorId, double value) {
     for (Sensor sensor : sensorValues.keySet()) {
@@ -121,6 +119,7 @@ public class SensorPane extends TitledPane {
       }
     }
   }
+
 
   private Label createAndRememberSensorLabel(Sensor sensor) {
     SimpleStringProperty props = new SimpleStringProperty(generateSensorText(sensor.getReading()));
@@ -139,12 +138,7 @@ public class SensorPane extends TitledPane {
       Platform.runLater(() -> sensorValues.get(sensor).set(generateSensorText(sensor.getReading())));
     } else {
       Logger.info("Adding sensor[" + sensor.getId() + "]");
-      Platform.runLater(() -> {
-        HBox hBox = new HBox();
-        hBox.getChildren().addAll(createAndRememberSensorLabel(sensor));
-        contentBox.getChildren().add(hBox);
-        //contentBox.getChildren().add(createAndRememberSensorLabel(sensor));
-      });
+      addSensor(sensor);
     }
   }
 
@@ -173,12 +167,12 @@ public class SensorPane extends TitledPane {
   }
 
   public void remove(int sensorId) {
-//    TODO: Implement a way of removing the existing labels
-    sensorValues.keySet().stream()
-        .filter(actuator -> actuator.getId() == sensorId)
-        .findFirst()
-        .ifPresent(sensor -> {
-          sensorValues.remove(sensor);
-        });
+    for (Sensor sensor : sensorValues.keySet()) {
+      if (sensor.getId() == sensorId) {
+        sensorValues.remove(sensor);
+        contentBox.getChildren().removeIf(sensorBox -> sensorBox.getId().equals(String.valueOf(sensorId)));
+        break;
+      }
+    }
   }
 }

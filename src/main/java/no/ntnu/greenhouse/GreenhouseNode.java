@@ -26,6 +26,7 @@ public class GreenhouseNode implements CommunicationChannelListener {
   private final List<ActuatorListener> actuatorListeners = new LinkedList<>();
   private final List<StateListener> stateListeners = new LinkedList<>();
   private final List<NodeStateListener> nodeStateListeners = new LinkedList<>();
+  private final List<NodeListener> nodeListeners = new LinkedList<>();
 
   Timer sensorReadingTimer;
 
@@ -79,8 +80,7 @@ public class GreenhouseNode implements CommunicationChannelListener {
    *                 generation algorithms, etc.
    * @param n        The number of sensors to add to the node.
    */
-  public List<Sensor> addSensors(Sensor template, int n) {
-    List<Sensor> newSensors = new LinkedList<>();
+  public void addSensors(Sensor template, int n) {
 
     if (template == null) {
       throw new IllegalArgumentException("Sensor template is missing");
@@ -98,11 +98,8 @@ public class GreenhouseNode implements CommunicationChannelListener {
       newSensor.setListeners(sensorListeners);
       newSensor.setStateListeners(stateListeners);
       sensors.add(newSensor);
-      newSensors.add(newSensor);
       Logger.info("Created " + newSensor.getType() + "[" + newSensor.getId() + "] on node " + id);
     }
-
-    return newSensors;
   }
 
   /**
@@ -158,6 +155,16 @@ public class GreenhouseNode implements CommunicationChannelListener {
   public void addNodeStateListener(NodeStateListener listener) {
     if (!nodeStateListeners.contains(listener)) {
       nodeStateListeners.add(listener);
+    }
+  }
+
+  /**
+   * Register a new listener for node updates.
+   * @param listener The listener which will get notified when
+   */
+  public void addNodeListener(NodeListener listener) {
+    if (!nodeListeners.contains(listener)) {
+      nodeListeners.add(listener);
     }
   }
 
@@ -367,6 +374,8 @@ public class GreenhouseNode implements CommunicationChannelListener {
   }
 
   public void removeSensor(int sensorId) {
+    Sensor sensor = sensors.get(sensorId);
     sensors.remove(sensorId);
+    nodeListeners.forEach(listener -> listener.sensorRemoved(sensor));
   }
 }

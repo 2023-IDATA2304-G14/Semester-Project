@@ -142,22 +142,22 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     return nodeDisplayArea;
   }
 
-  private void addNodeDisplay(GreenhouseNodeInfo nodeInfo) {
+  private void addNodeDisplay(GreenhouseNode node) {
 
-    System.out.println(nodeInfo.getId());
+    System.out.println(node.getId());
     VBox nodeBox = new VBox(5);
-    Label nodeLabel = new Label("Node " + nodeInfo.getId());
+    Label nodeLabel = new Label("Node " + node.getId());
     nodeBox.getChildren().add(nodeLabel);
 
-    SensorPane sensorPane = new SensorPane();
-    sensorPanes.put(nodeInfo.getId(), sensorPane);
+    SensorPane sensorPane = new SensorPane(node);
+    sensorPanes.put(node.getId(), sensorPane);
     nodeBox.getChildren().add(sensorPane);
 
-    ActuatorPane actuatorPane = new ActuatorPane(nodeInfo.getActuators());
-    actuatorPanes.put(nodeInfo.getId(), actuatorPane);
+    ActuatorPane actuatorPane = new ActuatorPane(node.getActuators());
+    actuatorPanes.put(node.getId(), actuatorPane);
     nodeBox.getChildren().add(actuatorPane);
 
-    nodeBoxes.put(nodeInfo.getId(), nodeBox);
+    nodeBoxes.put(node.getId(), nodeBox);
     nodeDisplayArea.getChildren().add(nodeBox);
 
   }
