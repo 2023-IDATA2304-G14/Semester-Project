@@ -1,7 +1,9 @@
 package no.ntnu.gui.controlpanel;
 
-import no.ntnu.controlpanel.GreenhouseNodeInfo;
 import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 // TODO: Check if this is the correct listener
 
@@ -10,6 +12,14 @@ import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
  * notifying the view (GUI) about changes.
  */
 public class ControlPanelModel implements GreenhouseEventListener {
+
+    private Map<Integer, Map<Integer, Double>> nodeSensorData;
+    private Map<Integer, Map<Integer, ActuatorInfo>> nodeActuatorData;
+
+    public ControlPanelModel() {
+        nodeSensorData = new HashMap<>();
+        nodeActuatorData = new HashMap<>();
+    }
 
     /**
      * Test class to
@@ -25,7 +35,7 @@ public class ControlPanelModel implements GreenhouseEventListener {
      */
     @Override
     public void onNodeRemoved(int nodeId) {
-        // TODO: Implement
+        System.out.println("Node removed: " + nodeId);
     }
 
     /**
@@ -37,7 +47,13 @@ public class ControlPanelModel implements GreenhouseEventListener {
      */
     @Override
     public void onSensorDataChanged(int nodeId, int sensorId, double value) {
-        // TODO: Implement
+        updateSensorData(nodeId, sensorId, value);
+        System.out.println("Sensor data changed - Node ID: " + nodeId + ", Sensor ID: " + sensorId + ", New Value: " + value);
+    }
+
+    private void updateSensorData(int nodeId, int sensorId, double value) {
+        nodeSensorData.putIfAbsent(nodeId, new HashMap<>());
+        nodeSensorData.get(nodeId).put(sensorId, value);
     }
 
     /**
@@ -53,7 +69,8 @@ public class ControlPanelModel implements GreenhouseEventListener {
      */
     @Override
     public void onSensorStateChanged(int nodeId, int sensorId, String type, double value, double min, double max, String unit) {
-//        TODO: Implement
+        updateSensorData(nodeId, sensorId, value);
+        System.out.println("Sensor state changed - Node ID: " + nodeId + ", Sensor ID: " + sensorId + ", Type: " + type + ", Value: " + value + ", Min: " + min + ", Max: " + max + ", Unit: " + unit);
     }
 
     /**
@@ -65,7 +82,21 @@ public class ControlPanelModel implements GreenhouseEventListener {
      */
     @Override
     public void onActuatorDataChanged(int nodeId, int actuatorId, boolean isOn, int strength) {
-        // TODO: Implement
+    }
+
+    private void updateActuatorState(int nodeId, int actuatorId, String type, boolean isOn, int strength, int minStrength, int maxStrength, String unit) {
+        nodeActuatorData.putIfAbsent(nodeId, new HashMap<>());
+        nodeActuatorData.get(nodeId).put(actuatorId, new ActuatorInfo(isOn, strength));
+    }
+
+    private class ActuatorInfo {
+        private boolean isOn;
+        private int strength;
+
+        public ActuatorInfo(boolean isOn, int strength) {
+            this.isOn = isOn;
+            this.strength = strength;
+        }
     }
 
     /**
@@ -81,7 +112,8 @@ public class ControlPanelModel implements GreenhouseEventListener {
      */
     @Override
     public void onActuatorStateChanged(int nodeId, int actuatorId, String type, boolean isOn, int strength, int minStrength, int maxStrength, String unit) {
-//        TODO: Implement
+           updateActuatorState(nodeId, actuatorId, type, isOn, strength, minStrength, maxStrength, unit);
+           System.out.println("Actuator state changed - Node ID: " + nodeId + ", Actuator ID: " + actuatorId + ", Type: " + type + ", State: " + (isOn ? "On" : "Off") + ", Strength: " + strength + ", Min Strength: " + minStrength + ", Max Strength: " + maxStrength + ", Unit: " + unit);
     }
 
     /**
@@ -92,7 +124,14 @@ public class ControlPanelModel implements GreenhouseEventListener {
      */
     @Override
     public void onActuatorRemoved(int nodeId, int actuatorId) {
-//        TODO: Implement
+        removeActuator(nodeId, actuatorId);
+        System.out.println("Actuator removed - Node ID: " + nodeId + ", Actuator ID: " + actuatorId);
+    }
+
+    private void removeActuator(int nodeId, int actuatorId) {
+        if (nodeActuatorData.containsKey(nodeId)) {
+            nodeActuatorData.get(nodeId).remove(actuatorId);
+        }
     }
 
     /**
@@ -103,7 +142,12 @@ public class ControlPanelModel implements GreenhouseEventListener {
      */
     @Override
     public void onNodeStateChanged(int nodeId, String name) {
-//        TODO: Implement
+        updateNodeState(nodeId, name);
+        System.out.println("Node state changed - Node ID: " + nodeId + ", Name: " + name);
+    }
+
+    private void updateNodeState(int nodeId, String name) {
+        // TODO: Implement
     }
 
     /**
@@ -154,6 +198,6 @@ public class ControlPanelModel implements GreenhouseEventListener {
      */
     @Override
     public void onUnknownMessageReceived(String message) {
-//        TODO: Implement
+        System.out.println("Received an unknown message " + message);
     }
 }
