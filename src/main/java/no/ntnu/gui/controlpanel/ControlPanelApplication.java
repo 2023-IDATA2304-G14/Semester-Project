@@ -17,10 +17,8 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
-import no.ntnu.controlpanel.GreenhouseNodeInfo;
 import no.ntnu.encryption.ChangeKey;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.GreenhouseNode;
@@ -280,6 +278,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
       nodeLabel.setText("Node " + nodeId + " - " + name);
     } else {
       Logger.error("No node section for node " + nodeId);
+
     }
   }
 

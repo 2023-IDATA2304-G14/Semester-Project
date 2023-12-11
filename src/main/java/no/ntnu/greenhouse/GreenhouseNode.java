@@ -380,4 +380,8 @@ public class GreenhouseNode implements CommunicationChannelListener {
     sensors.remove(sensorId);
     nodeListeners.forEach(listener -> listener.sensorRemoved(sensor));
   }
+
+  public void removeNodeStateListener(NodeStateListener listener) {
+    nodeStateListeners.remove(listener);
+  }
 }

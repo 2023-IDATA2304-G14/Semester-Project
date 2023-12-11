@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 
 import no.ntnu.listeners.common.NodeListener;
 import no.ntnu.listeners.common.StateListener;
+import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.tools.Logger;
 
 /**
@@ -18,6 +19,7 @@ public class GreenhouseSimulator {
   private final boolean fake;
   private GreenhouseServer greenhouseServer;
   private ExecutorService serverExecutor;
+  private List<NodeStateListener> nodeStateListeners = new LinkedList<>();
 
 
   /**
@@ -170,11 +172,25 @@ public class GreenhouseSimulator {
 
   public void addNode(GreenhouseNode node) {
     nodes.put(node.getId(), node);
+    for (NodeStateListener listener : nodeStateListeners) {
+      node.addNodeStateListener(listener);
+    }
     node.start();
   }
 
   public void removeNode(GreenhouseNode node) {
     nodes.remove(node.getId());
+    for (NodeStateListener listener : nodeStateListeners) {
+      node.removeNodeStateListener(listener);
+    }
     node.stop();
+  }
+
+  public void addNodeStateListener(NodeStateListener listener) {
+    nodeStateListeners.add(listener);
+  }
+
+  public void removeNodeStateListener(NodeStateListener listener) {
+    nodeStateListeners.remove(listener);
   }
 }
