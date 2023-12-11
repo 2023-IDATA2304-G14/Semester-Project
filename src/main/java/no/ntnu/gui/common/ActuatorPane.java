@@ -15,8 +15,10 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import no.ntnu.controlpanel.ControlPanelChannel;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.ActuatorCollection;
+import no.ntnu.greenhouse.GreenhouseNode;
 import no.ntnu.tools.Logger;
 
 /**
@@ -26,17 +28,34 @@ public class ActuatorPane extends TitledPane {
   private final Map<Actuator, SimpleStringProperty> actuatorValue = new HashMap<>();
   private final Map<Actuator, SimpleBooleanProperty> actuatorActive = new HashMap<>();
   private final VBox contentBox = new VBox();
+  private final GreenhouseNode node;
+  private ControlPanelChannel channel = null;
 
   /**
    * Create a new actuator pane.
    *
    * @param actuators The actuators to display
    */
-  public ActuatorPane(ActuatorCollection actuators) {
+  public ActuatorPane(ActuatorCollection actuators, GreenhouseNode node) {
     super();
     setText("Actuators");
     setContent(contentBox); // Set contentBox as the content of the ActuatorPane
     addActuatorControls(actuators, contentBox);
+    this.node = node;
+  }
+
+  /**
+   * Create a new actuator pane.
+   *
+   * @param actuators The actuators to display
+   */
+  public ActuatorPane(ActuatorCollection actuators, GreenhouseNode node, ControlPanelChannel channel) {
+    super();
+    setText("Actuators");
+    setContent(contentBox); // Set contentBox as the content of the ActuatorPane
+    addActuatorControls(actuators, contentBox);
+    this.channel = channel;
+    this.node = node;
   }
 
 

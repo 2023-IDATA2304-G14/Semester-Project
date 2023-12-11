@@ -8,10 +8,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -29,6 +26,8 @@ import no.ntnu.listeners.common.CommunicationChannelListener;
 import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
 import no.ntnu.tools.Logger;
 
+import static no.ntnu.tools.Error.showAlert;
+
 /**
  * Run a control panel with a graphical user interface (GUI), with JavaFX.
  */
@@ -42,10 +41,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   private FlowPane nodeDisplayArea;
   private Scene mainScene;
   private VBox controlArea;
-  private final Map<Integer, VBox> nodeBoxes = new HashMap<>();
-  private final Map<Integer, SensorPane> sensorPanes = new HashMap<>();
-  private final Map<Integer, ActuatorPane> actuatorPanes = new HashMap<>();
-  private final Map<Integer, GreenhouseNode> nodes = new HashMap<>();
+  private final Map<Integer, TitledPane> nodeViewPanes = new HashMap<>();
   private static ControlPanelModel controlPanelModel;
 
   //Daniel Shenanigans
@@ -130,44 +126,43 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     return nodeDisplayArea;
   }
 
-  private void addNodeDisplay(GreenhouseNode node) {
-
-    System.out.println(node.getId());
-    VBox nodeBox = new VBox(5);
-    Label nodeLabel = new Label("Node " + node.getId());
-    nodeBox.getChildren().add(nodeLabel);
-
-    SensorPane sensorPane = new SensorPane(node);
-    sensorPanes.put(node.getId(), sensorPane);
-    nodeBox.getChildren().add(sensorPane);
-
-    ActuatorPane actuatorPane = new ActuatorPane(node.getActuators());
-    actuatorPanes.put(node.getId(), actuatorPane);
-    nodeBox.getChildren().add(actuatorPane);
-
-    nodeBoxes.put(node.getId(), nodeBox);
-    nodeDisplayArea.getChildren().add(nodeBox);
-  }
+//  private void addNodeDisplay(GreenhouseNode node) {
+//    System.out.println(node.getId());
+//    VBox nodeBox = new VBox(5);
+//    Label nodeLabel = new Label("Node " + node.getId());
+//    nodeBox.getChildren().add(nodeLabel);
+//
+//    SensorPane sensorPane = new SensorPane(node);
+//    sensorPanes.put(node.getId(), sensorPane);
+//    nodeBox.getChildren().add(sensorPane);
+//
+//    ActuatorPane actuatorPane = new ActuatorPane(node.getActuators(), node);
+//    actuatorPanes.put(node.getId(), actuatorPane);
+//    nodeBox.getChildren().add(actuatorPane);
+//
+//    nodeBoxes.put(node.getId(), nodeBox);
+//    nodeDisplayArea.getChildren().add(nodeBox);
+//  }
 
   private void removeNodeDisplay(int nodeId) {
-    VBox nodeBox = nodeBoxes.get(nodeId);
-    if (nodeBox != null) {
-      nodeDisplayArea.getChildren().remove(nodeBox);
-      nodeBoxes.remove(nodeId);
-      sensorPanes.remove(nodeId);
-      actuatorPanes.remove(nodeId);
+    TitledPane nodePane = nodeViewPanes.get(nodeId);
+    if (nodePane != null) {
+      nodeDisplayArea.getChildren().remove(nodePane);
+      nodeViewPanes.remove(nodeId);
+//      sensorPanes.remove(nodeId);
+//      actuatorPanes.remove(nodeId);
     }
   }
 
   @Override
   public void onSensorDataChanged(int nodeId, int sensorId, double value) {
     Logger.info("Sensor data from node " + nodeId);
-    SensorPane sensorPane = sensorPanes.get(nodeId);
-    if (sensorPane != null) {
-      sensorPane.update(sensorId, value);
-    } else {
-      Logger.error("No sensor section for node " + nodeId);
-    }
+//    SensorPane sensorPane = sensorPanes.get(nodeId);
+//    if (sensorPane != null) {
+//      sensorPane.update(sensorId, value);
+//    } else {
+//      Logger.error("No sensor section for node " + nodeId);
+//    }
   }
 
   /**
@@ -184,31 +179,31 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   @Override
   public void onSensorStateChanged(int nodeId, int sensorId, String type, double value, double min, double max, String unit) {
     Logger.info("Sensor data from node " + nodeId);
-    SensorPane sensorPane = sensorPanes.get(nodeId);
-    if (sensorPane != null) {
-      sensorPane.update(sensorId, type, value, min, max, unit);
-    } else {
-      Logger.error("No sensor section for node " + nodeId);
-    }
+//    SensorPane sensorPane = sensorPanes.get(nodeId);
+//    if (sensorPane != null) {
+//      sensorPane.update(sensorId, type, value, min, max, unit);
+//    } else {
+//      Logger.error("No sensor section for node " + nodeId);
+//    }
   }
 
   @Override
   public void onActuatorDataChanged(int nodeId, int actuatorId, boolean isOn, int strength) {
     String state = isOn ? "ON" : "off";
     Logger.info("actuator[" + actuatorId + "] on node " + nodeId + " is " + state);
-    ActuatorPane actuatorPane = actuatorPanes.get(nodeId);
-    if (actuatorPane != null) {
-      Actuator actuator = getActuator(nodeId, actuatorId);
-      if (actuator != null) {
-        actuator.setOn(isOn);
-        actuator.setStrength(strength);
-        actuatorPane.update(actuator);
-      } else {
-        Logger.error(" actuator not found");
-      }
-    } else {
-      Logger.error("No actuator section for node " + nodeId);
-    }
+//    ActuatorPane actuatorPane = actuatorPanes.get(nodeId);
+//    if (actuatorPane != null) {
+//      Actuator actuator = getActuator(nodeId, actuatorId);
+//      if (actuator != null) {
+//        actuator.setOn(isOn);
+//        actuator.setStrength(strength);
+//        actuatorPane.update(actuator);
+//      } else {
+//        Logger.error(" actuator not found");
+//      }
+//    } else {
+//      Logger.error("No actuator section for node " + nodeId);
+//    }
   }
 
   /**
@@ -225,25 +220,25 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   @Override
   public void onActuatorStateChanged(int nodeId, int actuatorId, String type, boolean isOn, int strength, int minStrength, int maxStrength, String unit) {
     Logger.info("actuator[" + actuatorId + "] on node " + nodeId + " is " + isOn);
-    ActuatorPane actuatorPane = actuatorPanes.get(nodeId);
-    Actuator actuator;
-    if (actuatorPane != null) {
-      actuator = getActuator(nodeId, actuatorId);
-      if (actuator != null) {
-        actuator.setOn(isOn);
-        actuator.setStrength(strength);
-        actuator.setMinStrength(minStrength);
-        actuator.setMaxStrength(maxStrength);
-        actuator.setUnit(unit);
-        actuator.setType(type);
-      } else {
-        actuator = new Actuator(nodeId, actuatorId, type, strength, minStrength, maxStrength, unit);
-        actuator.setOn(isOn);
-      }
-    actuatorPane.update(actuator);
-    } else {
-        Logger.error("No actuator section for node " + nodeId);
-    }
+//    ActuatorPane actuatorPane = actuatorPanes.get(nodeId);
+//    Actuator actuator;
+//    if (actuatorPane != null) {
+//      actuator = getActuator(nodeId, actuatorId);
+//      if (actuator != null) {
+//        actuator.setOn(isOn);
+//        actuator.setStrength(strength);
+//        actuator.setMinStrength(minStrength);
+//        actuator.setMaxStrength(maxStrength);
+//        actuator.setUnit(unit);
+//        actuator.setType(type);
+//      } else {
+//        actuator = new Actuator(nodeId, actuatorId, type, strength, minStrength, maxStrength, unit);
+//        actuator.setOn(isOn);
+//      }
+//    actuatorPane.update(actuator);
+//    } else {
+//        Logger.error("No actuator section for node " + nodeId);
+//    }
   }
 
   /**
@@ -255,12 +250,12 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   @Override
   public void onActuatorRemoved(int nodeId, int actuatorId) {
     Logger.info("actuator[" + actuatorId + "] on node " + nodeId + " is removed");
-    ActuatorPane actuatorPane = actuatorPanes.get(nodeId);
-    if (actuatorPane != null) {
-      actuatorPane.remove(actuatorId);
-    } else {
-      Logger.error("No actuator section for node " + nodeId);
-    }
+//    ActuatorPane actuatorPane = actuatorPanes.get(nodeId);
+//    if (actuatorPane != null) {
+//      actuatorPane.remove(actuatorId);
+//    } else {
+//      Logger.error("No actuator section for node " + nodeId);
+//    }
   }
 
   /**
@@ -272,14 +267,13 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   @Override
   public void onNodeStateChanged(int nodeId, String name) {
     Logger.info("Node " + nodeId + " is " + name);
-    VBox nodeBox = nodeBoxes.get(nodeId);
-    if (nodeBox != null) {
-      Label nodeLabel = (Label) nodeBox.getChildren().get(0);
-      nodeLabel.setText("Node " + nodeId + " - " + name);
-    } else {
-//      TODO: Add node to list and display it in GUI. Can use same classes as greenhouse.
-      Logger.error("No node section for node " + nodeId);
-    }
+//    VBox nodeBox = nodeBoxes.get(nodeId);
+//    if (nodeBox != null) {
+//      Label nodeLabel = (Label) nodeBox.getChildren().get(0);
+//      nodeLabel.setText("Node " + nodeId + " - " + name);
+//    } else {
+//
+//    }
   }
 
   /**
@@ -291,12 +285,12 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   @Override
   public void onSensorRemoved(int nodeId, int sensorId) {
     Logger.info("sensor[" + sensorId + "] on node " + nodeId + " is removed");
-    SensorPane sensorPane = sensorPanes.get(nodeId);
-    if (sensorPane != null) {
-      sensorPane.remove(sensorId);
-    } else {
-      Logger.error("No sensor section for node " + nodeId);
-    }
+//    SensorPane sensorPane = sensorPanes.get(nodeId);
+//    if (sensorPane != null) {
+//      sensorPane.remove(sensorId);
+//    } else {
+//      Logger.error("No sensor section for node " + nodeId);
+//    }
   }
 
   /**
@@ -326,7 +320,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
    */
   @Override
   public void onErrorReceived(String message) {
-
+    showAlert(Alert.AlertType.ERROR, "Error received", message, "The server sent an error message: " + message, mainScene);
   }
 
   /**
@@ -336,7 +330,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
    */
   @Override
   public void onUnknownMessageReceived(String message) {
-
+    showAlert(Alert.AlertType.WARNING, "Unknown message received", message, "The message received from the server was not recognized: " + message, mainScene);
   }
 
   /**
@@ -349,23 +343,23 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     Platform.runLater(() -> removeNodeDisplay(nodeId));
   }
 
-  private Actuator getActuator(int nodeId, int actuatorId) {
-    Actuator actuator = null;
-    GreenhouseNode node = nodes.get(nodeId);
-    if (node != null) {
-      actuator = node.getActuator(actuatorId);
-    }
-    return actuator;
-  }
+//  private Actuator getActuator(int nodeId, int actuatorId) {
+//    Actuator actuator = null;
+//    GreenhouseNode node = nodeViewPanes.get(nodeId);
+//    if (node != null) {
+//      actuator = node.getActuator(actuatorId);
+//    }
+//    return actuator;
+//  }
 
-  private Sensor getSensor(int nodeId, int sensorId) {
-    Sensor sensor = null;
-    GreenhouseNode node = nodes.get(nodeId);
-    if (node != null) {
-      sensor = node.getSensor(sensorId);
-    }
-    return sensor;
-  }
+//  private Sensor getSensor(int nodeId, int sensorId) {
+//    Sensor sensor = null;
+//    GreenhouseNode node = nodeViewPanes.get(nodeId);
+//    if (node != null) {
+//      sensor = node.getSensor(sensorId);
+//    }
+//    return sensor;
+//  }
 
   @Override
   public void onCommunicationChannelClosed() {
