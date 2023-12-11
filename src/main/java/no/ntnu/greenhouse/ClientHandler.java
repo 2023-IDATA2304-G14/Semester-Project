@@ -1,5 +1,6 @@
 package no.ntnu.greenhouse;
 
+import no.ntnu.encryption.ChangeKey;
 import no.ntnu.encryption.SymmetricEncryption;
 import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.common.NodeListener;
@@ -9,11 +10,20 @@ import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.message.*;
 import no.ntnu.tools.Logger;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.ShortBufferException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.InvalidParameterSpecException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,15 +97,38 @@ public class ClientHandler extends Thread implements ActuatorListener, SensorLis
       if (rawClientRequest == null) {
         return null;
       }
-//      TODO: implement decryption
-//      String decryptedMessage = SymmetricEncryption.decryptMessage(rawClientRequest, );
-      clientCommand = MessageSerializer.deserialize(rawClientRequest);
+//      TODO: implement decryption  !!_!_!_!__!_!__!_!__!_!
+      String key = ChangeKey.getInstance().getGreenhouseKeyKey();
+      System.out.println("String: " + rawClientRequest);
+
+      //This need. toByte not getByte
+      System.out.println("Byte: " + rawClientRequest.getBytes());
+      String decryptedMessage = SymmetricEncryption.decryptMessage(rawClientRequest.getBytes(), key);
+      System.out.println("Decrypt: " + decryptedMessage);
+      Logger.info(decryptedMessage);
+      clientCommand = MessageSerializer.deserialize(decryptedMessage);
       if (!(clientCommand instanceof Command) && !(clientCommand instanceof NodeSubscriptionCommand)) {
         Logger.error("Received invalid request from client: " + clientCommand);
         clientCommand = null;
       }
     } catch (IOException e) {
       Logger.error("Could not read from client socket: " + e.getMessage());
+    } catch (InvalidAlgorithmParameterException e) {
+      throw new RuntimeException(e);
+    } catch (IllegalBlockSizeException e) {
+      throw new RuntimeException(e);
+    } catch (NoSuchPaddingException e) {
+      throw new RuntimeException(e);
+    } catch (NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
+    } catch (InvalidKeySpecException e) {
+      throw new RuntimeException(e);
+    } catch (BadPaddingException e) {
+      throw new RuntimeException(e);
+    } catch (InvalidParameterSpecException e) {
+      throw new RuntimeException(e);
+    } catch (InvalidKeyException e) {
+      throw new RuntimeException(e);
     }
     return clientCommand;
   }
@@ -105,10 +138,14 @@ public class ClientHandler extends Thread implements ActuatorListener, SensorLis
    * @param message The message to send.
    */
   public void sendMessageToClient(Message message) {
+
     String serializedMessage = MessageSerializer.serialize(message);
 //    TODO: implement encryption
-//    Byte[] encryptedMessage = SymmetricEncryption.encryptMessage(serializedMessage, );
-    socketWriter.println(serializedMessage);
+    //String key = ChangeKey.getInstance().getGreenhouseKeyKey();
+
+      //byte[] encryptedMessage = SymmetricEncryption.encryptMessage(serializedMessage, key);
+      socketWriter.println(serializedMessage);
+
   }
 
   /**

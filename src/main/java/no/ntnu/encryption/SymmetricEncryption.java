@@ -85,9 +85,26 @@ public class SymmetricEncryption {
    */
   public static String decryptMessage(byte[] encryptedMessage, String passPhrase) throws IllegalArgumentException, NoSuchAlgorithmException, InvalidKeySpecException, IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, InvalidKeyException, InvalidParameterSpecException, InvalidAlgorithmParameterException {
     SecretKey secretKey = generateSecretKeyFromPassword(passPhrase);
+/**
+    byte[] iv = new byte[12];
+    System.arraycopy(encryptedMessage, 0, iv, 0, iv.length);
+
+    // Extract the actual encrypted data
+    byte[] encryptedData = new byte[encryptedMessage.length - iv.length];
+    System.arraycopy(encryptedMessage, iv.length, encryptedData, 0, encryptedData.length);
+
+    Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+    GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, iv);
+    cipher.init(Cipher.DECRYPT_MODE, secretKey, gcmParameterSpec);
+
+    byte[] decryptedData = cipher.doFinal(encryptedData);
+    return new String(decryptedData);
+*/
+
 
     // Get the GCM parameters from the encrypted message
     AlgorithmParameters parameters = AlgorithmParameters.getInstance("GCM");
+    System.out.println(encryptedMessage);
     parameters.init(new GCMParameterSpec(128, encryptedMessage, 0, 12)); // Adjust the length based on your requirements
 
     Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");

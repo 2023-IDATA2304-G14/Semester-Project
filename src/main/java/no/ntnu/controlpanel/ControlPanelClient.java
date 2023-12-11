@@ -179,9 +179,12 @@ public class ControlPanelClient {
     if (socketWriter != null && socketReader != null) {
       try {
         String serializedCommand = MessageSerializer.serialize(command);
+        System.out.println("Serialized message: " + serializedCommand);
 //        TODO: implement encryption
         String encryptionKey = ChangeKey.getInstance().getKey();
         byte[] encryptedMessage = SymmetricEncryption.encryptMessage(serializedCommand, encryptionKey);
+        System.out.println("Encrypted message String: " + encryptedMessage.toString());
+        System.out.println("Encrypted message byte: " + encryptedMessage);
         socketWriter.println(encryptedMessage);
         return true;
       } catch (Exception e) {

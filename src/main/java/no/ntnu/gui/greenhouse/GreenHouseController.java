@@ -1,6 +1,7 @@
 package no.ntnu.gui.greenhouse;
 
 // Import statements
+import no.ntnu.encryption.ChangeKey;
 import no.ntnu.encryption.PSKGenerator;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.GreenhouseNode;
@@ -33,7 +34,9 @@ public class GreenHouseController implements PropertyChangeListener {
 
   // Method to generate a PSK (Pre-Shared Key) for encryption
   public String generatePSKKey(){
-    return PSKGenerator.generateKey();
+    String key = PSKGenerator.generateKey();
+    ChangeKey.getInstance().setGreenhouseKeyKey(key);
+    return key;
   }
 
   // Placeholder methods for future functionality
