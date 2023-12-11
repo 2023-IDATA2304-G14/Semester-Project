@@ -28,7 +28,7 @@ public class SensorPane extends TitledPane {
     setText("Sensors");
     sensors.forEach(sensor ->{
       HBox hBox = new HBox();
-      hBox.getChildren().addAll(new CheckBox(), createAndRememberSensorLabel(sensor));
+      hBox.getChildren().addAll(createAndRememberSensorLabel(sensor));
         contentBox.getChildren().add(hBox);
     });
     setContent(contentBox);
@@ -58,7 +58,7 @@ public class SensorPane extends TitledPane {
     Platform.runLater(() -> {
       if (!sensorValues.containsKey(sensor)) {
         HBox hBox = new HBox();
-        hBox.getChildren().addAll(new CheckBox(), createAndRememberSensorLabel(sensor));
+        hBox.getChildren().addAll(createAndRememberSensorLabel(sensor));
         contentBox.getChildren().add(hBox);
       }
     });
@@ -119,7 +119,7 @@ public class SensorPane extends TitledPane {
       Logger.info("Adding sensor[" + sensor.getId() + "]");
       Platform.runLater(() -> {
         HBox hBox = new HBox();
-        hBox.getChildren().addAll(new CheckBox(), createAndRememberSensorLabel(sensor));
+        hBox.getChildren().addAll(createAndRememberSensorLabel(sensor));
         contentBox.getChildren().add(hBox);
         //contentBox.getChildren().add(createAndRememberSensorLabel(sensor));
       });
