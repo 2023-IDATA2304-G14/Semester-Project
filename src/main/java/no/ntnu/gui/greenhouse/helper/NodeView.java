@@ -38,7 +38,7 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener, 
     initializeListeners(node);
     initializeGui();
   }
-  public Node getPane(){
+  public TitledPane getPane(){
     return titledPane;
   }
 
@@ -114,15 +114,7 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener, 
 
     confirmationAlert.showAndWait().ifPresent(response -> {
       if (response == ButtonType.OK) {
-        Platform.runLater(() -> {
-          Node parent = titledPane.getParent();
-          if (parent instanceof Pane) {
-            ((Pane) parent).getChildren().remove(titledPane);
-            System.out.println("Node " + node.getId() + " is removed");
-          } else {
-            System.err.println("Parent is not a Pane. NodeView removal failed.");
-          }
-        });
+        Platform.runLater(() -> simulator.removeNode(node));
       }
     });
   }

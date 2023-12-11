@@ -4,18 +4,11 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import no.ntnu.greenhouse.DeviceFactory;
 import no.ntnu.greenhouse.GreenhouseNode;
@@ -24,6 +17,10 @@ import no.ntnu.greenhouse.Sensor;
 import no.ntnu.gui.greenhouse.helper.NodeView;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 public class GreenHouseView implements NodeStateListener {
   // Model and Controller for MVC pattern
@@ -31,6 +28,7 @@ public class GreenHouseView implements NodeStateListener {
   private GreenHouseController controller;
   // Layout to arrange node views
   private FlowPane flowPane = new FlowPane();
+  private Map<Integer, TitledPane> nodeViewPanes = new HashMap<>();
 
   // Constructor initializing the model, controller, and GUI
   public GreenHouseView(Stage stage, GreenhouseSimulator simulator){
@@ -110,10 +108,6 @@ public class GreenHouseView implements NodeStateListener {
     stage.show();
   }
 
-  private void removeNode(GreenhouseNode node) {
-    flowPane.getChildren().removeIf(nodeView -> ((NodeView) nodeView).getNode().getId() == node.getId());
-  }
-
   // Getter for the model
   public GreenHouseModel getModel(){
     return model;
@@ -165,7 +159,11 @@ public class GreenHouseView implements NodeStateListener {
    */
   @Override
   public void onNodeReady(GreenhouseNode node) {
+    if (nodeViewPanes.containsKey(node.getId())) {
+      return;
+    }
     NodeView nodeView = new NodeView(node, model.getSimulator());
+    nodeViewPanes.put(node.getId(), nodeView.getPane());
     flowPane.getChildren().add(nodeView.getPane());
   }
 
@@ -176,6 +174,9 @@ public class GreenHouseView implements NodeStateListener {
    */
   @Override
   public void onNodeStopped(GreenhouseNode node) {
-    removeNode(node);
+    TitledPane pane = nodeViewPanes.get(node.getId());
+    if (pane != null) {
+      flowPane.getChildren().remove(pane);
+    }
   }
 }
