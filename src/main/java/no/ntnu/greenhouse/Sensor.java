@@ -4,6 +4,7 @@ import no.ntnu.listeners.common.NodeListener;
 import no.ntnu.listeners.common.SensorListener;
 import no.ntnu.listeners.common.StateListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,8 +17,8 @@ public class Sensor {
   private final int nodeId;
   private double min;
   private double max;
-  private List<SensorListener> listeners;
-  private List<StateListener> stateListeners;
+  private List<SensorListener> listeners = new ArrayList<>();
+  private List<StateListener> stateListeners = new ArrayList<>();
 
   /**
    * Create a sensor.
@@ -35,6 +36,7 @@ public class Sensor {
     this.max = max;
     this.id = generateUniqueId();
     ensureValueBoundsAndPrecision(current, false);
+    notifyStateChanges();
   }
 
   /**
@@ -229,6 +231,7 @@ public class Sensor {
    */
   public void setStateListeners(List<StateListener> listeners) {
     this.stateListeners = listeners;
+    notifyStateChanges();
   }
 
   /**

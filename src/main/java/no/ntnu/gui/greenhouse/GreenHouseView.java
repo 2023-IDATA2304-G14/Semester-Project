@@ -147,10 +147,6 @@ public class GreenHouseView implements NodeStateListener {
     }
   }
 
-  public void updateSensor(Sensor sensor) {
-
-  }
-
   /**
    * This event is fired when a sensor/actuator node has finished the starting procedure and
    * has entered the "ready" state.
