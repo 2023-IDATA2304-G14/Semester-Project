@@ -140,9 +140,9 @@ public class GreenhouseNode implements CommunicationChannelListener {
   }
 
   /**
-   * Register a new listener for node state updates.
+   * Register a new listener for sensor/actuator state updates.
    *
-   * @param listener The listener which will get notified when the state of this node changes
+   * @param listener The listener which will get notified every time sensor/actuator state changes.
    */
   public void addStateListener(StateListener listener) {
     if (!stateListeners.contains(listener)) {
@@ -150,6 +150,16 @@ public class GreenhouseNode implements CommunicationChannelListener {
     }
   }
 
+  /**
+   * Register a new listener for node state updates.
+   *
+   * @param listener The listener which will get notified when the state of this node changes
+   */
+  public void addNodeStateListener(NodeStateListener listener) {
+    if (!nodeStateListeners.contains(listener)) {
+      nodeStateListeners.add(listener);
+    }
+  }
 
   /**
    * Start simulating the sensor node's operation.

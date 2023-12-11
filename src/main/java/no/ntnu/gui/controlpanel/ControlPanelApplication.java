@@ -22,6 +22,8 @@ import no.ntnu.controlpanel.ControlPanelChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
 import no.ntnu.controlpanel.GreenhouseNodeInfo;
 import no.ntnu.greenhouse.Actuator;
+import no.ntnu.greenhouse.GreenhouseNode;
+import no.ntnu.greenhouse.Sensor;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
 import no.ntnu.listeners.common.CommunicationChannelListener;
@@ -44,7 +46,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   private final Map<Integer, VBox> nodeBoxes = new HashMap<>();
   private final Map<Integer, SensorPane> sensorPanes = new HashMap<>();
   private final Map<Integer, ActuatorPane> actuatorPanes = new HashMap<>();
-  private final Map<Integer, GreenhouseNodeInfo> nodeInfos = new HashMap<>();
+  private final Map<Integer, GreenhouseNode> nodes = new HashMap<>();
   private static ControlPanelModel controlPanelModel;
 
   //Daniel Shenanigans
@@ -160,6 +162,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
   @Override
   public void onNodeUpdated(GreenhouseNodeInfo nodeInfo) {
+    System.out.println("Somethign HappeN!!");
     Platform.runLater(() -> addNodeDisplay(nodeInfo));
   }
 
@@ -207,13 +210,9 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     Logger.info("actuator[" + actuatorId + "] on node " + nodeId + " is " + state);
     ActuatorPane actuatorPane = actuatorPanes.get(nodeId);
     if (actuatorPane != null) {
-      Actuator actuator = getStoredActuator(nodeId, actuatorId);
+      Actuator actuator = getActuator(nodeId, actuatorId);
       if (actuator != null) {
-        if (isOn) {
-          actuator.turnOn();
-        } else {
-          actuator.turnOff();
-        }
+        actuator.setOn(isOn);
         actuator.setStrength(strength);
         actuatorPane.update(actuator);
       } else {
@@ -241,7 +240,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     ActuatorPane actuatorPane = actuatorPanes.get(nodeId);
     Actuator actuator;
     if (actuatorPane != null) {
-      actuator = getStoredActuator(nodeId, actuatorId);
+      actuator = getActuator(nodeId, actuatorId);
       if (actuator != null) {
         if (isOn) {
           actuator.turnOn();
@@ -355,13 +354,32 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
   }
 
-  private Actuator getStoredActuator(int nodeId, int actuatorId) {
+  /**
+   * This event is fired when a node is removed from the greenhouse.
+   *
+   * @param nodeId ID of the node
+   */
+  @Override
+  public void onNodeRemoved(int nodeId) {
+
+  }
+
+  private Actuator getActuator(int nodeId, int actuatorId) {
     Actuator actuator = null;
-    GreenhouseNodeInfo nodeInfo = nodeInfos.get(nodeId);
-    if (nodeInfo != null) {
-      actuator = nodeInfo.getActuator(actuatorId);
+    GreenhouseNode node = nodes.get(nodeId);
+    if (node != null) {
+      actuator = node.getActuator(actuatorId);
     }
     return actuator;
+  }
+
+  private Sensor getSensor(int nodeId, int sensorId) {
+    Sensor sensor = null;
+    GreenhouseNode node = nodes.get(nodeId);
+    if (node != null) {
+      sensor = node.getSensor(sensorId);
+    }
+    return sensor;
   }
 
   @Override

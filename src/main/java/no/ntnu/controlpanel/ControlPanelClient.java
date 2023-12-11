@@ -51,7 +51,7 @@ public class ControlPanelClient {
   private PrintWriter socketWriter;
   private final String host;
   private final int port;
-  private final GreenhouseEventListener logic;
+  private final ControlPanelLogic logic;
   private String decryptionKey;
 
   /**
@@ -60,7 +60,7 @@ public class ControlPanelClient {
    * @param logic The logic of the ControlPanel client
    */
   //  TODO: Add the correct listener type
-  public ControlPanelClient(GreenhouseEventListener logic) {
+  public ControlPanelClient(ControlPanelLogic logic) {
     this(GreenhouseServer.DEFAULT_HOSTNAME, GreenhouseServer.DEFAULT_PORT, logic);
   }
 
@@ -80,7 +80,7 @@ public class ControlPanelClient {
   public ControlPanelClient(
       String host,
       int port,
-      GreenhouseEventListener logic
+      ControlPanelLogic logic
   ) throws RuntimeException {
     this.host = host;
     this.port = port;

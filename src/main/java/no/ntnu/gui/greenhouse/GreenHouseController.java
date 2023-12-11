@@ -6,6 +6,7 @@ import no.ntnu.encryption.PSKGenerator;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.GreenhouseNode;
 import no.ntnu.greenhouse.GreenhouseSimulator;
+import no.ntnu.greenhouse.Sensor;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -21,17 +22,6 @@ public class GreenHouseController implements PropertyChangeListener {
     this.view = view;
   }
 
-  // Method to add nodes to the view
-  public void addNodes(GreenhouseNode nodes){
-    // Add the node to the view
-    view.addNode(nodes);
-
-    // Iterate through actuators of the node and print their types
-    for (Actuator act : nodes.getActuators()) {
-      System.out.println(act.getType());
-    }
-  }
-
   // Method to generate a PSK (Pre-Shared Key) for encryption
   public String generatePSKKey(){
     String key = PSKGenerator.generateKey();
@@ -40,16 +30,15 @@ public class GreenHouseController implements PropertyChangeListener {
   }
 
   // Placeholder methods for future functionality
-  public void addNode(){
-    // Implementation for adding a single node
+  public void addNode(GreenhouseNode node){
+    model.getSimulator().addNode(node);
   }
 
-  public void removeNode(){
-    // Implementation for removing a node
+  public void removeNode(GreenhouseNode node){
+    model.getSimulator().removeNode(node);
   }
 
-  public void addSensor(){
-    // Implementation for adding a sensor
+  public void addSensor(Sensor sensor) {
   }
 
   public void removeSensor(){

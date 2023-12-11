@@ -4,33 +4,35 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import no.ntnu.greenhouse.DeviceFactory;
 import no.ntnu.greenhouse.GreenhouseNode;
+import no.ntnu.greenhouse.GreenhouseSimulator;
+import no.ntnu.greenhouse.Sensor;
 import no.ntnu.gui.greenhouse.helper.NodeView;
+import no.ntnu.listeners.greenhouse.NodeStateListener;
 
-public class GreenHouseView {
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+public class GreenHouseView implements NodeStateListener {
   // Model and Controller for MVC pattern
   private GreenHouseModel model;
   private GreenHouseController controller;
   // Layout to arrange node views
   private FlowPane flowPane = new FlowPane();
+  private Map<Integer, TitledPane> nodeViewPanes = new HashMap<>();
 
   // Constructor initializing the model, controller, and GUI
-  public GreenHouseView(Stage stage){
-    model = new GreenHouseModel();
+  public GreenHouseView(Stage stage, GreenhouseSimulator simulator){
+    model = new GreenHouseModel(this, simulator);
     controller = new GreenHouseController(model, this);
     initialize(stage);
   }
@@ -64,7 +66,8 @@ public class GreenHouseView {
     button.setOnAction(e -> {
       System.out.println("Add Node");
       GreenhouseNode node = DeviceFactory.createNode(0,0,0,0,0, "TestNode");
-      addNode(node);
+      node.addNodeStateListener(this);
+      controller.addNode(node);
     });
 
     // Copy PSK key to clipboard on right-click
@@ -105,18 +108,6 @@ public class GreenHouseView {
     stage.show();
   }
 
-  // Adds a new node to the flowPane
-  public void addNode(GreenhouseNode node){
-    NodeView nodeView = new NodeView(node);
-    flowPane.getChildren().add(nodeView.getPane());
-  }
-
-  // Sets the simulator with a specific node
-  public void setSimulator(GreenhouseNode node){
-    System.out.println(node.getId());
-    addNode(node);
-  }
-
   // Getter for the model
   public GreenHouseModel getModel(){
     return model;
@@ -153,6 +144,39 @@ public class GreenHouseView {
       return port > 0 && port <= 65535;
     } catch (NumberFormatException e) {
       return false;
+    }
+  }
+
+  public void updateSensor(Sensor sensor) {
+
+  }
+
+  /**
+   * This event is fired when a sensor/actuator node has finished the starting procedure and
+   * has entered the "ready" state.
+   *
+   * @param node the node which is ready now
+   */
+  @Override
+  public void onNodeReady(GreenhouseNode node) {
+    if (nodeViewPanes.containsKey(node.getId())) {
+      return;
+    }
+    NodeView nodeView = new NodeView(node, model.getSimulator());
+    nodeViewPanes.put(node.getId(), nodeView.getPane());
+    flowPane.getChildren().add(nodeView.getPane());
+  }
+
+  /**
+   * This event is fired when a sensor/actuator node has stopped (shut down_.
+   *
+   * @param node The node which is stopped
+   */
+  @Override
+  public void onNodeStopped(GreenhouseNode node) {
+    TitledPane pane = nodeViewPanes.get(node.getId());
+    if (pane != null) {
+      flowPane.getChildren().remove(pane);
     }
   }
 }

@@ -10,14 +10,16 @@ import no.ntnu.greenhouse.*;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
 import no.ntnu.listeners.common.ActuatorListener;
+import no.ntnu.listeners.common.NodeListener;
 import no.ntnu.listeners.common.SensorListener;
+import no.ntnu.listeners.common.StateListener;
 
 import java.util.List;
 
 /**
  * Window with GUI for overview and control of one specific sensor/actuator node.
  */
-public class NodeView extends VBox implements SensorListener, ActuatorListener {
+public class NodeView extends VBox implements SensorListener, ActuatorListener, NodeListener, StateListener {
   private final GreenhouseNode node;
   private ActuatorPane actuatorPane;
   private SensorPane sensorPane;
@@ -26,21 +28,24 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
   private Button addSensor = new Button("Add Sensor");
   private Button addActuator = new Button("Add Actuator");
   private TitledPane titledPane;
-  public NodeView(GreenhouseNode node) {
+  private GreenhouseSimulator simulator;
+  public NodeView(GreenhouseNode node, GreenhouseSimulator simulator) {
     this.node = node;
+    this.simulator = simulator;
     this.nodeIdLabel = new Label("Node ID: " + node.getId());
 
     this.nodeIdLabel.setStyle("-fx-font-weight: bold;");
     initializeListeners(node);
     initializeGui();
   }
-  public Node getPane(){
+  public TitledPane getPane(){
     return titledPane;
   }
 
   private void initializeListeners(GreenhouseNode node) {
     node.addSensorListener(this);
     node.addActuatorListener(this);
+    node.addStateListener(this);
   }
 
   private void initializeGui() {
@@ -89,6 +94,10 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
     node.stop();
   }
 
+  public GreenhouseNode getNode() {
+    return node;
+  }
+
   @Override
   public void sensorDataUpdated(Sensor sensor) {
     if (sensorPane != null) {
@@ -105,15 +114,7 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
 
     confirmationAlert.showAndWait().ifPresent(response -> {
       if (response == ButtonType.OK) {
-        Platform.runLater(() -> {
-          Node parent = titledPane.getParent();
-          if (parent instanceof Pane) {
-            ((Pane) parent).getChildren().remove(titledPane);
-            System.out.println("Node " + node.getId() + " is removed");
-          } else {
-            System.err.println("Parent is not a Pane. NodeView removal failed.");
-          }
-        });
+        Platform.runLater(() -> simulator.removeNode(node));
       }
     });
   }
@@ -142,10 +143,7 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
           } else {
             sensor = DeviceFactory.createHumiditySensor(node.getId());
           }
-          List<Sensor> newSensors = node.addSensors(sensor, Integer.parseInt(textField.getText()));
-          for (Sensor newSensor : newSensors) {
-            sensorPane.addSensor(newSensor);
-          }
+//          List<Sensor> newSensors = node.addSensors(sensor, Integer.parseInt(textField.getText()));
           node.start();
            dialog.setResult("");
            dialog.close();
@@ -223,8 +221,46 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
    */
   @Override
   public void actuatorDataUpdated(Actuator actuator) {
-    if (actuatorPane != null) {
       actuatorPane.update(actuator);
-    }
+  }
+
+  /**
+   * An event that is fired every time an actuator is removed from a node.
+   *
+   * @param actuator The actuator that has been removed
+   */
+  @Override
+  public void actuatorRemoved(Actuator actuator) {
+    actuatorPane.remove(actuator.getId());
+  }
+
+  /**
+   * An event that is fired every time a sensor is removed from a node.
+   *
+   * @param sensor The sensor that has been removed
+   */
+  @Override
+  public void sensorRemoved(Sensor sensor) {
+    sensorPane.remove(sensor.getId());
+  }
+
+  /**
+   * An event that is fired every time an actuator changes state or is added.
+   *
+   * @param actuator The actuator that has changed its state
+   */
+  @Override
+  public void actuatorStateUpdated(Actuator actuator) {
+    actuatorPane.update(actuator);
+  }
+
+  /**
+   * An event that is fired every time a sensor changes state or is added.
+   *
+   * @param sensor The sensor that has changed its state
+   */
+  @Override
+  public void sensorStateUpdated(Sensor sensor) {
+    sensorPane.update(sensor);
   }
 }
