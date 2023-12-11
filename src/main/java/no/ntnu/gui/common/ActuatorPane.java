@@ -9,14 +9,13 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TitledPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.ActuatorCollection;
+import no.ntnu.greenhouse.GreenhouseNode;
 import no.ntnu.tools.Logger;
 
 /**
@@ -109,19 +108,32 @@ public class ActuatorPane extends TitledPane {
     }
   }
 
-  private void addActuator(Actuator actuator) {
+  public void addActuator(Actuator actuator) {
     Platform.runLater(() -> {
       if (!actuatorValue.containsKey(actuator)) {
-        // Create new GUI components for the actuator
-        HBox hBox = new HBox(createActuatorLabel(actuator), createActuatorCheckbox(actuator));
-        hBox.setId(String.valueOf(actuator.getId()));
-        hBox.setSpacing(5);
+        HBox hBox = new HBox(5);
 
-        // Add the new HBox to the contentBox, which already contains other actuators
+        Label actuatorLabel = new Label("Actuator: " + actuator.getType() + " - " + (actuator.isOn() ? "ON" : "OFF"));
+
+        Button removeButton = new Button("Remove");
+
+        removeButton.setOnAction(e -> {
+          Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION,
+                  "Are you sure you want to remove this actuator?", ButtonType.YES, ButtonType.NO);
+          confirmationAlert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.YES) {
+              removeActuator(actuator);
+            }
+          });
+        });
+
+        hBox.getChildren().addAll(actuatorLabel, removeButton);
+
         contentBox.getChildren().add(hBox);
+
+        actuatorValue.put(actuator, new SimpleStringProperty(actuator.toString()));
       }
     });
   }
-
 
 }
