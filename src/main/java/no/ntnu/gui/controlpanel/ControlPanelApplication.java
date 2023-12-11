@@ -277,8 +277,8 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
       Label nodeLabel = (Label) nodeBox.getChildren().get(0);
       nodeLabel.setText("Node " + nodeId + " - " + name);
     } else {
+//      TODO: Add node to list and display it in GUI. Can use same classes as greenhouse.
       Logger.error("No node section for node " + nodeId);
-
     }
   }
 
