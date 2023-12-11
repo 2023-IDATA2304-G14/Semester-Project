@@ -9,10 +9,11 @@ distributed application.
   the context of this project). Examples: temperature sensor, humidity sensor.
 * Actuator - a device which can influence the environment. Examples: a fan, a window opener/closer,
   door opener/closer, heater.
-* Sensor and actuator node - a computer which has direct access to a set of sensors, a set of
-  actuators and is connected to the Internet.
-* Control-panel node - a device connected to the Internet which visualizes status of sensor and
-  actuator nodes and sends control commands to them.
+* Greenhouse - A fully fledged greenhouse which can contain several GreenhouseNodes. It can be
+  controlled by several Control-panel nodes. Acts as a server.
+* GreenhouseNode - a section or a part of the greenhouse which contains sensors and actuators.
+* Control-panel node - a device connected to a network which visualizes status GreenhouseNodes
+  and sends control commands to them. Acts as a client.
 * Graphical User Interface (GUI) - A graphical interface where users of the system can interact with
   it.
 
@@ -23,6 +24,16 @@ choose this transport layer protocol?
 
 We can use TCP? Since we don't care about speed, but more the data gets the unaltered.
 Can use UDP if we send a lot of data, since the speed and the chance that a lot of data is wrong is low?
+
+The protocol uses TCP as the underlying transport protocol. This is because we don't want our data to be
+lost or altered, and we don't care about the speed of the data transfer. Our solution enables the user to
+set a custom port number for the server to listen on. If the user does not select a port number, the server
+will default to port 1238. The reason for choosing this port is that is not reserved by any service, and
+is not used by any common services. This means that the user can use this port without having to worry about
+other services using the same port. If the user wants they can also choose automatic port selection, which
+will select a random ephemeral port. 
+
+
 
 ## The architecture
 

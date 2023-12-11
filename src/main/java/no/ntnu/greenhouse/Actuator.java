@@ -17,10 +17,8 @@ public class Actuator {
   private final int nodeId;
   private final int id;
   private Map<String, Double> impacts = new HashMap<>();
-
   private List<ActuatorListener> listeners;
   private List<StateListener> stateListeners;
-
   private boolean on;
   private int strength;
   private int maxStrength;

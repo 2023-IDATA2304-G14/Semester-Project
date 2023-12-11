@@ -54,6 +54,16 @@ public class SensorPane extends TitledPane {
   }
 
 
+  public void addSensor(Sensor sensor) {
+    Platform.runLater(() -> {
+      if (!sensorValues.containsKey(sensor)) {
+        HBox hBox = new HBox();
+        hBox.getChildren().addAll(new CheckBox(), createAndRememberSensorLabel(sensor));
+        contentBox.getChildren().add(hBox);
+      }
+    });
+  }
+
 //  /**
 //   * Update the GUI according to the changes in sensor data.
 //   *
