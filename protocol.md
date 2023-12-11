@@ -19,10 +19,6 @@ distributed application.
 
 ## The underlying transport protocol
 
-[//]: # (TODO: remove the following text)
-TODO - what transport-layer protocol do you use? TCP? UDP? What port number(s)? Why did you
-choose this transport layer protocol?
-
 The protocol uses TCP as the underlying transport protocol. This is because we don't want our data to be
 lost or altered, and we don't care about the speed of the data transfer.
 
@@ -88,8 +84,6 @@ Name (String name): A string representing the name or label of the node.
 
 ## Message format
 
-
-
 The general format of messages in this protocol is designed to ensure a consistent and structured
 communication system. All the messages are encapsulated as Java records or classes, implementing
 the "Message" interface which standardizes the behaviour across different message types. 
@@ -135,8 +129,6 @@ Each message type in this protocol is distinctly formatted to cater to its speci
 a robust and flexible communication framework within the greenhouse system.
 
 ### Error messages
-
-TODO - describe the possible error messages that nodes can send in your system.
 
 In a system with nodes like a greenhouse control system, various components can encounter issues that need to be 
 reported back to the user or system administrator. Here are som potential error messages that nodes might send, 
@@ -202,20 +194,21 @@ These are some of the possible error messages that could occur by the nodes in t
 
 ## An example scenario
 
-describe a typical scenario. How would it look like from communication perspective? When 
-are connections established? Which packets are sent? How do nodes react on the packets? An 
-example scenario could be as follows:
-1. A sensor node with ID=1 is started. It has a temperature sensor, two humidity sensors. It can
+1. A node with ID=1 is started. It has a temperature sensor, two humidity sensors. It can
    also open a window.
 2. A sensor node with ID=2 is started. It has a single temperature sensor and can control two fans
    and a heater.
 3. A control panel node is started.
 4. Another control panel node is started.
-5. A sensor node with ID=3 is started. It has a two temperature sensors and no actuators.
-6. After 5 seconds all three sensor/actuator nodes broadcast their sensor data.
-7. The user of the first-control panel presses on the button "ON" for the first fan of
+5. The first control panel gets a list of all nodes
+6. The first control panel subscribes to the node with ID=1 and ID=2.
+7. A sensor node with ID=3 is started. It has a two temperature sensors and no actuators.
+8. After a few seconds the two first Greenhousenodes send their sensordata to the control panel.
+9. The user of the first-control panel presses on the button "ON" for the first fan of
    sensor/actuator node with ID=2.
-8. The user of the second control-panel node presses on the button "turn off all actuators".
+10. The other control-panel nodes gets the update from the server and updates its GUI.
+11. The user of the second control-panel node presses on the button "turn off all actuators".
+12. The other control-panel nodes gets the update from the server and updates its GUI.
 
 ## Reliability and security
 
