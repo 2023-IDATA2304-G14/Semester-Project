@@ -19,15 +19,14 @@ distributed application.
 
 ## The underlying transport protocol
 
-TODO - what transport-layer protocol do you use? TCP? UDP? What port number(s)? Why did you 
+[//]: # (TODO: remove the following text)
+TODO - what transport-layer protocol do you use? TCP? UDP? What port number(s)? Why did you
 choose this transport layer protocol?
 
-We can use TCP? Since we don't care about speed, but more the data gets the unaltered.
-Can use UDP if we send a lot of data, since the speed and the chance that a lot of data is wrong is low?
-
 The protocol uses TCP as the underlying transport protocol. This is because we don't want our data to be
-lost or altered, and we don't care about the speed of the data transfer. Our solution enables the user to
-set a custom port number for the server to listen on. If the user does not select a port number, the server
+lost or altered, and we don't care about the speed of the data transfer.
+
+Our solution enables the user to set a custom port number for the server to listen on. If the user does not select a port number, the server
 will default to port 1238. The reason for choosing this port is that is not reserved by any service, and
 is not used by any common services. This means that the user can use this port without having to worry about
 other services using the same port. If the user wants they can also choose automatic port selection, which
@@ -37,8 +36,16 @@ will select a random ephemeral port.
 
 ## The architecture
 
+[//]: # (TODO: remove the following text)
 TODO - show the general architecture of your network. Which part is a server? Who are clients? 
 Do you have one or several servers? Perhaps include a picture here. 
+
+Each greenhouse is its own server, and each control panel is its own client. The control panel can connect to
+any greenhouse server, the greenhouse server supports having multiple clients connected at the same time.
+A client can send commands to the server and the server will automatically update all connected clients.
+If a client disconnects, the server will continue to run and wait for new clients to connect. One instance of
+the greenhouse application can only run one server, but the user could run multiple instances of the application
+if they have a use for multiple greenhouses.
 
 
 ## The flow of information and events
@@ -46,6 +53,9 @@ Do you have one or several servers? Perhaps include a picture here.
 TODO - describe what each network node does and when. Some periodic events? Some reaction on 
 incoming packets? Perhaps split into several subsections, where each subsection describes one 
 node type (For example: one subsection for sensor/actuator nodes, one for control panel nodes).
+
+### Greenhouse server
+The greenhouse server is the main node in the network. It listens for incoming connections from clients.
 
 ## Connection and state
 
