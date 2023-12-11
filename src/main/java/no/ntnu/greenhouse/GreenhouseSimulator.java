@@ -46,7 +46,9 @@ public class GreenhouseSimulator {
   /**
    * Initialise the greenhouse but don't start the simulation just yet.
    */
-
+  public void initialize() {
+    Logger.info("Greenhouse initialized");
+  }
 
   private void createNode(int temperature, int humidity, int windows, int fans, int heaters, String name) {
     GreenhouseNode node = DeviceFactory.createNode(

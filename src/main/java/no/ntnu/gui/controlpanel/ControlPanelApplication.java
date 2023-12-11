@@ -2,7 +2,6 @@ package no.ntnu.gui.controlpanel;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -122,7 +121,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     logic.setCommunicationChannelListener(this);
   }
 
-  private Node top(){
+  private Node top() {
     Button openPopupButton = new Button("Set PSK key");
     openPopupButton.setOnAction(e -> showCustomDialog());
     HBox hBox = new HBox(openPopupButton);
