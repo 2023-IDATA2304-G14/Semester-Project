@@ -3,8 +3,7 @@ package no.ntnu.message;
 public record NodeStateMessage(int nodeId, String name) implements StateMessage {
     public static final String PREFIX = "nS";
 
-    @Override
-    public String getPrefix() {
+    public static String getPrefix() {
         return PREFIX;
     }
 
@@ -16,8 +15,7 @@ public record NodeStateMessage(int nodeId, String name) implements StateMessage 
                 .parameterize();
     }
 
-    @Override
-    public Message deserialize(String message) {
+    public static Message deserialize(String message) {
         if (message == null) {
             throw new IllegalArgumentException("Message cannot be null");
         }

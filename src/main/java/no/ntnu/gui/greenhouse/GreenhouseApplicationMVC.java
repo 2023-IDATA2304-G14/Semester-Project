@@ -41,7 +41,6 @@ public class GreenhouseApplicationMVC extends Application implements NodeStateLi
   public void onNodeReady(GreenhouseNode node) {
     Logger.info("Node " + node.getId() + " is ready");
     Platform.runLater(() -> {
-
       greenHouseView.setSimulator(node);
     });
   }

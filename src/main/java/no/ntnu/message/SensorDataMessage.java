@@ -5,8 +5,7 @@ import no.ntnu.greenhouse.SensorReading;
 public record SensorDataMessage(int nodeId, int sensorId, double value, String unit, String type) implements Message {
   public static final String PREFIX = "sD";
 
-  @Override
-  public String getPrefix() {
+  public static String getPrefix() {
     return PREFIX;
   }
 
@@ -21,8 +20,7 @@ public record SensorDataMessage(int nodeId, int sensorId, double value, String u
         .parameterize();
   }
 
-  @Override
-  public Message deserialize(String message) {
+  public static Message deserialize(String message) {
     if (message == null) {
       throw new IllegalArgumentException("Message cannot be null");
     }

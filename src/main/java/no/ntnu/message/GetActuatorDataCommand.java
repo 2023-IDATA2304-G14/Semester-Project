@@ -18,8 +18,7 @@ public record GetActuatorDataCommand(int nodeId, int actuatorId) implements Comm
     return new ActuatorDataMessage(nodeId, actuatorId, actuator.isOn(), actuator.getStrength());
   }
 
-    @Override
-    public String getPrefix() {
+    public static String getPrefix() {
         return PREFIX;
     }
 
@@ -31,8 +30,7 @@ public record GetActuatorDataCommand(int nodeId, int actuatorId) implements Comm
                 .parameterize();
     }
 
-    @Override
-    public Message deserialize(String message) {
+    public static Message deserialize(String message) {
         if (message == null) {
             throw new IllegalArgumentException("Message cannot be null");
         }

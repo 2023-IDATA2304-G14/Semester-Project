@@ -4,8 +4,7 @@ public record SensorRemovedMessage(int nodeId, int sensorId) implements Message 
 
   public static final String PREFIX = "sR";
 
-  @Override
-  public String getPrefix() {
+  public static String getPrefix() {
     return PREFIX;
   }
 
@@ -17,8 +16,7 @@ public record SensorRemovedMessage(int nodeId, int sensorId) implements Message 
         .parameterize();
   }
 
-  @Override
-  public Message deserialize(String message) {
+  public static Message deserialize(String message) {
     if (message == null) {
       throw new IllegalArgumentException("Message cannot be null");
     }

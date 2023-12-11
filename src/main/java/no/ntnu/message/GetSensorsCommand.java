@@ -7,8 +7,7 @@ import java.util.List;
 public record GetSensorsCommand(int nodeId) implements ListCommand {
     public static final String PREFIX = "gS";
 
-    @Override
-    public String getPrefix() {
+    public static String getPrefix() {
         return PREFIX;
     }
 
@@ -19,8 +18,7 @@ public record GetSensorsCommand(int nodeId) implements ListCommand {
                 .parameterize();
     }
 
-    @Override
-    public ListCommand deserialize(String message) {
+    public static ListCommand deserialize(String message) {
         if (message == null) {
             throw new IllegalArgumentException("Message cannot be null");
         }

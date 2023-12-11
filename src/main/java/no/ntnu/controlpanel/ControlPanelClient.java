@@ -121,10 +121,6 @@ public class ControlPanelClient {
         try {
           if (socketReader != null) {
             String serializedMessage = socketReader.readLine();
-
-//            TODO: implement decryption
-
-
             String encryptionKey = ChangeKey.getInstance().getKey();
 
             System.out.println("ser " + serializedMessage);

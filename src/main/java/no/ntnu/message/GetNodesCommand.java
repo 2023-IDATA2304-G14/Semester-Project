@@ -7,8 +7,7 @@ import java.util.List;
 public record GetNodesCommand() implements ListCommand {
     public static final String PREFIX = "gN";
 
-    @Override
-    public String getPrefix() {
+    public static String getPrefix() {
         return PREFIX;
     }
 
@@ -31,12 +30,10 @@ public record GetNodesCommand() implements ListCommand {
         .toList();
   }
 
-  @Override
-    public ListCommand deserialize(String message) {
+    public static ListCommand deserialize(String message) {
         if (message == null) {
             throw new IllegalArgumentException("Message cannot be null");
         }
-        MessageParameterizer parameterizer = new MessageParameterizer(PREFIX).deparameterize(message);
 
         return new GetNodesCommand();
     }

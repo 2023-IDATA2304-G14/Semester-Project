@@ -19,8 +19,7 @@ public record GetSensorDataCommand(int nodeId, int sensorId) implements GetComma
         return response;
     }
 
-    @Override
-    public String getPrefix() {
+    public static String getPrefix() {
         return PREFIX;
     }
 
@@ -32,8 +31,7 @@ public record GetSensorDataCommand(int nodeId, int sensorId) implements GetComma
                 .parameterize();
     }
 
-    @Override
-    public Message deserialize(String message) {
+    public static Message deserialize(String message) {
         if (message == null) {
             throw new IllegalArgumentException("Message cannot be null");
         }

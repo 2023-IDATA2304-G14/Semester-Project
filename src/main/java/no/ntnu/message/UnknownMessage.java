@@ -12,8 +12,7 @@ public record UnknownMessage(String message) implements Message {
         return message;
     }
 
-    @Override
-    public String getPrefix() {
+    public static String getPrefix() {
         return PREFIX;
     }
 
@@ -24,8 +23,7 @@ public record UnknownMessage(String message) implements Message {
                 .parameterize();
     }
 
-    @Override
-    public Message deserialize(String message) {
+    public static Message deserialize(String message) {
         if (message == null) {
             throw new IllegalArgumentException("Message cannot be null");
         }

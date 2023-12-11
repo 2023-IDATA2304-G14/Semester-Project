@@ -86,8 +86,7 @@ public class ClientHandler
    */
   @Override
   public void run() {
-    //    TODO: Improve the code quality of this method.
-    List<Message> responses = null;
+    List<Message> responses;
     do {
       Message clientCommand = readClientRequest();
       if (clientCommand != null) {
@@ -101,9 +100,11 @@ public class ClientHandler
         } else if (clientCommand instanceof Command command) {
           responses.add(command.execute(greenhouseServer.getGreenhouseSimulator()));
         } else if (clientCommand instanceof ListCommand listCommand) {
+          Logger.info("Executing list command");
           responses.addAll(listCommand.execute(greenhouseServer.getGreenhouseSimulator()));
         } else {
           Logger.error("Received invalid request from client: " + clientCommand);
+          Logger.error("Instance of: " + clientCommand.getClass().getName());
           responses = null;
         }
         if (responses != null && !responses.isEmpty()) {
@@ -121,7 +122,7 @@ public class ClientHandler
       } else {
         responses = null;
       }
-    } while (responses != null && !responses.isEmpty());
+    } while (responses != null);
     Logger.info("Client disconnected: " + clientSocket.getRemoteSocketAddress());
     greenhouseServer.removeClient(this);
   }
@@ -138,11 +139,9 @@ public class ClientHandler
       if (rawClientRequest == null) {
         return null;
       }
-//      TODO: implement decryption  !!_!_!_!__!_!__!_!__!_!
       String key = ChangeKey.getInstance().getGreenhouseKeyKey();
       System.out.println("String: " + rawClientRequest);
       System.out.println("Byte: " + Base64.getDecoder().decode(rawClientRequest));
-
 
       String decryptedMessage = SymmetricEncryption.decryptMessage(Base64.getDecoder().decode(rawClientRequest), key);
 
@@ -150,7 +149,7 @@ public class ClientHandler
       System.out.println("Decrypt: " + decryptedMessage);
       Logger.info(decryptedMessage);
       clientCommand = MessageSerializer.deserialize(decryptedMessage);
-      if (!(clientCommand instanceof Command) && !(clientCommand instanceof NodeSubscriptionCommand)) {
+      if (!(clientCommand instanceof Command) && !(clientCommand instanceof NodeSubscriptionCommand) && !(clientCommand instanceof ListCommand)) {
         Logger.error("Received invalid request from client: " + clientCommand);
         clientCommand = null;
       }
@@ -182,18 +181,35 @@ public class ClientHandler
    * @param message The message to send.
    */
   public void sendMessageToClient(Message message) {
-
+    try {
     String serializedMessage = MessageSerializer.serialize(message);
+    Logger.info("Sending to client(" + this.clientSocket.getRemoteSocketAddress() + ") : " + serializedMessage);
 //    TODO: implement encryption
-    //String key = ChangeKey.getInstance().getGreenhouseKeyKey();
+    String key = ChangeKey.getInstance().getGreenhouseKeyKey();
 
-      //byte[] encryptedMessage = SymmetricEncryption.encryptMessage(serializedMessage, key);
-      socketWriter.println(serializedMessage);
+      byte[] encryptedMessage = SymmetricEncryption.encryptMessage(serializedMessage, key);
+      String byteConversion = Base64.getEncoder().encodeToString(encryptedMessage);
 
-    //    TODO: implement encryption
-    //    Byte[] encryptedMessage = SymmetricEncryption
-    //      .encryptMessage(serializedMessage, );
-    socketWriter.println(serializedMessage);
+      socketWriter.println(byteConversion);
+    } catch (NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
+    } catch (InvalidKeySpecException e) {
+      throw new RuntimeException(e);
+    } catch (NoSuchPaddingException e) {
+      throw new RuntimeException(e);
+    } catch (InvalidKeyException e) {
+      throw new RuntimeException(e);
+    } catch (IllegalBlockSizeException e) {
+      throw new RuntimeException(e);
+    } catch (BadPaddingException e) {
+      throw new RuntimeException(e);
+    } catch (InvalidAlgorithmParameterException e) {
+      throw new RuntimeException(e);
+    } catch (ShortBufferException e) {
+      throw new RuntimeException(e);
+    }
+
+
   }
 
   /**

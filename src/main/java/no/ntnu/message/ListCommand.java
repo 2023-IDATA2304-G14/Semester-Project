@@ -12,9 +12,4 @@ public interface ListCommand extends Message {
    * @return The message which contains the output of the command
    */
   List<StateMessage> execute(GreenhouseSimulator logic);
-
-  /**
-   * Deserialize a message into a command.
-   */
-  ListCommand deserialize(String message);
 }
