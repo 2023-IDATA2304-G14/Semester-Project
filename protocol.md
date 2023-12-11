@@ -46,13 +46,16 @@ if they have a use for multiple greenhouses.
 
 ## The flow of information and events
 
-[//]: # (TODO: remove the following text)
-TODO - describe what each network node does and when. Some periodic events? Some reaction on 
-incoming packets? Perhaps split into several subsections, where each subsection describes one 
-node type (For example: one subsection for sensor/actuator nodes, one for control panel nodes).
-
 ### Greenhouse server
-The greenhouse server is the main node in the network. It listens for incoming connections from clients.
+The greenhouse server is the main node in the network. It listens for incoming connections from clients, running eac
+in its own thread. When a client sends a command, the server will execute the command and send a response back to the
+client. If the message is a BroadcastMessage, the server will send the message to all connected clients.
+
+### Control panel
+The control panel is the client in the network. It connects to the server and sends commands to it. The control panel
+can also receive messages from the server, and will update the GUI accordingly. The control panel can also send
+a subscription command to the server, which will make the server send updates to the control panel whenever a sensor
+or actuator changes state.
 
 ## Connection and state
 
