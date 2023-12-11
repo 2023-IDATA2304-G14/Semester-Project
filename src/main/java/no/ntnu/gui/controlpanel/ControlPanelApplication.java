@@ -41,7 +41,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   private FlowPane nodeDisplayArea;
   private Scene mainScene;
   private VBox controlArea;
-  private final Map<Integer, TitledPane> nodeViewPanes = new HashMap<>();
+  private final Map<Integer, NodeViewControlPanel> nodeViewPanes = new HashMap<>();
   private static ControlPanelModel controlPanelModel;
 
   //Daniel Shenanigans
@@ -145,24 +145,21 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 //  }
 
   private void removeNodeDisplay(int nodeId) {
-    TitledPane nodePane = nodeViewPanes.get(nodeId);
+    NodeViewControlPanel nodePane = nodeViewPanes.get(nodeId);
     if (nodePane != null) {
       nodeDisplayArea.getChildren().remove(nodePane);
       nodeViewPanes.remove(nodeId);
-//      sensorPanes.remove(nodeId);
-//      actuatorPanes.remove(nodeId);
     }
   }
 
   @Override
   public void onSensorDataChanged(int nodeId, int sensorId, double value) {
     Logger.info("Sensor data from node " + nodeId);
-//    SensorPane sensorPane = sensorPanes.get(nodeId);
-//    if (sensorPane != null) {
-//      sensorPane.update(sensorId, value);
-//    } else {
-//      Logger.error("No sensor section for node " + nodeId);
-//    }
+    Platform.runLater(() -> {
+      if (nodeViewPanes.containsKey(nodeId)) {
+        nodeViewPanes.get(nodeId).updateSensor(sensorId, value);
+      }
+    });
   }
 
   /**
@@ -179,12 +176,11 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   @Override
   public void onSensorStateChanged(int nodeId, int sensorId, String type, double value, double min, double max, String unit) {
     Logger.info("Sensor data from node " + nodeId);
-//    SensorPane sensorPane = sensorPanes.get(nodeId);
-//    if (sensorPane != null) {
-//      sensorPane.update(sensorId, type, value, min, max, unit);
-//    } else {
-//      Logger.error("No sensor section for node " + nodeId);
-//    }
+    Platform.runLater(() -> {
+      if (nodeViewPanes.containsKey(nodeId)) {
+        nodeViewPanes.get(nodeId).updateSensor(sensorId, type, value, min, max, unit);
+      }
+    });
   }
 
   @Override
@@ -269,11 +265,11 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     Logger.info("Node " + nodeId + " is " + name);
     Platform.runLater(() -> {
       if (nodeViewPanes.containsKey(nodeId)) {
-        nodeViewPanes.get(nodeId).setText(name);
+        nodeViewPanes.get(nodeId).getPane().setText(name);
       } else {
         GreenhouseNode node = new GreenhouseNode(nodeId, name);
         NodeViewControlPanel nodeView = new NodeViewControlPanel(node, channel);
-        nodeViewPanes.put(nodeId, nodeView.getPane());
+        nodeViewPanes.put(nodeId, nodeView);
         nodeDisplayArea.getChildren().add(nodeView.getPane());
       }
     });
@@ -288,12 +284,11 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   @Override
   public void onSensorRemoved(int nodeId, int sensorId) {
     Logger.info("sensor[" + sensorId + "] on node " + nodeId + " is removed");
-//    SensorPane sensorPane = sensorPanes.get(nodeId);
-//    if (sensorPane != null) {
-//      sensorPane.remove(sensorId);
-//    } else {
-//      Logger.error("No sensor section for node " + nodeId);
-//    }
+    Platform.runLater(() -> {
+      if (nodeViewPanes.containsKey(nodeId)) {
+        nodeViewPanes.get(nodeId).removeSensor(sensorId);
+      }
+    });
   }
 
   /**

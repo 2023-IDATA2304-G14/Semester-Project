@@ -169,6 +169,8 @@ public class SensorPane extends TitledPane {
         break;
       }
     }
+    Sensor sensor = new Sensor(sensorId, type, min, max, value, unit);
+    updateSensorLabel(sensor);
   }
 
   public void remove(int sensorId) {

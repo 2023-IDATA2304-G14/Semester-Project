@@ -76,10 +76,12 @@ public class NodeViewControlPanel extends VBox {
     return node;
   }
 
-  public void updateSensorPane() {
-    for (Sensor sensor : node.getSensors()) {
-      sensorPane.update(sensor);
-    }
+  public void removeSensor(int sensorId) {
+    sensorPane.remove(sensorId);
+  }
+
+  public void updateSensor(Sensor sensor) {
+    sensorPane.update(sensor);
   }
 
   public static boolean isPositiveNumber(String str) {
@@ -89,5 +91,13 @@ public class NodeViewControlPanel extends VBox {
     } catch (NumberFormatException e) {
       return false; // The string does not represent a valid integer
     }
+  }
+
+  public void updateSensor(int sensorId, double value) {
+    sensorPane.update(sensorId, value);
+  }
+
+  public void updateSensor(int sensorId, String type, double value, double min, double max, String unit) {
+    sensorPane.update(sensorId, type, value, min, max, unit);
   }
 }
