@@ -104,7 +104,6 @@ public class SymmetricEncryption {
 
     // Get the GCM parameters from the encrypted message
     AlgorithmParameters parameters = AlgorithmParameters.getInstance("GCM");
-    System.out.println(encryptedMessage);
     parameters.init(new GCMParameterSpec(128, encryptedMessage, 0, 12)); // Adjust the length based on your requirements
 
     Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");

@@ -145,14 +145,8 @@ public class ClientHandler
         return null;
       }
       String key = ChangeKey.getInstance().getGreenhouseKeyKey();
-      System.out.println("String: " + rawClientRequest);
-      System.out.println("Byte: " + Base64.getDecoder().decode(rawClientRequest));
-
       String decryptedMessage = SymmetricEncryption.decryptMessage(Base64.getDecoder().decode(rawClientRequest), key);
-
-
-      System.out.println("Decrypt: " + decryptedMessage);
-      Logger.info(decryptedMessage);
+      Logger.info("Got client request: " + decryptedMessage);
       clientCommand = MessageSerializer.deserialize(decryptedMessage);
       if (!(clientCommand instanceof Command) && !(clientCommand instanceof NodeSubscriptionCommand) && !(clientCommand instanceof ListCommand)) {
         Logger.error("Received invalid request from client: " + clientCommand);

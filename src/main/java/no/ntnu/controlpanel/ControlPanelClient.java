@@ -120,10 +120,10 @@ public class ControlPanelClient {
           if (socketReader != null) {
             String serializedMessage = socketReader.readLine();
             String encryptionKey = ChangeKey.getInstance().getKey();
-
-            System.out.println("ser " + serializedMessage);
-
             String decryptedMessage = SymmetricEncryption.decryptMessage(Base64.getDecoder().decode(serializedMessage), encryptionKey);
+
+            Logger.info("Received message from server: " + decryptedMessage);
+
             message = MessageSerializer.deserialize(decryptedMessage);
             handleMessage(message);
           } else {

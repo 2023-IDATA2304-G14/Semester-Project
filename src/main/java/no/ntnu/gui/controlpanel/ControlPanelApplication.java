@@ -34,18 +34,14 @@ import static no.ntnu.tools.Error.showAlert;
 public class ControlPanelApplication extends Application implements GreenhouseEventListener,
     CommunicationChannelListener {
   private static ControlPanelLogic logic;
-  private static final int WIDTH = 500;
-  private static final int HEIGHT = 400;
+  private static final int WIDTH = 700;
+  private static final int HEIGHT = 500;
   private static ControlPanelChannel channel;
   private BorderPane mainLayout;
   private FlowPane nodeDisplayArea;
   private Scene mainScene;
   private VBox controlArea;
   private final Map<Integer, NodeViewControlPanel> nodeViewPanes = new HashMap<>();
-
-  //Daniel Shenanigans
-  private String passPhrase;
-  private Label label = new Label();
 
   /**
    * Application entrypoint for the GUI of a control panel.
@@ -246,6 +242,10 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
         NodeViewControlPanel nodeView = new NodeViewControlPanel(node, channel);
         nodeViewPanes.put(nodeId, nodeView);
         nodeDisplayArea.getChildren().add(nodeView.getPane());
+        channel.getSensors(nodeId);
+        channel.getActuators(nodeId);
+//        TODO: Implement a way for the user to subscribe and unsubscribe to nodes in the GUI
+        channel.subscribeToNode(nodeId);
       }
     });
   }
@@ -293,9 +293,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
    */
   @Override
   public void onErrorReceived(String message) {
-    Platform.runLater(() -> {
-      showAlert(Alert.AlertType.ERROR, "Error received", message, "The server sent an error message: " + message, mainScene);
-    });
+    Platform.runLater(() -> showAlert(Alert.AlertType.ERROR, "Error received", message, "The server sent an error message: " + message, mainScene));
   }
 
   /**
@@ -305,9 +303,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
    */
   @Override
   public void onUnknownMessageReceived(String message) {
-    Platform.runLater(() -> {
-      showAlert(Alert.AlertType.WARNING, "Unknown message received", message, "The message received from the server was not recognized: " + message, mainScene);
-    });
+    Platform.runLater(() -> showAlert(Alert.AlertType.WARNING, "Unknown message received", message, "The message received from the server was not recognized: " + message, mainScene));
   }
 
   /**
@@ -319,24 +315,6 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   public void onNodeRemoved(int nodeId) {
     Platform.runLater(() -> removeNodeDisplay(nodeId));
   }
-
-//  private Actuator getActuator(int nodeId, int actuatorId) {
-//    Actuator actuator = null;
-//    GreenhouseNode node = nodeViewPanes.get(nodeId);
-//    if (node != null) {
-//      actuator = node.getActuator(actuatorId);
-//    }
-//    return actuator;
-//  }
-
-//  private Sensor getSensor(int nodeId, int sensorId) {
-//    Sensor sensor = null;
-//    GreenhouseNode node = nodeViewPanes.get(nodeId);
-//    if (node != null) {
-//      sensor = node.getSensor(sensorId);
-//    }
-//    return sensor;
-//  }
 
   @Override
   public void onCommunicationChannelClosed() {
