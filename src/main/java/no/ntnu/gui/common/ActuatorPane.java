@@ -138,21 +138,37 @@ public class ActuatorPane extends TitledPane {
         HBox hBox = new HBox(5);
         hBox.setId(String.valueOf(actuator.getId()));
 
-        Label actuatorLabel = new Label("Actuator: " + actuator.getType() + " - " + (actuator.isOn() ? "ON" : "OFF"));
+        Label actuatorLabel = new Label("Actuator: " + actuator.getType() + " - "
+            + (actuator.isOn() ? "ON" : "OFF" + " (" + actuator.getStrength() + actuator.getUnit() + ")"));
 
-        Button removeButton = new Button("Remove");
+        hBox.getChildren().addAll(actuatorLabel);
+        if (channel == null) {
+          Button removeButton = new Button("Remove");
 
-        removeButton.setOnAction(e -> {
-          Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION,
-                  "Are you sure you want to remove this actuator?", ButtonType.YES, ButtonType.NO);
-          confirmationAlert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.YES) {
-              removeActuator(actuator);
-            }
+          removeButton.setOnAction(e -> {
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION,
+                "Are you sure you want to remove this actuator?", ButtonType.YES, ButtonType.NO);
+            confirmationAlert.showAndWait().ifPresent(response -> {
+              if (response == ButtonType.YES) {
+                removeActuator(actuator);
+              }
+            });
           });
-        });
+          hBox.getChildren().addAll(removeButton);
+        } else {
+          CheckBox checkBox = new CheckBox();
+          checkBox.setSelected(actuator.isOn());
+          checkBox.setOnAction(e ->
+            channel.sendActuatorChange(
+              node.getId(),
+              actuator.getId(),
+              checkBox.isSelected(),
+              actuator.getStrength()
+            )
+          );
+          hBox.getChildren().addAll(checkBox);
+        }
 
-        hBox.getChildren().addAll(actuatorLabel, removeButton);
 
         contentBox.getChildren().add(hBox);
 
@@ -161,4 +177,41 @@ public class ActuatorPane extends TitledPane {
     });
   }
 
+  public void update(int actuatorId, String type, boolean isOn, int strength, int minStrength, int maxStrength, String unit) {
+    for (Actuator actuator : actuatorValue.keySet()) {
+      if (actuator.getId() == actuatorId) {
+        actuator.setType(type);
+        actuator.setOn(isOn);
+        actuator.setStrength(strength);
+        actuator.setMinStrength(minStrength);
+        actuator.setMaxStrength(maxStrength);
+        actuator.setUnit(unit);
+        update(actuator);
+        break;
+      }
+    }
+    Actuator actuator = new Actuator(node.getId(), actuatorId, type, strength, maxStrength, minStrength, unit);
+    actuator.setOn(isOn);
+    update(actuator);
+  }
+
+  public void update(int actuatorId, boolean isOn, int strength) {
+    for (Actuator actuator : actuatorValue.keySet()) {
+      if (actuator.getId() == actuatorId) {
+        actuator.setOn(isOn);
+        actuator.setStrength(strength);
+        update(actuator);
+        break;
+      }
+    }
+  }
+
+  public void remove(int actuatorId) {
+    for (Actuator actuator : actuatorValue.keySet()) {
+      if (actuator.getId() == actuatorId) {
+        removeActuator(actuator);
+        break;
+      }
+    }
+  }
 }

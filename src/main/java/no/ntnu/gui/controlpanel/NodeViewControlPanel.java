@@ -100,4 +100,16 @@ public class NodeViewControlPanel extends VBox {
   public void updateSensor(int sensorId, String type, double value, double min, double max, String unit) {
     sensorPane.update(sensorId, type, value, min, max, unit);
   }
+
+  public void updateActuator(int actuatorId, String type, boolean isOn, int strength, int minStrength, int maxStrength, String unit) {
+    actuatorPane.update(actuatorId, type, isOn, strength, minStrength, maxStrength, unit);
+  }
+
+  public void updateActuator(int actuatorId, boolean isOn, int strength) {
+    actuatorPane.update(actuatorId, isOn, strength);
+  }
+
+  public void removeActuator(int actuatorId) {
+    actuatorPane.remove(actuatorId);
+  }
 }

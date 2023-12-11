@@ -187,19 +187,11 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   public void onActuatorDataChanged(int nodeId, int actuatorId, boolean isOn, int strength) {
     String state = isOn ? "ON" : "off";
     Logger.info("actuator[" + actuatorId + "] on node " + nodeId + " is " + state);
-//    ActuatorPane actuatorPane = actuatorPanes.get(nodeId);
-//    if (actuatorPane != null) {
-//      Actuator actuator = getActuator(nodeId, actuatorId);
-//      if (actuator != null) {
-//        actuator.setOn(isOn);
-//        actuator.setStrength(strength);
-//        actuatorPane.update(actuator);
-//      } else {
-//        Logger.error(" actuator not found");
-//      }
-//    } else {
-//      Logger.error("No actuator section for node " + nodeId);
-//    }
+    Platform.runLater(() -> {
+      if (nodeViewPanes.containsKey(nodeId)) {
+        nodeViewPanes.get(nodeId).updateActuator(actuatorId, isOn, strength);
+      }
+    });
   }
 
   /**
@@ -216,25 +208,11 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   @Override
   public void onActuatorStateChanged(int nodeId, int actuatorId, String type, boolean isOn, int strength, int minStrength, int maxStrength, String unit) {
     Logger.info("actuator[" + actuatorId + "] on node " + nodeId + " is " + isOn);
-//    ActuatorPane actuatorPane = actuatorPanes.get(nodeId);
-//    Actuator actuator;
-//    if (actuatorPane != null) {
-//      actuator = getActuator(nodeId, actuatorId);
-//      if (actuator != null) {
-//        actuator.setOn(isOn);
-//        actuator.setStrength(strength);
-//        actuator.setMinStrength(minStrength);
-//        actuator.setMaxStrength(maxStrength);
-//        actuator.setUnit(unit);
-//        actuator.setType(type);
-//      } else {
-//        actuator = new Actuator(nodeId, actuatorId, type, strength, minStrength, maxStrength, unit);
-//        actuator.setOn(isOn);
-//      }
-//    actuatorPane.update(actuator);
-//    } else {
-//        Logger.error("No actuator section for node " + nodeId);
-//    }
+    Platform.runLater(() -> {
+      if (nodeViewPanes.containsKey(nodeId)) {
+        nodeViewPanes.get(nodeId).updateActuator(actuatorId, type, isOn, strength, minStrength, maxStrength, unit);
+      }
+    });
   }
 
   /**
@@ -246,12 +224,11 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   @Override
   public void onActuatorRemoved(int nodeId, int actuatorId) {
     Logger.info("actuator[" + actuatorId + "] on node " + nodeId + " is removed");
-//    ActuatorPane actuatorPane = actuatorPanes.get(nodeId);
-//    if (actuatorPane != null) {
-//      actuatorPane.remove(actuatorId);
-//    } else {
-//      Logger.error("No actuator section for node " + nodeId);
-//    }
+    Platform.runLater(() -> {
+      if (nodeViewPanes.containsKey(nodeId)) {
+        nodeViewPanes.get(nodeId).removeActuator(actuatorId);
+      }
+    });
   }
 
   /**
@@ -318,7 +295,9 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
    */
   @Override
   public void onErrorReceived(String message) {
-    showAlert(Alert.AlertType.ERROR, "Error received", message, "The server sent an error message: " + message, mainScene);
+    Platform.runLater(() -> {
+      showAlert(Alert.AlertType.ERROR, "Error received", message, "The server sent an error message: " + message, mainScene);
+    });
   }
 
   /**
@@ -328,7 +307,9 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
    */
   @Override
   public void onUnknownMessageReceived(String message) {
-    showAlert(Alert.AlertType.WARNING, "Unknown message received", message, "The message received from the server was not recognized: " + message, mainScene);
+    Platform.runLater(() -> {
+      showAlert(Alert.AlertType.WARNING, "Unknown message received", message, "The message received from the server was not recognized: " + message, mainScene);
+    });
   }
 
   /**

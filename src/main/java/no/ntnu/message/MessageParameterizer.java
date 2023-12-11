@@ -230,6 +230,9 @@ public class MessageParameterizer {
     String[] parameters = message.substring(message.indexOf("?") + 1).split("&");
     for (String parameter : parameters) {
       String[] keyValue = parameter.split("=");
+      if (keyValue.length != 2) {
+        return this;
+      }
       switch (keyValue[0]) {
         case NODE_ID_PARAMETER:
           setNodeId(keyValue[1]);

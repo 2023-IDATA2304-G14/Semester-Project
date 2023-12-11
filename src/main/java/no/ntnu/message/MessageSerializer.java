@@ -60,7 +60,7 @@ public class MessageSerializer {
         }
       } catch (Exception e) {
         e.printStackTrace();
-        Logger.error("Could not deserialize message. Error: " + e);
+        Logger.error("Could not deserialize message. Error: " + e + ". Message: " + message);
         return new UnknownMessage(message);
       }
     }

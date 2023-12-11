@@ -4,7 +4,7 @@ import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.GreenhouseSimulator;
 
 public record SetActuatorCommand(int nodeId, int actuatorId, boolean isOn, int strength) implements Command {
-  public static final String PREFIX = "aS";
+  public static final String PREFIX = "setA";
 
   /**
    * Execute the command.
