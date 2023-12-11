@@ -21,6 +21,7 @@ import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
 import no.ntnu.controlpanel.GreenhouseNodeInfo;
+import no.ntnu.encryption.ChangeKey;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
@@ -116,7 +117,10 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
 
     stage.show();
+
+    System.out.println("Get Nodes");
     channel.getNodes();
+
     logic.addListener(this);
     logic.setCommunicationChannelListener(this);
   }
@@ -171,6 +175,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
   @Override
   public void onNodeUpdated(GreenhouseNodeInfo nodeInfo) {
+    System.out.println("Somethign HappeN!!");
     Platform.runLater(() -> addNodeDisplay(nodeInfo));
   }
 
@@ -402,7 +407,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     dialog.getDialogPane().setContent(dialogLayout);
 
     dialog.showAndWait().ifPresent(result -> {
-
+      ChangeKey.getInstance().setKey(result);
       System.out.println("Entered Text: " + result);
     });
   }
@@ -417,19 +422,21 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     TextField enterIpField = new TextField("localhost");
     Label enterPort = new Label("Enter Server Port Number:");
     TextField enterPortField = new TextField("1238");
+    Label enterKey = new Label("Enter Server PSK password:");
+    TextField enterKeyField = new TextField("1238");
 
     Button saveButton = new Button("Update");
 
     saveButton.setOnAction(e -> {
       if(isValidPort(enterPortField.getText())){
-
+        ChangeKey.getInstance().setKey(enterKeyField.getText());
         setup(enterIpField.getText(), Integer.parseInt(enterPortField.getText()));
         dialog.setResult("");
         dialog.close();
       }
     });
 
-    dialogLayout.getChildren().addAll(enterIp, enterIpField, enterPort, enterPortField, saveButton);
+    dialogLayout.getChildren().addAll(enterIp, enterIpField, enterPort, enterPortField, enterKey, enterKeyField, saveButton);
     dialog.getDialogPane().setContent(dialogLayout);
     dialog.showAndWait();
   }

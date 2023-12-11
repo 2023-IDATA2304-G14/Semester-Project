@@ -14,6 +14,8 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.InvalidParameterSpecException;
+import java.util.Base64;
+
 import no.ntnu.encryption.ChangeKey;
 import no.ntnu.encryption.SymmetricEncryption;
 import no.ntnu.greenhouse.GreenhouseServer;
@@ -118,11 +120,16 @@ public class ControlPanelClient {
       do {
         try {
           if (socketReader != null) {
-            byte[] serializedMessage = socketReader.readLine().getBytes();
+            String serializedMessage = socketReader.readLine();
 
 //            TODO: implement decryption
+
+
             String encryptionKey = ChangeKey.getInstance().getKey();
-            String decryptedMessage = SymmetricEncryption.decryptMessage(serializedMessage, encryptionKey);
+
+            System.out.println("ser " + serializedMessage);
+
+            String decryptedMessage = SymmetricEncryption.decryptMessage(Base64.getDecoder().decode(serializedMessage), encryptionKey);
             message = MessageSerializer.deserialize(decryptedMessage);
             handleMessage(message);
           } else {
@@ -246,10 +253,15 @@ public class ControlPanelClient {
     if (socketWriter != null && socketReader != null) {
       try {
         String serializedCommand = MessageSerializer.serialize(command);
+        System.out.println("Serialized message: " + serializedCommand);
 //        TODO: implement encryption
         String encryptionKey = ChangeKey.getInstance().getKey();
         byte[] encryptedMessage = SymmetricEncryption.encryptMessage(serializedCommand, encryptionKey);
-        socketWriter.println(encryptedMessage);
+
+        String byteConvertion = Base64.getEncoder().encodeToString(encryptedMessage);
+        System.out.println("Send string: " + byteConvertion);
+
+        socketWriter.println(byteConvertion);
         return true;
       } catch (Exception e) {
         Logger.error("Error sending command to server: " + e.getMessage());
