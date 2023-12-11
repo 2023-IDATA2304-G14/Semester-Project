@@ -78,20 +78,24 @@ public class SensorPane extends TitledPane {
         HBox hBox = new HBox(5);
         hBox.setId(String.valueOf(sensor.getId()));
 
-        Button removeButton = new Button("Remove");
-
-        removeButton.setOnAction(e -> {
-          Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION,
-                  "Are you sure you want to remove this sensor?", ButtonType.YES, ButtonType.NO);
-          confirmationAlert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.YES) {
-              removeSensor(sensor);
-            }
-          });
-        });
-
         Label sensorLabel = createAndRememberSensorLabel(sensor);
-        hBox.getChildren().addAll(sensorLabel, removeButton);
+        hBox.getChildren().addAll(sensorLabel);
+
+        if (channel != null) {
+          Button removeButton = new Button("Remove");
+
+          removeButton.setOnAction(e -> {
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION,
+                    "Are you sure you want to remove this sensor?", ButtonType.YES, ButtonType.NO);
+            confirmationAlert.showAndWait().ifPresent(response -> {
+              if (response == ButtonType.YES) {
+                removeSensor(sensor);
+              }
+            });
+          });
+          hBox.getChildren().addAll(removeButton);
+        }
+
         contentBox.getChildren().add(hBox);
       }
     });

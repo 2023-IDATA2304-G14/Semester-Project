@@ -90,7 +90,7 @@ public class ActuatorPane extends TitledPane {
 
   private String generateActuatorText(Actuator actuator) {
     String onOff = actuator.isOn() ? "ON" : "off";
-    return actuator.getType() + ": " + onOff + " (" + actuator.getStrength() + actuator.getUnit() + ")";
+    return actuator.getType() + ": " + onOff + " (" + actuator.getStrength() + (actuator.getUnit().equals("null") ? "" : actuator.getUnit())  + ")";
   }
 
   /**

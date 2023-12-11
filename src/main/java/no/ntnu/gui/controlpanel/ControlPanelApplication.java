@@ -43,10 +43,6 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   private VBox controlArea;
   private final Map<Integer, NodeViewControlPanel> nodeViewPanes = new HashMap<>();
 
-  //Daniel Shenanigans
-  private String passPhrase;
-  private Label label = new Label();
-
   /**
    * Application entrypoint for the GUI of a control panel.
    * Note - this is a workaround to avoid problems with JavaFX not finding the modules!
@@ -246,6 +242,8 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
         NodeViewControlPanel nodeView = new NodeViewControlPanel(node, channel);
         nodeViewPanes.put(nodeId, nodeView);
         nodeDisplayArea.getChildren().add(nodeView.getPane());
+//        TODO: Implement a way for the user to subscribe and unsubscribe to nodes in the GUI
+        channel.subscribeToNode(nodeId);
       }
     });
   }
@@ -293,9 +291,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
    */
   @Override
   public void onErrorReceived(String message) {
-    Platform.runLater(() -> {
-      showAlert(Alert.AlertType.ERROR, "Error received", message, "The server sent an error message: " + message, mainScene);
-    });
+    Platform.runLater(() -> showAlert(Alert.AlertType.ERROR, "Error received", message, "The server sent an error message: " + message, mainScene));
   }
 
   /**
@@ -305,9 +301,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
    */
   @Override
   public void onUnknownMessageReceived(String message) {
-    Platform.runLater(() -> {
-      showAlert(Alert.AlertType.WARNING, "Unknown message received", message, "The message received from the server was not recognized: " + message, mainScene);
-    });
+    Platform.runLater(() -> showAlert(Alert.AlertType.WARNING, "Unknown message received", message, "The message received from the server was not recognized: " + message, mainScene));
   }
 
   /**
@@ -319,24 +313,6 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
   public void onNodeRemoved(int nodeId) {
     Platform.runLater(() -> removeNodeDisplay(nodeId));
   }
-
-//  private Actuator getActuator(int nodeId, int actuatorId) {
-//    Actuator actuator = null;
-//    GreenhouseNode node = nodeViewPanes.get(nodeId);
-//    if (node != null) {
-//      actuator = node.getActuator(actuatorId);
-//    }
-//    return actuator;
-//  }
-
-//  private Sensor getSensor(int nodeId, int sensorId) {
-//    Sensor sensor = null;
-//    GreenhouseNode node = nodeViewPanes.get(nodeId);
-//    if (node != null) {
-//      sensor = node.getSensor(sensorId);
-//    }
-//    return sensor;
-//  }
 
   @Override
   public void onCommunicationChannelClosed() {
