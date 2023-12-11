@@ -1,22 +1,11 @@
 package no.ntnu.gui.controlpanel;
 
-import javafx.application.Platform;
-import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import no.ntnu.controlpanel.ControlPanelChannel;
 import no.ntnu.greenhouse.*;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
-import no.ntnu.listeners.common.ActuatorListener;
-import no.ntnu.listeners.common.NodeListener;
-import no.ntnu.listeners.common.SensorListener;
-import no.ntnu.listeners.common.StateListener;
-import no.ntnu.listeners.greenhouse.NodeStateListener;
-
-import java.util.List;
 
 /**
  * Window with GUI for overview and control of one specific sensor/actuator node.
@@ -44,7 +33,7 @@ public class NodeViewControlPanel extends VBox {
     VBox content = new VBox();
     content.setMinWidth(300);
     content.setMinHeight(300);
-    actuatorPane = new ActuatorPane(node.getActuators(), node, channel);
+    actuatorPane = new ActuatorPane(node, channel);
 
     sensorPane = new SensorPane(node.getSensors(), node, channel);
 

@@ -3,16 +3,12 @@ package no.ntnu.gui.common;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import no.ntnu.controlpanel.ControlPanelChannel;
 import no.ntnu.greenhouse.Actuator;
-import no.ntnu.greenhouse.ActuatorCollection;
 import no.ntnu.greenhouse.GreenhouseNode;
 import no.ntnu.tools.Logger;
 
@@ -21,71 +17,29 @@ import no.ntnu.tools.Logger;
  */
 public class ActuatorPane extends TitledPane {
   private final Map<Actuator, SimpleStringProperty> actuatorValue = new HashMap<>();
-  private final Map<Actuator, SimpleBooleanProperty> actuatorActive = new HashMap<>();
   private final VBox contentBox = new VBox();
   private final GreenhouseNode node;
   private ControlPanelChannel channel = null; // If this is null, the actuator pane is used in the greenhouse simulator
 
   /**
    * Create a new actuator pane.
-   *
-   * @param actuators The actuators to display
    */
-  public ActuatorPane(ActuatorCollection actuators, GreenhouseNode node) {
+  public ActuatorPane(GreenhouseNode node) {
     super();
     setText("Actuators");
     setContent(contentBox); // Set contentBox as the content of the ActuatorPane
-    addActuatorControls(actuators, contentBox);
     this.node = node;
   }
 
   /**
    * Create a new actuator pane.
-   *
-   * @param actuators The actuators to display
    */
-  public ActuatorPane(ActuatorCollection actuators, GreenhouseNode node, ControlPanelChannel channel) {
+  public ActuatorPane(GreenhouseNode node, ControlPanelChannel channel) {
     super();
     setText("Actuators");
     setContent(contentBox); // Set contentBox as the content of the ActuatorPane
-    addActuatorControls(actuators, contentBox);
     this.channel = channel;
     this.node = node;
-  }
-
-
-  private void addActuatorControls(ActuatorCollection actuators, Pane parent) {
-    actuators.forEach(actuator ->
-            parent.getChildren().add(createActuatorGui(actuator))
-    );
-  }
-
-  private Node createActuatorGui(Actuator actuator) {
-    HBox actuatorGui = new HBox(createActuatorLabel(actuator), createActuatorCheckbox(actuator));
-    actuatorGui.setSpacing(5);
-    return actuatorGui;
-  }
-
-  private CheckBox createActuatorCheckbox(Actuator actuator) {
-    CheckBox checkbox = new CheckBox();
-    SimpleBooleanProperty isSelected = new SimpleBooleanProperty(actuator.isOn());
-    actuatorActive.put(actuator, isSelected);
-    checkbox.selectedProperty().bindBidirectional(isSelected);
-
-    checkbox.setId("checkBoxActuator");
-
-    checkbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-//      TODO: should the checkbox do anything????
-    });
-    return checkbox;
-  }
-
-  private Label createActuatorLabel(Actuator actuator) {
-    SimpleStringProperty props = new SimpleStringProperty(generateActuatorText(actuator));
-    actuatorValue.put(actuator, props);
-    Label label = new Label();
-    label.textProperty().bind(props);
-    return label;
   }
 
   private String generateActuatorText(Actuator actuator) {
@@ -125,7 +79,6 @@ public class ActuatorPane extends TitledPane {
     for (Actuator actuator : actuatorValue.keySet()) {
       if (actuator.getId() == actuatorId) {
         actuatorValue.remove(actuator);
-        actuatorActive.remove(actuator);
         contentBox.getChildren().removeIf(actuatorBox -> actuatorBox.getId().equals(String.valueOf(actuatorId)));
         break;
       }
@@ -138,8 +91,10 @@ public class ActuatorPane extends TitledPane {
         HBox hBox = new HBox(5);
         hBox.setId(String.valueOf(actuator.getId()));
 
-        Label actuatorLabel = new Label("Actuator: " + actuator.getType() + " - "
-            + (actuator.isOn() ? "ON" : "OFF" + " (" + actuator.getStrength() + actuator.getUnit() + ")"));
+        Label actuatorLabel = new Label(generateActuatorText(actuator));
+        SimpleStringProperty prop = new SimpleStringProperty(generateActuatorText(actuator));
+        actuatorValue.put(actuator, prop);
+        actuatorLabel.textProperty().bind(prop);
 
         hBox.getChildren().addAll(actuatorLabel);
         if (channel == null) {
@@ -172,7 +127,6 @@ public class ActuatorPane extends TitledPane {
 
         contentBox.getChildren().add(hBox);
 
-        actuatorValue.put(actuator, new SimpleStringProperty(actuator.toString()));
       }
     });
   }

@@ -249,12 +249,10 @@ public class ControlPanelClient {
       try {
         String serializedCommand = MessageSerializer.serialize(command);
         System.out.println("Serialized message: " + serializedCommand);
-//        TODO: implement encryption
         String encryptionKey = ChangeKey.getInstance().getKey();
         byte[] encryptedMessage = SymmetricEncryption.encryptMessage(serializedCommand, encryptionKey);
 
         String byteConvertion = Base64.getEncoder().encodeToString(encryptedMessage);
-        System.out.println("Send string: " + byteConvertion);
 
         socketWriter.println(byteConvertion);
         return true;

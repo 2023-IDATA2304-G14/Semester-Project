@@ -50,7 +50,7 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener, 
     VBox content = new VBox();
     content.setMinWidth(300);
     content.setMinHeight(300);
-    actuatorPane = new ActuatorPane(node.getActuators(), node);
+    actuatorPane = new ActuatorPane(node);
 
     sensorPane = new SensorPane(node.getSensors(), node);
 
