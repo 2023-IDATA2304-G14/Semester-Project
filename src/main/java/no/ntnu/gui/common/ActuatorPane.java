@@ -25,6 +25,7 @@ import no.ntnu.tools.Logger;
 public class ActuatorPane extends TitledPane {
   private final Map<Actuator, SimpleStringProperty> actuatorValue = new HashMap<>();
   private final Map<Actuator, SimpleBooleanProperty> actuatorActive = new HashMap<>();
+  private final VBox contentBox = new VBox();
 
   /**
    * Create a new actuator pane.
@@ -130,5 +131,15 @@ public class ActuatorPane extends TitledPane {
               actuatorActive.remove(actuator);
             });
     //    TODO: Implement a way of removing the existing labels
+  }
+
+  public void addActuator(Actuator actuator) {
+    Platform.runLater(() -> {
+      if (!actuatorValue.containsKey(actuator)) {
+        HBox hBox = new HBox();
+        hBox.getChildren().addAll(new CheckBox(), createActuatorLabel(actuator));
+        setContent(hBox);
+      }
+    });
   }
 }

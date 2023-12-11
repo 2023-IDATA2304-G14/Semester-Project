@@ -11,6 +11,9 @@ import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
 import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.common.SensorListener;
+
+import java.util.List;
+
 /**
  * Window with GUI for overview and control of one specific sensor/actuator node.
  */
@@ -139,8 +142,10 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
           } else {
             sensor = DeviceFactory.createHumiditySensor(node.getId());
           }
-          node.addSensors(sensor, Integer.parseInt(textField.getText()));
-          sensorPane.addSensor(sensor);
+          List<Sensor> newSensors = node.addSensors(sensor, Integer.parseInt(textField.getText()));
+          for (Sensor newSensor : newSensors) {
+            sensorPane.addSensor(newSensor);
+          }
           node.start();
            dialog.setResult("");
            dialog.close();
@@ -184,6 +189,7 @@ public class NodeView extends VBox implements SensorListener, ActuatorListener {
       } else {
         actuator = DeviceFactory.createFan(node.getId());
       }
+      actuatorPane.addActuator(actuator);
       node.addActuator(actuator);
       node.start();
       dialog.setResult("");

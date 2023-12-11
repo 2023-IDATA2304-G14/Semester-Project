@@ -79,7 +79,9 @@ public class GreenhouseNode implements CommunicationChannelListener {
    *                 generation algorithms, etc.
    * @param n        The number of sensors to add to the node.
    */
-  public void addSensors(Sensor template, int n) {
+  public List<Sensor> addSensors(Sensor template, int n) {
+    List<Sensor> newSensors = new LinkedList<>();
+
     if (template == null) {
       throw new IllegalArgumentException("Sensor template is missing");
     }
@@ -96,8 +98,11 @@ public class GreenhouseNode implements CommunicationChannelListener {
       newSensor.setListeners(sensorListeners);
       newSensor.setStateListeners(stateListeners);
       sensors.add(newSensor);
+      newSensors.add(newSensor);
       Logger.info("Created " + newSensor.getType() + "[" + newSensor.getId() + "] on node " + id);
     }
+
+    return newSensors;
   }
 
   /**

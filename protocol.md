@@ -26,8 +26,12 @@ We can use TCP? Since we don't care about speed, but more the data gets the unal
 Can use UDP if we send a lot of data, since the speed and the chance that a lot of data is wrong is low?
 
 The protocol uses TCP as the underlying transport protocol. This is because we don't want our data to be
-lost or altered and we don't care about the speed of the data transfer. Our solution enables the user to
-set a port number for the server to listen on. 
+lost or altered, and we don't care about the speed of the data transfer. Our solution enables the user to
+set a custom port number for the server to listen on. If the user does not select a port number, the server
+will default to port 1238. The reason for choosing this port is that is not reserved by any service, and
+is not used by any common services. This means that the user can use this port without having to worry about
+other services using the same port. If the user wants they can also choose automatic port selection, which
+will select a random ephemeral port. 
 
 
 
