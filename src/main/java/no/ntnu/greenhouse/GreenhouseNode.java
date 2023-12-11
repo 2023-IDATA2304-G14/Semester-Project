@@ -384,4 +384,12 @@ public class GreenhouseNode implements CommunicationChannelListener {
   public void removeNodeStateListener(NodeStateListener listener) {
     nodeStateListeners.remove(listener);
   }
+
+  public void removeNodeListener(NodeListener listener) {
+    nodeListeners.remove(listener);
+  }
+
+  public void removeStateListener(StateListener listener) {
+    stateListeners.remove(listener);
+  }
 }

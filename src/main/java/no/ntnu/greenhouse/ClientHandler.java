@@ -79,8 +79,8 @@ public class ClientHandler
     this.greenhouseServer = greenhouseServer;
     this.socketReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
     this.socketWriter = new PrintWriter(clientSocket.getOutputStream(), true);
-    greenhouseServer.getGreenhouseSimulator().addNodeStateListener(this);
-    greenhouseServer.getGreenhouseSimulator().addNodeListener(this);
+//    greenhouseServer.getGreenhouseSimulator().addNodeStateListener(this);
+//    greenhouseServer.getGreenhouseSimulator().addNodeListener(this);
   }
 
   /**
@@ -129,6 +129,7 @@ public class ClientHandler
     greenhouseServer.removeClient(this);
     greenhouseServer.getGreenhouseSimulator().removeNodeStateListener(this);
     greenhouseServer.getGreenhouseSimulator().removeNodeListener(this);
+    greenhouseServer.getGreenhouseSimulator().removeStateListener(this);
   }
 
   /**

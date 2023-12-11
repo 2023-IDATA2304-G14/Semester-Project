@@ -21,6 +21,7 @@ public class GreenhouseSimulator {
   private ExecutorService serverExecutor;
   private List<NodeStateListener> nodeStateListeners = new LinkedList<>();
   private List<NodeListener> nodeListeners = new LinkedList<>();
+  private List<StateListener> stateListeners = new LinkedList<>();
 
 
   /**
@@ -179,6 +180,9 @@ public class GreenhouseSimulator {
     for (NodeListener listener : nodeListeners) {
       node.addNodeListener(listener);
     }
+    for (StateListener listener : stateListeners) {
+      node.addStateListener(listener);
+    }
     node.start();
   }
 
@@ -196,6 +200,9 @@ public class GreenhouseSimulator {
 
   public void removeNodeStateListener(NodeStateListener listener) {
     nodeStateListeners.remove(listener);
+    for (GreenhouseNode node : nodes.values()) {
+      node.removeNodeStateListener(listener);
+    }
   }
 
   public void addNodeListener(NodeListener listener) {
@@ -204,5 +211,19 @@ public class GreenhouseSimulator {
 
   public void removeNodeListener(NodeListener listener) {
     nodeListeners.remove(listener);
+    for (GreenhouseNode node : nodes.values()) {
+      node.removeNodeListener(listener);
+    }
+  }
+
+  public void addStateListener(StateListener listener) {
+    stateListeners.add(listener);
+  }
+
+  public void removeStateListener(StateListener listener) {
+    stateListeners.remove(listener);
+    for (GreenhouseNode node : nodes.values()) {
+      node.removeStateListener(listener);
+    }
   }
 }

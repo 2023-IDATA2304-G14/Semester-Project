@@ -104,6 +104,9 @@ public class GreenhouseServer {
       Socket clientSocket = listeningSocket.accept();
       Logger.info("New client connected from " + clientSocket.getRemoteSocketAddress());
       clientHandler = new ClientHandler(clientSocket, this);
+      getGreenhouseSimulator().addNodeStateListener(clientHandler);
+      getGreenhouseSimulator().addNodeListener(clientHandler);
+      getGreenhouseSimulator().addStateListener(clientHandler);
     } catch (IOException e) {
       Logger.error("Could not accept client connection: " + e.getMessage());
     }
