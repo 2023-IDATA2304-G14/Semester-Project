@@ -68,6 +68,23 @@ stateless?
 TODO - Do you have some specific value types you use in several messages? They you can describe 
 them here.
 
+1. ActuatorDataMessage.java: 
+Node ID: A numeric identifier for the node, commonly used to identify which sensor/actuator node the message pertains to.
+Actuator ID: A numeric identifier for the specific actuator within the node.
+Status Flag (boolean isOn): A boolean flag indicating the status (on/off) of the actuator.
+Strength (int strength): An integer value representing the strength or level at which the actuator is operating.
+
+2. SensorDataMessage.java:
+Node ID (int nodeId): Similar to ActuatorDataMessage, identifying the node.
+Sensor ID (int sensorId): A numeric identifier for the specific sensor within the node.
+Value (double value): A floating-point number representing the sensor's reading.
+Unit (String unit): A string indicating the unit of the sensor's reading.
+Type (String type): A string specifying the type of sensor (e.g., temperature, humidity)
+
+3. NodeStateMessage.java:
+Node ID (int nodeId): Again, a numeric identifier for the node.
+Name (String name): A string representing the name or label of the node.
+
 ## Message format
 
 TODO - describe the general format of all messages. Then describe specific format for each 
@@ -95,6 +112,8 @@ a robust and flexible communication framework within the greenhouse system.
 ### Error messages
 
 TODO - describe the possible error messages that nodes can send in your system.
+
+
 
 ## An example scenario
 
@@ -132,3 +151,6 @@ Security measurements:
 * Improvements can be:
 * * Use public and private key to send the symmetric key.
 * * Let the user change the password.
+
+in summary the solution supports security through symmetric encryption, specifically using AESin GCM
+mode for secure and efficient message encryption and authentication. 
