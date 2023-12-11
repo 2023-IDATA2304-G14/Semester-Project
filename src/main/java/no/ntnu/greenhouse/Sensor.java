@@ -89,7 +89,7 @@ public class Sensor {
    * @return A clone of this sensor, where all the fields are the same
    */
   public Sensor createClone() {
-    Sensor newSensor = new Sensor(this.id, this.reading.getType(), this.min, this.max,
+    Sensor newSensor = new Sensor(this.nodeId, this.reading.getType(), this.min, this.max,
         this.reading.getValue(), this.reading.getUnit());
     newSensor.listeners = this.listeners;
     newSensor.stateListeners = this.stateListeners;
