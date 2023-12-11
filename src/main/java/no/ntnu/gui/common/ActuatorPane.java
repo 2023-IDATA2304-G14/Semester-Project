@@ -35,12 +35,10 @@ public class ActuatorPane extends TitledPane {
   public ActuatorPane(ActuatorCollection actuators) {
     super();
     setText("Actuators");
-    VBox vbox = new VBox();
-    vbox.setSpacing(10);
-    setContent(vbox);
-    addActuatorControls(actuators, vbox);
-    //GuiTools.stretchVertically(this);
+    setContent(contentBox); // Set contentBox as the content of the ActuatorPane
+    addActuatorControls(actuators, contentBox);
   }
+
 
   private void addActuatorControls(ActuatorCollection actuators, Pane parent) {
     actuators.forEach(actuator ->
@@ -136,10 +134,15 @@ public class ActuatorPane extends TitledPane {
   public void addActuator(Actuator actuator) {
     Platform.runLater(() -> {
       if (!actuatorValue.containsKey(actuator)) {
-        HBox hBox = new HBox();
-        hBox.getChildren().addAll(new CheckBox(), createActuatorLabel(actuator));
-        setContent(hBox);
+        // Create new GUI components for the actuator
+        HBox hBox = new HBox(createActuatorLabel(actuator), createActuatorCheckbox(actuator));
+        hBox.setSpacing(5);
+
+        // Add the new HBox to the contentBox, which already contains other actuators
+        contentBox.getChildren().add(hBox);
       }
     });
   }
+
+
 }

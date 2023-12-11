@@ -110,11 +110,8 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
     setPort();
 
-
-
     mainScene = new Scene(mainLayout, WIDTH, HEIGHT);
     stage.setScene(mainScene);
-
 
     stage.show();
 
