@@ -36,10 +36,6 @@ will select a random ephemeral port.
 
 ## The architecture
 
-[//]: # (TODO: remove the following text)
-TODO - show the general architecture of your network. Which part is a server? Who are clients? 
-Do you have one or several servers? Perhaps include a picture here. 
-
 Each greenhouse is its own server, and each control panel is its own client. The control panel can connect to
 any greenhouse server, the greenhouse server supports having multiple clients connected at the same time.
 A client can send commands to the server and the server will automatically update all connected clients.
@@ -60,12 +56,11 @@ The greenhouse server is the main node in the network. It listens for incoming c
 
 ## Connection and state
 
-TODO - is your communication protocol connection-oriented or connection-less? Is it stateful or 
-stateless? 
+The communication protocol for this project is connection-oriented and stateful
 
 ## Types, constants
 
-TODO - Do you have some specific value types you use in several messages? They you can describe 
+Do you have some specific value types you use in several messages? They you can describe 
 them here.
 
 1. ActuatorDataMessage.java: 
@@ -87,8 +82,7 @@ Name (String name): A string representing the name or label of the node.
 
 ## Message format
 
-TODO - describe the general format of all messages. Then describe specific format for each 
-message type in your protocol.
+
 
 The general format of messages in this protocol is designed to ensure a consistent and structured
 communication system. All the messages are encapsulated as Java records or classes, implementing
@@ -177,7 +171,7 @@ These are some of the possible error messages that could occur by the nodes in t
 
 ## An example scenario
 
-TODO - describe a typical scenario. How would it look like from communication perspective? When 
+describe a typical scenario. How would it look like from communication perspective? When 
 are connections established? Which packets are sent? How do nodes react on the packets? An 
 example scenario could be as follows:
 1. A sensor node with ID=1 is started. It has a temperature sensor, two humidity sensors. It can
@@ -194,7 +188,6 @@ example scenario could be as follows:
 
 ## Reliability and security
 
-TODO - describe the reliability and security mechanisms your solution supports.
 
 ### Security
 Added a encryption system to more securely send messages over the Internet.
