@@ -11,19 +11,6 @@ import no.ntnu.controlpanel.GreenhouseNodeInfo;
  * about some changes in a greenhouse.
  */
 public interface GreenhouseEventListener {
-  /**
-   * This event is fired when a new node is updated or added to the greenhouse.
-   *
-   * @param nodeInfo Information about the added node
-   */
-  void onNodeUpdated(GreenhouseNodeInfo nodeInfo);
-
-  /**
-   * This event is fired when a node is removed from the greenhouse.
-   *
-   * @param nodeId ID of the node which has disappeared (removed)
-   */
-  void onNodeRemoved(int nodeId);
 
   /**
    * This event is fired when new sensor data is received from a node.
@@ -113,4 +100,10 @@ public interface GreenhouseEventListener {
    * @param message The unknown message
    */
   void onUnknownMessageReceived(String message);
+
+  /**
+   * This event is fired when a node is removed from the greenhouse.
+   * @param nodeId ID of the node
+   */
+  void onNodeRemoved(int nodeId);
 }

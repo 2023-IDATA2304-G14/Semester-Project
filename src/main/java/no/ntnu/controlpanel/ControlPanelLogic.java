@@ -4,9 +4,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import no.ntnu.greenhouse.Actuator;
+import no.ntnu.greenhouse.GreenhouseNode;
 import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.common.CommunicationChannelListener;
+import no.ntnu.listeners.common.NodeListener;
 import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
+import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.tools.Logger;
 
 /**
@@ -53,16 +56,6 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
     if (!listeners.contains(listener)) {
       listeners.add(listener);
     }
-  }
-
-  @Override
-  public void onNodeUpdated(GreenhouseNodeInfo nodeInfo) {
-    listeners.forEach(listener -> listener.onNodeUpdated(nodeInfo));
-  }
-
-  @Override
-  public void onNodeRemoved(int nodeId) {
-    listeners.forEach(listener -> listener.onNodeRemoved(nodeId));
   }
 
   @Override
@@ -183,6 +176,16 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
   }
 
   /**
+   * This event is fired when a node is removed from the greenhouse.
+   *
+   * @param nodeId ID of the node
+   */
+  @Override
+  public void onNodeRemoved(int nodeId) {
+    listeners.forEach(listener -> listener.onNodeRemoved(nodeId));
+  }
+
+  /**
    * An event that is fired every time an actuator changes state.
    *
    * @param actuator The actuator that has changed its state
@@ -193,5 +196,4 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
       communicationChannel.sendActuatorChange(actuator.getNodeId(), actuator.getId(), actuator.isOn(), actuator.getStrength());
     }
   }
-
 }

@@ -18,17 +18,6 @@ public class ControlPanelModel implements GreenhouseEventListener {
 
     }
 
-
-    /**
-     * This event is fired when a new node is added to the greenhouse.
-     *
-     * @param nodeInfo Information about the added node
-     */
-    @Override
-    public void onNodeUpdated(GreenhouseNodeInfo nodeInfo) {
-        // TODO: Implement
-    }
-
     /**
      * This event is fired when a node is removed from the greenhouse.
      *

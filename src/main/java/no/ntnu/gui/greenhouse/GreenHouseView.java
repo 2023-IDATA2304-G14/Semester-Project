@@ -19,9 +19,13 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import no.ntnu.greenhouse.DeviceFactory;
 import no.ntnu.greenhouse.GreenhouseNode;
+import no.ntnu.greenhouse.GreenhouseSimulator;
+import no.ntnu.greenhouse.Sensor;
 import no.ntnu.gui.greenhouse.helper.NodeView;
+import no.ntnu.listeners.greenhouse.NodeStateListener;
 
-public class GreenHouseView {
+
+public class GreenHouseView implements NodeStateListener {
   // Model and Controller for MVC pattern
   private GreenHouseModel model;
   private GreenHouseController controller;
@@ -29,8 +33,8 @@ public class GreenHouseView {
   private FlowPane flowPane = new FlowPane();
 
   // Constructor initializing the model, controller, and GUI
-  public GreenHouseView(Stage stage){
-    model = new GreenHouseModel();
+  public GreenHouseView(Stage stage, GreenhouseSimulator simulator){
+    model = new GreenHouseModel(this, simulator);
     controller = new GreenHouseController(model, this);
     initialize(stage);
   }
@@ -64,7 +68,8 @@ public class GreenHouseView {
     button.setOnAction(e -> {
       System.out.println("Add Node");
       GreenhouseNode node = DeviceFactory.createNode(0,0,0,0,0, "TestNode");
-      addNode(node);
+      node.addNodeStateListener(this);
+      controller.addNode(node);
     });
 
     // Copy PSK key to clipboard on right-click
@@ -105,16 +110,8 @@ public class GreenHouseView {
     stage.show();
   }
 
-  // Adds a new node to the flowPane
-  public void addNode(GreenhouseNode node){
-    NodeView nodeView = new NodeView(node);
-    flowPane.getChildren().add(nodeView.getPane());
-  }
-
-  // Sets the simulator with a specific node
-  public void setSimulator(GreenhouseNode node){
-    System.out.println(node.getId());
-    addNode(node);
+  private void removeNode(GreenhouseNode node) {
+    flowPane.getChildren().removeIf(nodeView -> ((NodeView) nodeView).getNode().getId() == node.getId());
   }
 
   // Getter for the model
@@ -154,5 +151,31 @@ public class GreenHouseView {
     } catch (NumberFormatException e) {
       return false;
     }
+  }
+
+  public void updateSensor(Sensor sensor) {
+
+  }
+
+  /**
+   * This event is fired when a sensor/actuator node has finished the starting procedure and
+   * has entered the "ready" state.
+   *
+   * @param node the node which is ready now
+   */
+  @Override
+  public void onNodeReady(GreenhouseNode node) {
+    NodeView nodeView = new NodeView(node, model.getSimulator());
+    flowPane.getChildren().add(nodeView.getPane());
+  }
+
+  /**
+   * This event is fired when a sensor/actuator node has stopped (shut down_.
+   *
+   * @param node The node which is stopped
+   */
+  @Override
+  public void onNodeStopped(GreenhouseNode node) {
+    removeNode(node);
   }
 }

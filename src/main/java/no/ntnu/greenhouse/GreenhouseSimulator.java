@@ -167,4 +167,14 @@ public class GreenhouseSimulator {
   public List<GreenhouseNode> getNodes() {
     return new ArrayList<>(nodes.values());
   }
+
+  public void addNode(GreenhouseNode node) {
+    nodes.put(node.getId(), node);
+    node.start();
+  }
+
+  public void removeNode(GreenhouseNode node) {
+    nodes.remove(node.getId());
+    node.stop();
+  }
 }
