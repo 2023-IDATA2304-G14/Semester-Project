@@ -91,15 +91,8 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     logic.setCommunicationChannel(channel);
   }
 
-
-
   @Override
   public void start(Stage stage) {
-    //if (channel == null) {
-    //  throw new IllegalStateException(
-    //      "No communication channel. See the README on how to use fake event spawner!");
-   // }
-
     stage.setTitle("Control Panel");
 
     mainLayout = new BorderPane();
@@ -116,10 +109,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     stage.setScene(mainScene);
 
     stage.show();
-
-    System.out.println("Get Nodes");
     channel.getNodes();
-
     logic.addListener(this);
     logic.setCommunicationChannelListener(this);
   }
@@ -142,24 +132,23 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     return nodeDisplayArea;
   }
 
-  private void addNodeDisplay(GreenhouseNodeInfo nodeInfo) {
+  private void addNodeDisplay(GreenhouseNode node) {
 
-    System.out.println(nodeInfo.getId());
+    System.out.println(node.getId());
     VBox nodeBox = new VBox(5);
-    Label nodeLabel = new Label("Node " + nodeInfo.getId());
+    Label nodeLabel = new Label("Node " + node.getId());
     nodeBox.getChildren().add(nodeLabel);
 
-    SensorPane sensorPane = new SensorPane();
-    sensorPanes.put(nodeInfo.getId(), sensorPane);
+    SensorPane sensorPane = new SensorPane(node);
+    sensorPanes.put(node.getId(), sensorPane);
     nodeBox.getChildren().add(sensorPane);
 
-    ActuatorPane actuatorPane = new ActuatorPane(nodeInfo.getActuators());
-    actuatorPanes.put(nodeInfo.getId(), actuatorPane);
+    ActuatorPane actuatorPane = new ActuatorPane(node.getActuators());
+    actuatorPanes.put(node.getId(), actuatorPane);
     nodeBox.getChildren().add(actuatorPane);
 
-    nodeBoxes.put(nodeInfo.getId(), nodeBox);
+    nodeBoxes.put(node.getId(), nodeBox);
     nodeDisplayArea.getChildren().add(nodeBox);
-
   }
 
   private void removeNodeDisplay(int nodeId) {
@@ -362,7 +351,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
    */
   @Override
   public void onNodeRemoved(int nodeId) {
-
+    Platform.runLater(() -> removeNodeDisplay(nodeId));
   }
 
   private Actuator getActuator(int nodeId, int actuatorId) {
@@ -406,7 +395,6 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     });
 
     dialogLayout.getChildren().addAll(label, textField, saveButton);
-
     dialog.getDialogPane().setContent(dialogLayout);
 
     dialog.showAndWait().ifPresent(result -> {
@@ -426,7 +414,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     Label enterPort = new Label("Enter Server Port Number:");
     TextField enterPortField = new TextField("1238");
     Label enterKey = new Label("Enter Server PSK password:");
-    TextField enterKeyField = new TextField("1238");
+    TextField enterKeyField = new TextField("");
 
     Button saveButton = new Button("Update");
 
