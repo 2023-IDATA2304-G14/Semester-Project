@@ -113,7 +113,67 @@ a robust and flexible communication framework within the greenhouse system.
 
 TODO - describe the possible error messages that nodes can send in your system.
 
+In a system with nodes like a greenhouse control system, various components can encounter issues that need to be 
+reported back to the user or system administrator. Here are som potential error messages that nodes might send, 
+categorized by general types of errors:
 
+#### Communication Errors:
+
+- "Unable to establish connection with the server."
+- "Connection timeout with the node."
+- "Data transmission interrupted unexpectedly."
+- "Unknown protocol received from the node."
+- "Node is not responding to heartbeat signals."
+
+#### Sensor Errors:
+
+- "Sensor reading failed due to a timeout."
+- "Invalid data received from the temperature/humidity/CO2 sensor."
+- "Sensor disconnected or not detected."
+- "Sensor calibration error detected."
+- "Sensor ID not recognized."
+
+#### Actuator Errors:
+
+- "Actuator failed to execute the command." 
+- "Actuator is not responding or offline."
+- "Unexpected actuator position detected."
+- "Actuator is blocked or jammed."
+- "Overcurrent or overheating detected in actuator circuit."
+
+#### System Health Errors:
+
+- "Node battery level is critically low."
+- "Memory overflow error on the node."
+- "Node firmware is outdated and needs an update."
+- "Hardware failure detected in node’s circuitry."
+- "Node has rebooted unexpectedly, possible power issue."
+
+#### Configuration and Setup Errors:
+
+- "Configuration data is missing or corrupted."
+- "Failed to apply new configuration settings."
+- "Error during node initialization."
+- "Node security credentials are invalid or expired."
+- "Mismatch in node version compatibility."
+
+#### Environmental Errors:
+
+- "Ambient temperature is outside the safe operating range."
+- "Humidity levels have exceeded recommended thresholds."
+- "Detected water leak near the node."
+- "Light intensity too high for optimal plant growth."
+- "Air quality index has dropped below acceptable levels."
+
+#### Security and Access Errors:
+
+- "Unauthorized access attempt detected."
+- "Node locked due to multiple failed login attempts."
+- "Security certificate error."
+- "Encrypted communication verification failed."
+- "Suspicious activity detected; node is in lockdown mode."
+
+These are some of the possible error messages that could occur by the nodes in the system.
 
 ## An example scenario
 
